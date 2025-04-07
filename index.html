@@ -10,30 +10,35 @@
       html, body {
         margin: 0;
         padding: 0;
-        overflow: hidden;           /* Disable all scrolling */
+        overflow: hidden;
         height: 100%;
         width: 100%;
-        touch-action: none;         /* Disable touch gestures */
-        overscroll-behavior: none;  /* Prevent scroll bounce on mobile */
+        touch-action: none;
+        overscroll-behavior: none;
       }
 
       .a-enter-vr-button {
-        display: none !important;  /* Hide VR button */
+        display: none !important;
       }
 
-      #debug-info {
+      #debug {
         position: absolute;
         top: 10px;
         left: 10px;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        color: #00ffcc;
         padding: 10px;
+        font-family: monospace;
         font-size: 14px;
-        border-radius: 5px;
+        border-radius: 6px;
+        z-index: 999;
       }
     </style>
   </head>
   <body>
+    <!-- Debug Output -->
+    <div id="debug">Rotation: waiting...</div>
+
     <a-scene
       mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind;"
       color-space="sRGB"
@@ -47,7 +52,8 @@
         <a-asset-item id="avatarModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogoNewCup.glb"></a-asset-item>
       </a-assets>
 
-      <a-camera id="camera" position="0 0 0" look-controls="enabled: false"></a-camera>
+      <!-- MindAR-controlled camera -->
+      <a-camera id="mainCamera" position="0 0 0" look-controls="enabled: false"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model
@@ -56,7 +62,7 @@
           scale="10 10 10"
           src="#avatarModel"
           animation-mixer
-          look-at="[camera]" <!-- Always faces the camera -->
+          look-at="[camera]"
         ></a-gltf-model>
       </a-entity>
 
@@ -67,40 +73,24 @@
           scale="10 10 10"
           src="#CoffeeCupNew"
           animation-mixer
-          look-at="[camera]" <!-- Always faces the camera -->
+          look-at="[camera]"
         ></a-gltf-model>
       </a-entity>
     </a-scene>
 
-    <!-- Debug Information -->
-    <div id="debug-info">Waiting for camera rotation...</div>
-
     <script>
-      // Get the camera element
-      const cameraEl = document.querySelector("#camera");
+      const debug = document.getElementById('debug');
+      const cameraEl = document.querySelector('#mainCamera');
 
-      // Debug information element
-      const debugInfo = document.getElementById("debug-info");
-
-      // Function to update the camera's rotation values
-      function updateCameraRotation() {
-        // Get the current rotation of the camera (in degrees)
-        const rotation = cameraEl.getAttribute("rotation");
-
-        // Log the rotation to the console
-        console.log(`Camera Rotation: X = ${rotation.x}, Y = ${rotation.y}, Z = ${rotation.z}`);
-
-        // Update the debug info on the screen
-        debugInfo.innerHTML = `
-          Camera Rotation: <br>
-          X: ${rotation.x.toFixed(2)}°<br>
-          Y: ${rotation.y.toFixed(2)}°<br>
-          Z: ${rotation.z.toFixed(2)}°
-        `;
-      }
-
-      // Continuously update the camera rotation every 100 milliseconds
-      setInterval(updateCameraRotation, 100);
+      setInterval(() => {
+        if (cameraEl && cameraEl.object3D) {
+          const rot = cameraEl.object3D.rotation;
+          const rx = THREE.MathUtils.radToDeg(rot.x).toFixed(2);
+          const ry = THREE.MathUtils.radToDeg(rot.y).toFixed(2);
+          const rz = THREE.MathUtils.radToDeg(rot.z).toFixed(2);
+          debug.innerHTML = `Camera Rotation:<br>X: ${rx}°<br>Y: ${ry}°<br>Z: ${rz}°`;
+        }
+      }, 100);
     </script>
   </body>
 </html>
