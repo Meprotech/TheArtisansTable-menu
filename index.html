@@ -38,25 +38,54 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity mindar-image-target="targetIndex: 0">
+      <a-entity id="model1" mindar-image-target="targetIndex: 0">
         <a-gltf-model
+          rotation="90 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#avatarModel"
           animation-mixer
-          look-at="[camera]" <!-- Always faces the camera -->
+          look-at="[camera]"
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity mindar-image-target="targetIndex: 1">
+      <a-entity id="model2" mindar-image-target="targetIndex: 1">
         <a-gltf-model
+          rotation="90 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#CoffeeCupNew"
           animation-mixer
-          look-at="[camera]" <!-- Always faces the camera -->
+          look-at="[camera]"
         ></a-gltf-model>
       </a-entity>
     </a-scene>
+
+    <script>
+      // Access the models in the scene
+      const model1 = document.querySelector('#model1');
+      const model2 = document.querySelector('#model2');
+
+      // Listen for the device orientation event
+      window.addEventListener('deviceorientation', function(event) {
+        // Get the rotation data from the device
+        const alpha = event.alpha; // Rotation around the Z axis (0 to 360 degrees)
+        const beta = event.beta;   // Rotation around the X axis (-180 to 180 degrees)
+        const gamma = event.gamma; // Rotation around the Y axis (-90 to 90 degrees)
+
+        // Update the rotation of the models based on device orientation
+        model1.setAttribute('rotation', {
+          x: beta,   // Pitch (rotation around X-axis)
+          y: gamma,  // Roll (rotation around Y-axis)
+          z: alpha   // Yaw (rotation around Z-axis)
+        });
+
+        model2.setAttribute('rotation', {
+          x: beta,   // Pitch (rotation around X-axis)
+          y: gamma,  // Roll (rotation around Y-axis)
+          z: alpha   // Yaw (rotation around Z-axis)
+        });
+      });
+    </script>
   </body>
 </html>
