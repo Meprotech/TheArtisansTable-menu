@@ -1,14 +1,24 @@
-﻿<html>
+﻿<!DOCTYPE html>
+<html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    
     <style>
-      /* Force hide VR button if it still appears */
-      /* Force hide VR button if it still appears */
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;           /* Disable all scrolling */
+        height: 100%;
+        width: 100%;
+        touch-action: none;         /* Disable touch gestures */
+        overscroll-behavior: none;  /* Prevent scroll bounce on mobile */
+      }
+
       .a-enter-vr-button {
-        display: none !important;
+        display: none !important;  /* Hide VR button */
       }
     </style>
   </head>
