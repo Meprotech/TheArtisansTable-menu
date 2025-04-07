@@ -20,11 +20,22 @@
       .a-enter-vr-button {
         display: none !important;  /* Hide VR button */
       }
+
+      #debug-info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 10px;
+        font-size: 14px;
+        border-radius: 5px;
+      }
     </style>
   </head>
   <body>
     <a-scene
-      mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind; "
+      mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind;"
       color-space="sRGB"
       renderer="colorManagement: true, physicallyCorrectLights"
       vr-mode-ui="enabled: false"
@@ -61,28 +72,35 @@
       </a-entity>
     </a-scene>
 
+    <!-- Debug Information -->
+    <div id="debug-info">Waiting for camera rotation...</div>
+
     <script>
-      // Check if DeviceOrientationEvent is supported
-      if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", function(event) {
-          // Get device orientation angles
-          const alpha = event.alpha; // Rotation around Z-axis (Compass direction)
-          const beta = event.beta;   // Rotation around X-axis (Tilt front/back)
-          const gamma = event.gamma; // Rotation around Y-axis (Tilt left/right)
+      // Get the camera element
+      const cameraEl = document.querySelector("#camera");
 
-          // Apply the device's orientation to the camera
-          const camera = document.querySelector("#camera");
+      // Debug information element
+      const debugInfo = document.getElementById("debug-info");
 
-          // Update the camera's rotation based on device orientation
-          // Alpha corresponds to rotation around Z-axis (heading)
-          // Beta corresponds to rotation around X-axis (pitch)
-          // Gamma corresponds to rotation around Y-axis (roll)
+      // Function to update the camera's rotation values
+      function updateCameraRotation() {
+        // Get the current rotation of the camera (in degrees)
+        const rotation = cameraEl.getAttribute("rotation");
 
-          camera.setAttribute("rotation", { x: beta, y: gamma, z: alpha });
-        }, false);
-      } else {
-        console.log("Device Orientation not supported on this device.");
+        // Log the rotation to the console
+        console.log(`Camera Rotation: X = ${rotation.x}, Y = ${rotation.y}, Z = ${rotation.z}`);
+
+        // Update the debug info on the screen
+        debugInfo.innerHTML = `
+          Camera Rotation: <br>
+          X: ${rotation.x.toFixed(2)}°<br>
+          Y: ${rotation.y.toFixed(2)}°<br>
+          Z: ${rotation.z.toFixed(2)}°
+        `;
       }
+
+      // Continuously update the camera rotation every 100 milliseconds
+      setInterval(updateCameraRotation, 100);
     </script>
   </body>
 </html>
