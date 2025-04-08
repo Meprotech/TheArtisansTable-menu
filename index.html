@@ -4,7 +4,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
       html, body {
@@ -48,14 +47,8 @@
     </style>
   </head>
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind;"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-      embedded
-    >
+    <a-scene color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
+      
       <a-assets>
         <a-asset-item id="CoffeeCupNew" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogo.glb"></a-asset-item>
         <a-asset-item id="avatarModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogoNewCup.glb"></a-asset-item>
@@ -64,60 +57,51 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Image Target 0 with Model 1 -->
-      <a-entity mindar-image-target="targetIndex: 0">
+      <!-- Default Model Container -->
+      <a-entity id="modelContainer" position="0 0 -5">
         <a-gltf-model
           id="model1"
-          rotation="90 0 0"
+          rotation="0 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#avatarModel"
           animation-mixer
-          visible="true"  <!-- Hidden by default -->
+          visible="false" <!-- Hidden by default -->
         ></a-gltf-model>
-      </a-entity>
-
-      <!-- Image Target 1 with Model 2 -->
-      <a-entity mindar-image-target="targetIndex: 1">
         <a-gltf-model
           id="model2"
-          rotation="90 0 0"
+          rotation="0 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#CoffeeCupNew"
           animation-mixer
-          visible="true"
+          visible="false" <!-- Hidden by default -->
         ></a-gltf-model>
-      </a-entity>
-
-      <!-- Image Target 2 with Model 3 -->
-      <a-entity mindar-image-target="targetIndex: 2">
         <a-gltf-model
           id="model3"
-          rotation="90 0 0"
+          rotation="0 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#anotherModel"
           animation-mixer
-          visible="true"
+          visible="false" <!-- Hidden by default -->
         ></a-gltf-model>
       </a-entity>
+
     </a-scene>
 
     <!-- Buttons to control models -->
     <div class="button-container">
-      <button id="showModel1">Show Model 1</button>
-      <button id="showModel2">Show Model 2</button>
-      <button id="showModel3">Show Model 3</button>
-      <button id="hideAllModels">Hide All Models</button>
+      <button id="generateModel1">Generate Model 1</button>
+      <button id="generateModel2">Generate Model 2</button>
+      <button id="generateModel3">Generate Model 3</button>
     </div>
 
     <script>
       // Button Elements
-      const showModel1Button = document.getElementById("showModel1");
-      const showModel2Button = document.getElementById("showModel2");
-      const showModel3Button = document.getElementById("showModel3");
-      const hideAllButton = document.getElementById("hideAllModels");
+      const generateModel1Button = document.getElementById("generateModel1");
+      const generateModel2Button = document.getElementById("generateModel2");
+      const generateModel3Button = document.getElementById("generateModel3");
 
       // Model Elements
       const model1 = document.getElementById("model1");
@@ -131,70 +115,24 @@
         model3.setAttribute('visible', false);
       }
 
-      // Show Model 1 (for targetIndex 0)
-      showModel1Button.addEventListener("click", function () {
+      // Function to show the model when button is clicked
+      function showModel(modelToShow) {
         hideAllModels(); // Hide all models first
-        model1.setAttribute('visible', true);
-        console.log('Button1Clicked:',model1);
-        console.log('model1Vis:',model1.visible);
+        modelToShow.setAttribute('visible', true); // Show the selected model
+      }
+
+      // Event Listeners for Buttons
+      generateModel1Button.addEventListener("click", function () {
+        showModel(model1);
       });
 
-      // Show Model 2 (for targetIndex 1)
-      showModel2Button.addEventListener("click", function () {
-        hideAllModels(); // Hide all models first
-        model2.setAttribute('visible', true);
-        console.log('Button2Clicked:',model2);
-        console.log('model2Vis:',model2.visible);
+      generateModel2Button.addEventListener("click", function () {
+        showModel(model2);
       });
 
-      // Show Model 3 (for targetIndex 2)
-      showModel3Button.addEventListener("click", function() {
-        hideAllModels(); // Hide all models first
-        model3.setAttribute('visible', true);
-        console.log('Button3Clicked:',model3);
-        console.log('model3Vis:',model3.visible);
+      generateModel3Button.addEventListener("click", function () {
+        showModel(model3);
       });
-
-      // Hide All Models
-      hideAllButton.addEventListener("click", hideAllModels);
-
-      // Listen for events when image targets are detected or lost
-      //const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
-      //const target1 = document.querySelector('[mindar-image-target="targetIndex: 1"]');
-      //const target2 = document.querySelector('[mindar-image-target="targetIndex: 2"]');
-      //
-      //target0.addEventListener('targetFound', function() {
-      //  console.log('target0');
-      //  model1.setAttribute('visible', true);  // Show model for target 0
-      //});
-      //target0.addEventListener('targetLost', function() {
-      //  if (!model2.getAttribute('visible') && !model3.getAttribute('visible')) {
-      //      console.log('if (!model2.getAttribute(visible) && !model3.getAttribute(visible))');
-      //    //model1.setAttribute('visible', false);  // Hide model when target is lost, but keep others in check
-      //  }
-      //});
-      //
-      //target1.addEventListener('targetFound', function() {
-      //  console.log('target1');
-      //  model2.setAttribute('visible', true);  // Show model for target 1
-      //});
-      //target1.addEventListener('targetLost', function() {
-      //  if (!model1.getAttribute('visible') && !model3.getAttribute('visible')) {
-      //      console.log('if (!model1.getAttribute(visible) && !model3.getAttribute(visible))');
-      //    //model2.setAttribute('visible', false);  // Hide model when target is lost, but keep others in check
-      //  }
-      //});
-      //
-      //target2.addEventListener('targetFound', function() {
-      //  console.log('target2');
-      //  model3.setAttribute('visible', true);  // Show model for target 2
-      //});
-      //target2.addEventListener('targetLost', function() {
-      //  if (!model1.getAttribute('visible') && !model2.getAttribute('visible')) {
-      //      console.log('if (!model1.getAttribute(visible) && !model2.getAttribute(visible))');
-      //    //model3.setAttribute('visible', false);  // Hide model when target is lost, but keep others in check
-      //  }
-      //});
     </script>
   </body>
 </html>
