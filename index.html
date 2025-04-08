@@ -21,25 +21,33 @@
         display: none !important;
       }
 
-      #debug {
+      .button-container {
         position: absolute;
-        top: 10px;
-        left: 10px;
-        background: rgba(0, 0, 0, 0.7);
-        color: #00ffcc;
-        padding: 10px;
-        font-family: monospace;
-        font-size: 14px;
-        border-radius: 6px;
-        z-index: 999;
-        max-width: 300px;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: space-around;
+        width: 80%;
+        flex-wrap: wrap;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 15px;
+        margin: 5px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
       }
     </style>
   </head>
   <body>
-    <!-- Debug Output -->
-    <div id="debug">Initializing...</div>
-
     <a-scene
       mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind;"
       color-space="sRGB"
@@ -51,87 +59,142 @@
       <a-assets>
         <a-asset-item id="CoffeeCupNew" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogo.glb"></a-asset-item>
         <a-asset-item id="avatarModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogoNewCup.glb"></a-asset-item>
+        <a-asset-item id="anotherModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/NewModel.glb"></a-asset-item>
       </a-assets>
 
-      <!-- MindAR-controlled camera -->
-      <a-camera id="mainCamera" position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Targets -->
-      <a-entity id="target0" mindar-image-target="targetIndex: 0">
+      <!-- Image Target 0 with Model 1 -->
+      <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model
+          id="model1"
           rotation="90 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#avatarModel"
           animation-mixer
-          look-at="[camera]"
+          visible="true"  <!-- Hidden by default -->
         ></a-gltf-model>
       </a-entity>
 
-      <a-entity id="target1" mindar-image-target="targetIndex: 1">
+      <!-- Image Target 1 with Model 2 -->
+      <a-entity mindar-image-target="targetIndex: 1">
         <a-gltf-model
+          id="model2"
           rotation="90 0 0"
           position="0 0 0"
           scale="10 10 10"
           src="#CoffeeCupNew"
           animation-mixer
-          look-at="[camera]"
+          visible="true"
+        ></a-gltf-model>
+      </a-entity>
+
+      <!-- Image Target 2 with Model 3 -->
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-gltf-model
+          id="model3"
+          rotation="90 0 0"
+          position="0 0 0"
+          scale="10 10 10"
+          src="#anotherModel"
+          animation-mixer
+          visible="true"
         ></a-gltf-model>
       </a-entity>
     </a-scene>
 
-    <script>
-      const debug = document.getElementById('debug');
-      const target0 = document.querySelector('#target0');
-      const target1 = document.querySelector('#target1');
+    <!-- Buttons to control models -->
+    <div class="button-container">
+      <button id="showModel1">Show Model 1</button>
+      <button id="showModel2">Show Model 2</button>
+      <button id="showModel3">Show Model 3</button>
+      <button id="hideAllModels">Hide All Models</button>
+    </div>
 
-      function deg(rad) {
-        return THREE.MathUtils.radToDeg(rad).toFixed(2);
+    <script>
+      // Button Elements
+      const showModel1Button = document.getElementById("showModel1");
+      const showModel2Button = document.getElementById("showModel2");
+      const showModel3Button = document.getElementById("showModel3");
+      const hideAllButton = document.getElementById("hideAllModels");
+
+      // Model Elements
+      const model1 = document.getElementById("model1");
+      const model2 = document.getElementById("model2");
+      const model3 = document.getElementById("model3");
+
+      // Helper function to hide all models
+      function hideAllModels() {
+        model1.setAttribute('visible', false);
+        model2.setAttribute('visible', false);
+        model3.setAttribute('visible', false);
       }
 
-      AFRAME.scenes[0].addEventListener('loaded', () => {
-        const scene = AFRAME.scenes[0];
-        const mindarSystem = scene.systems['mindar-image'];
-
-        const waitForCamera = setInterval(() => {
-          if (mindarSystem?.controller?.camera) {
-            clearInterval(waitForCamera);
-            const mindarCamera = mindarSystem.controller.camera;
-
-            setInterval(() => {
-              const pos = mindarCamera.position;
-              const rot = mindarCamera.rotation;
-
-              const px = pos.x.toFixed(2);
-              const py = pos.y.toFixed(2);
-              const pz = pos.z.toFixed(2);
-
-              const rx = deg(rot.x);
-              const ry = deg(rot.y);
-              const rz = deg(rot.z);
-
-              const isVisible0 = target0.getAttribute('visible');
-              const isVisible1 = target1.getAttribute('visible');
-
-              debug.innerHTML = `
-                <b>Device Rotation:</b><br>
-                X: ${rx}°<br>
-                Y: ${ry}°<br>
-                Z: ${rz}°<br><br>
-
-                <b>Device Position:</b><br>
-                X: ${px}<br>
-                Y: ${py}<br>
-                Z: ${pz}<br><br>
-
-                <b>Markers Visible:</b><br>
-                Target 0: ${isVisible0}<br>
-                Target 1: ${isVisible1}
-              `;
-            }, 100);
-          }
-        }, 100);
+      // Show Model 1 (for targetIndex 0)
+      showModel1Button.addEventListener("click", function () {
+        hideAllModels(); // Hide all models first
+        model1.setAttribute('visible', true);
+        console.log('Button1Clicked:',model1);
+        console.log('model1Vis:',model1.visible);
       });
+
+      // Show Model 2 (for targetIndex 1)
+      showModel2Button.addEventListener("click", function () {
+        hideAllModels(); // Hide all models first
+        model2.setAttribute('visible', true);
+        console.log('Button2Clicked:',model2);
+        console.log('model2Vis:',model2.visible);
+      });
+
+      // Show Model 3 (for targetIndex 2)
+      showModel3Button.addEventListener("click", function() {
+        hideAllModels(); // Hide all models first
+        model3.setAttribute('visible', true);
+        console.log('Button3Clicked:',model3);
+        console.log('model3Vis:',model3.visible);
+      });
+
+      // Hide All Models
+      hideAllButton.addEventListener("click", hideAllModels);
+
+      // Listen for events when image targets are detected or lost
+      //const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
+      //const target1 = document.querySelector('[mindar-image-target="targetIndex: 1"]');
+      //const target2 = document.querySelector('[mindar-image-target="targetIndex: 2"]');
+      //
+      //target0.addEventListener('targetFound', function() {
+      //  console.log('target0');
+      //  model1.setAttribute('visible', true);  // Show model for target 0
+      //});
+      //target0.addEventListener('targetLost', function() {
+      //  if (!model2.getAttribute('visible') && !model3.getAttribute('visible')) {
+      //      console.log('if (!model2.getAttribute(visible) && !model3.getAttribute(visible))');
+      //    //model1.setAttribute('visible', false);  // Hide model when target is lost, but keep others in check
+      //  }
+      //});
+      //
+      //target1.addEventListener('targetFound', function() {
+      //  console.log('target1');
+      //  model2.setAttribute('visible', true);  // Show model for target 1
+      //});
+      //target1.addEventListener('targetLost', function() {
+      //  if (!model1.getAttribute('visible') && !model3.getAttribute('visible')) {
+      //      console.log('if (!model1.getAttribute(visible) && !model3.getAttribute(visible))');
+      //    //model2.setAttribute('visible', false);  // Hide model when target is lost, but keep others in check
+      //  }
+      //});
+      //
+      //target2.addEventListener('targetFound', function() {
+      //  console.log('target2');
+      //  model3.setAttribute('visible', true);  // Show model for target 2
+      //});
+      //target2.addEventListener('targetLost', function() {
+      //  if (!model1.getAttribute('visible') && !model2.getAttribute('visible')) {
+      //      console.log('if (!model1.getAttribute(visible) && !model2.getAttribute(visible))');
+      //    //model3.setAttribute('visible', false);  // Hide model when target is lost, but keep others in check
+      //  }
+      //});
     </script>
   </body>
 </html>
