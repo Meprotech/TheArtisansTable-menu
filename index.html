@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     
     <style>
       html, body {
@@ -27,8 +28,9 @@
         transform: translateX(-50%);
         display: flex;
         justify-content: space-around;
-        width: 80%;
+        width: 90%;
         flex-wrap: wrap;
+        z-index: 1;
       }
 
       button {
@@ -39,6 +41,7 @@
         margin: 5px;
         font-size: 16px;
         cursor: pointer;
+        border-radius: 8px;
       }
 
       button:hover {
@@ -47,8 +50,14 @@
     </style>
   </head>
   <body>
-    <a-scene color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false" embedded>
-      
+    <a-scene
+      mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      embedded
+    >
       <a-assets>
         <a-asset-item id="CoffeeCupNew" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogo.glb"></a-asset-item>
         <a-asset-item id="avatarModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogoNewCup.glb"></a-asset-item>
@@ -57,81 +66,104 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Default Model Container -->
-      <a-entity id="modelContainer" position="0 0 -5">
-        <a-gltf-model
-          id="model1"
-          rotation="0 0 0"
-          position="0 0 0"
-          scale="10 10 10"
-          src="#avatarModel"
-          animation-mixer
-          visible="false" <!-- Hidden by default -->
-        ></a-gltf-model>
-        <a-gltf-model
-          id="model2"
-          rotation="0 0 0"
-          position="0 0 0"
-          scale="10 10 10"
-          src="#CoffeeCupNew"
-          animation-mixer
-          visible="false" <!-- Hidden by default -->
-        ></a-gltf-model>
-        <a-gltf-model
-          id="model3"
-          rotation="0 0 0"
-          position="0 0 0"
-          scale="10 10 10"
-          src="#anotherModel"
-          animation-mixer
-          visible="false" <!-- Hidden by default -->
-        ></a-gltf-model>
+      <!-- Target 0 -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="true"></a-gltf-model>
+        <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="false"></a-gltf-model>
+        <a-gltf-model id="model3" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#anotherModel" animation-mixer visible="false"></a-gltf-model>
       </a-entity>
 
+      <!-- Target 1 -->
+      <a-entity mindar-image-target="targetIndex: 1">
+        <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="false"></a-gltf-model>
+        <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="true"></a-gltf-model>
+        <a-gltf-model id="model3" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#anotherModel" animation-mixer visible="false"></a-gltf-model>
+      </a-entity>
+
+      <!-- Target 2 -->
+      <a-entity mindar-image-target="targetIndex: 2">
+        <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="false"></a-gltf-model>
+        <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="false"></a-gltf-model>
+        <a-gltf-model id="model3" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#anotherModel" animation-mixer visible="true"></a-gltf-model>
+      </a-entity>
     </a-scene>
 
-    <!-- Buttons to control models -->
     <div class="button-container">
-      <button id="generateModel1">Generate Model 1</button>
-      <button id="generateModel2">Generate Model 2</button>
-      <button id="generateModel3">Generate Model 3</button>
+      <button id="showModel1">Show Model 1</button>
+      <button id="showModel2">Show Model 2</button>
+      <button id="showModel3">Show Model 3</button>
+      <button id="hideAllModels">Hide All Models</button>
+      <button id="resetAutoShow">Reset Auto Show</button>
     </div>
 
     <script>
-      // Button Elements
-      const generateModel1Button = document.getElementById("generateModel1");
-      const generateModel2Button = document.getElementById("generateModel2");
-      const generateModel3Button = document.getElementById("generateModel3");
-
-      // Model Elements
       const model1 = document.getElementById("model1");
       const model2 = document.getElementById("model2");
       const model3 = document.getElementById("model3");
 
-      // Helper function to hide all models
+      let manualOverride = false;
+
       function hideAllModels() {
-        model1.setAttribute('visible', false);
-        model2.setAttribute('visible', false);
-        model3.setAttribute('visible', false);
+        manualOverride = true;
+        [model1, model2, model3].forEach(m => {
+          console.log('hideAllModels');
+          m.setAttribute('visible', false);
+        });
       }
 
-      // Function to show the model when button is clicked
-      function showModel(modelToShow) {
-        hideAllModels(); // Hide all models first
-        modelToShow.setAttribute('visible', true); // Show the selected model
-      }
-
-      // Event Listeners for Buttons
-      generateModel1Button.addEventListener("click", function () {
-        showModel(model1);
+      document.getElementById("showModel1").addEventListener("click", function () {
+        hideAllModels();
+        [model1].forEach(m => {
+          m.setAttribute('visible', true);
+          console.log('showModel1',m);
+        });
       });
 
-      generateModel2Button.addEventListener("click", function () {
-        showModel(model2);
+      document.getElementById("showModel2").addEventListener("click", function () {
+        hideAllModels();
+        [model2].forEach(m => {
+          m.setAttribute('visible', true);
+          console.log('showModel2',m);
+        });
       });
 
-      generateModel3Button.addEventListener("click", function () {
-        showModel(model3);
+      document.getElementById("showModel3").addEventListener("click", function () {
+        hideAllModels();
+        [model3].forEach(m => {
+          m.setAttribute('visible', true);
+          console.log('showModel3',m);
+        });   
+      });
+
+      document.getElementById("hideAllModels").addEventListener("click", hideAllModels);
+
+      document.getElementById("resetAutoShow").addEventListener("click", function () {
+        manualOverride = false;
+      });
+
+      const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
+      const target1 = document.querySelector('[mindar-image-target="targetIndex: 1"]');
+      const target2 = document.querySelector('[mindar-image-target="targetIndex: 2"]');
+      
+      target0.addEventListener('targetFound', () => {
+        if (!manualOverride) {
+          model1.setAttribute('visible', true);
+          console.log('target0',model1);
+        }
+      });
+      
+      target1.addEventListener('targetFound', () => {
+        if (!manualOverride) {
+          model2.setAttribute('visible', true);
+          console.log('target1',model2);
+        }
+      });
+      
+      target2.addEventListener('targetFound', () => {
+        if (!manualOverride) {
+          model3.setAttribute('visible', true);
+          console.log('target2',model3);
+        }
       });
     </script>
   </body>
