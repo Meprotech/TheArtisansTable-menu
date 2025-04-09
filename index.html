@@ -23,7 +23,7 @@
 
       .button-container {
         position: absolute;
-        bottom: 20px;
+        bottom: 100px;
         left: 50%;
         transform: translateX(-50%);
         display: flex;
@@ -33,15 +33,28 @@
         z-index: 1;
       }
 
-      button {
-        background-color: #007bff;
+      .horizontal-scroll {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+        z-index: 1;
+      }
+
+      .horizontal-scroll button {
+        display: inline-block;
+        background-color: #28a745;
         color: white;
         border: none;
-        padding: 15px;
+        padding: 12px 20px;
         margin: 5px;
         font-size: 16px;
         cursor: pointer;
         border-radius: 8px;
+        white-space: nowrap;
       }
 
       button:hover {
@@ -88,12 +101,20 @@
       </a-entity>
     </a-scene>
 
+    <!-- Main Buttons -->
     <div class="button-container">
       <button id="showModel1">Show Model 1</button>
       <button id="showModel2">Show Model 2</button>
       <button id="showModel3">Show Model 3</button>
       <button id="hideAllModels">Hide All Models</button>
       <button id="resetAutoShow">Reset Auto Show</button>
+    </div>
+
+    <!-- Horizontal Scroll Buttons -->
+    <div class="horizontal-scroll">
+      <button onclick="alert('Option A clicked')">Option A</button>
+      <button onclick="alert('Option B clicked')">Option B</button>
+      <button onclick="alert('Option C clicked')">Option C</button>
     </div>
 
     <script>
@@ -113,26 +134,20 @@
 
       document.getElementById("showModel1").addEventListener("click", function () {
         hideAllModels();
-        [model1].forEach(m => {
-          m.setAttribute('visible', true);
-          console.log('showModel1',m);
-        });
+        model1.setAttribute('visible', true);
+        console.log('showModel1', model1);
       });
 
       document.getElementById("showModel2").addEventListener("click", function () {
         hideAllModels();
-        [model2].forEach(m => {
-          m.setAttribute('visible', true);
-          console.log('showModel2',m);
-        });
+        model2.setAttribute('visible', true);
+        console.log('showModel2', model2);
       });
 
       document.getElementById("showModel3").addEventListener("click", function () {
         hideAllModels();
-        [model3].forEach(m => {
-          m.setAttribute('visible', true);
-          console.log('showModel3',m);
-        });   
+        model3.setAttribute('visible', true);
+        console.log('showModel3', model3);
       });
 
       document.getElementById("hideAllModels").addEventListener("click", hideAllModels);
