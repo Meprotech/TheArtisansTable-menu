@@ -87,47 +87,47 @@
       const model3 = document.getElementById("model3");
       const modelButtons = [model1, model2, model3];
 
-      let manualOverride = false;
       let currentModelIndex = 0;
+      let isImageTracked = false;
 
       const scrollLeftBtn = document.getElementById("scroll-left");
       const scrollRightBtn = document.getElementById("scroll-right");
 
-      function hideAllModels() {
-        manualOverride = true;
-        modelButtons.forEach(m => m.setAttribute('visible', false));
+      function updateVisibleModel() {
+        modelButtons.forEach((model, i) => {
+          model.setAttribute('visible', i === currentModelIndex && isImageTracked);
+        });
       }
 
       function showModelByIndex(index) {
-        hideAllModels();
-        modelButtons[index].setAttribute("visible", true);
         currentModelIndex = index;
+        updateVisibleModel();
       }
 
       const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
 
       target0.addEventListener("targetFound", () => {
+        isImageTracked = true;
         scrollLeftBtn.style.display = "flex";
         scrollRightBtn.style.display = "flex";
-        if (!manualOverride) {
-          modelButtons.forEach((m, i) => m.setAttribute('visible', i === currentModelIndex));
-        }
+        updateVisibleModel();
       });
 
       target0.addEventListener("targetLost", () => {
+        isImageTracked = false;
         scrollLeftBtn.style.display = "none";
         scrollRightBtn.style.display = "none";
-        modelButtons.forEach(m => m.setAttribute('visible', false));
+        updateVisibleModel(); // hides model because isImageTracked is false
       });
 
       scrollLeftBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex - 1 + modelButtons.length) % modelButtons.length;
-        showModelByIndex(currentModelIndex);
+        updateVisibleModel();
       });
 
       scrollRightBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex + 1) % modelButtons.length;
-        showModelByIndex(currentModelIndex);
+        updateVisibleModel();
       });
 
       // Initially hide navigation buttons
