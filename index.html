@@ -55,14 +55,16 @@
 
       #controls-container {
         position: absolute;
-        bottom: 90px;
-        width: 100%;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        gap: 16px;
         z-index: 5;
         pointer-events: none;
-        gap: 20px;
       }
 
       .scroll-arrow {
@@ -121,7 +123,7 @@
     <!-- Controls Container -->
     <div id="controls-container">
       <div id="scroll-left" class="scroll-arrow">&#10094;</div>
-      <div style="text-align: center;">
+      <div style="text-align: center; pointer-events: auto;">
         <div id="model-name"></div>
         <div id="model-price"></div>
       </div>
