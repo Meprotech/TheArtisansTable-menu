@@ -5,7 +5,7 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-    
+
     <style>
       html, body {
         margin: 0;
@@ -13,7 +13,6 @@
         overflow: hidden;
         height: 100%;
         width: 100%;
-        touch-action: none;
         overscroll-behavior: none;
       }
 
@@ -23,46 +22,77 @@
 
       .button-container {
         position: absolute;
-        bottom: 100px;
+        bottom: 20px;
         left: 50%;
         transform: translateX(-50%);
+        width: 220px;
+        height: 60px;
         display: flex;
-        justify-content: space-around;
-        width: 90%;
-        flex-wrap: wrap;
-        z-index: 1;
-      }
-
-      .horizontal-scroll {
-        position: absolute;
-        bottom: 20px;
-        left: 0;
-        width: 100%;
         overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
         white-space: nowrap;
-        padding: 10px;
-        z-index: 1;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 5px;
+        scroll-behavior: smooth;
+        z-index: 2;
+        scrollbar-width: none;
       }
 
-      .horizontal-scroll button {
-        display: inline-block;
-        background-color: #28a745;
+      .button-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      button {
+        scroll-snap-align: center;
+        flex: 0 0 100%;
+        width: 200px;
+        background-color: #007bff;
         color: white;
         border: none;
-        padding: 12px 20px;
-        margin: 5px;
+        padding: 15px 30px;
         font-size: 16px;
         cursor: pointer;
         border-radius: 8px;
-        white-space: nowrap;
+        margin: 0 5px;
       }
 
       button:hover {
         background-color: #0056b3;
       }
+
+      .scroll-arrow {
+        position: absolute;
+        bottom: 90px;
+        font-size: 36px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 8px 12px;
+        cursor: pointer;
+        z-index: 3;
+        border-radius: 50%;
+        user-select: none;
+      }
+
+      .scroll-arrow:hover {
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      .scroll-arrow.left {
+        left: 10px;
+      }
+
+      .scroll-arrow.right {
+        right: 10px;
+      }
     </style>
   </head>
   <body>
+    <div id="scroll-left" class="scroll-arrow left">&#10094;</div>
+    <div id="scroll-right" class="scroll-arrow right">&#10095;</div>
+
     <a-scene
       mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/BothTarget.mind;"
       color-space="sRGB"
@@ -79,21 +109,18 @@
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Target 0 -->
       <a-entity mindar-image-target="targetIndex: 0">
         <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="true"></a-gltf-model>
         <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="false"></a-gltf-model>
         <a-gltf-model id="model3" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#anotherModel" animation-mixer visible="false"></a-gltf-model>
       </a-entity>
 
-      <!-- Target 1 -->
       <a-entity mindar-image-target="targetIndex: 1">
         <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="false"></a-gltf-model>
         <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="true"></a-gltf-model>
         <a-gltf-model id="model3" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#anotherModel" animation-mixer visible="false"></a-gltf-model>
       </a-entity>
 
-      <!-- Target 2 -->
       <a-entity mindar-image-target="targetIndex: 2">
         <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="false"></a-gltf-model>
         <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="false"></a-gltf-model>
@@ -101,20 +128,27 @@
       </a-entity>
     </a-scene>
 
-    <!-- Main Buttons -->
-    <div class="button-container">
+    <div class="button-container" id="buttonContainer">
       <button id="showModel1">Show Model 1</button>
       <button id="showModel2">Show Model 2</button>
       <button id="showModel3">Show Model 3</button>
       <button id="hideAllModels">Hide All Models</button>
       <button id="resetAutoShow">Reset Auto Show</button>
-    </div>
-
-    <!-- Horizontal Scroll Buttons -->
-    <div class="horizontal-scroll">
-      <button onclick="alert('Option A clicked')">Option A</button>
-      <button onclick="alert('Option B clicked')">Option B</button>
-      <button onclick="alert('Option C clicked')">Option C</button>
+      <button>Extra 1</button>
+      <button>Extra 2</button>
+      <button>Extra 3</button>
+      <button>Extra 4</button>
+      <button>Extra 5</button>
+      <button>Extra 6</button>
+      <button>Extra 7</button>
+      <button>Extra 8</button>
+      <button>Extra 9</button>
+      <button>Extra 10</button>
+      <button>Extra 11</button>
+      <button>Extra 12</button>
+      <button>Extra 13</button>
+      <button>Extra 14</button>
+      <button>Extra 15</button>
     </div>
 
     <script>
@@ -126,59 +160,90 @@
 
       function hideAllModels() {
         manualOverride = true;
-        [model1, model2, model3].forEach(m => {
-          console.log('hideAllModels');
-          m.setAttribute('visible', false);
-        });
+        [model1, model2, model3].forEach(m => m.setAttribute('visible', false));
       }
 
-      document.getElementById("showModel1").addEventListener("click", function () {
+      document.getElementById("showModel1").addEventListener("click", () => {
         hideAllModels();
-        model1.setAttribute('visible', true);
-        console.log('showModel1', model1);
+        model1.setAttribute("visible", true);
       });
 
-      document.getElementById("showModel2").addEventListener("click", function () {
+      document.getElementById("showModel2").addEventListener("click", () => {
         hideAllModels();
-        model2.setAttribute('visible', true);
-        console.log('showModel2', model2);
+        model2.setAttribute("visible", true);
       });
 
-      document.getElementById("showModel3").addEventListener("click", function () {
+      document.getElementById("showModel3").addEventListener("click", () => {
         hideAllModels();
-        model3.setAttribute('visible', true);
-        console.log('showModel3', model3);
+        model3.setAttribute("visible", true);
       });
 
       document.getElementById("hideAllModels").addEventListener("click", hideAllModels);
-
-      document.getElementById("resetAutoShow").addEventListener("click", function () {
+      document.getElementById("resetAutoShow").addEventListener("click", () => {
         manualOverride = false;
       });
 
       const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
       const target1 = document.querySelector('[mindar-image-target="targetIndex: 1"]');
       const target2 = document.querySelector('[mindar-image-target="targetIndex: 2"]');
-      
-      target0.addEventListener('targetFound', () => {
-        if (!manualOverride) {
-          model1.setAttribute('visible', true);
-          console.log('target0',model1);
-        }
+
+      target0.addEventListener("targetFound", () => {
+        if (!manualOverride) model1.setAttribute("visible", true);
       });
-      
-      target1.addEventListener('targetFound', () => {
-        if (!manualOverride) {
-          model2.setAttribute('visible', true);
-          console.log('target1',model2);
-        }
+
+      target1.addEventListener("targetFound", () => {
+        if (!manualOverride) model2.setAttribute("visible", true);
       });
-      
-      target2.addEventListener('targetFound', () => {
-        if (!manualOverride) {
-          model3.setAttribute('visible', true);
-          console.log('target2',model3);
-        }
+
+      target2.addEventListener("targetFound", () => {
+        if (!manualOverride) model3.setAttribute("visible", true);
+      });
+
+      const buttonContainer = document.getElementById("buttonContainer");
+      document.getElementById("scroll-left").addEventListener("click", () => {
+        buttonContainer.scrollBy({ left: -220, behavior: "smooth" });
+      });
+      document.getElementById("scroll-right").addEventListener("click", () => {
+        buttonContainer.scrollBy({ left: 220, behavior: "smooth" });
+      });
+
+      // Mouse and touch drag scroll
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      // Mouse
+      buttonContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        startX = e.pageX - buttonContainer.offsetLeft;
+        scrollLeft = buttonContainer.scrollLeft;
+      });
+
+      buttonContainer.addEventListener('mouseleave', () => isDown = false);
+      buttonContainer.addEventListener('mouseup', () => isDown = false);
+
+      buttonContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - buttonContainer.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        buttonContainer.scrollLeft = scrollLeft - walk;
+      });
+
+      // Touch
+      buttonContainer.addEventListener('touchstart', (e) => {
+        isDown = true;
+        startX = e.touches[0].pageX - buttonContainer.offsetLeft;
+        scrollLeft = buttonContainer.scrollLeft;
+      });
+
+      buttonContainer.addEventListener('touchend', () => isDown = false);
+
+      buttonContainer.addEventListener('touchmove', (e) => {
+        if (!isDown) return;
+        const x = e.touches[0].pageX - buttonContainer.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        buttonContainer.scrollLeft = scrollLeft - walk;
       });
     </script>
   </body>
