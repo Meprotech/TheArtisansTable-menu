@@ -53,6 +53,20 @@
         transform: translateX(-50%);
       }
 
+      #bottom-ui {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        box-sizing: border-box;
+        z-index: 5;
+        pointer-events: none;
+      }
+
       .scroll-arrow {
         width: 50px;
         height: 50px;
@@ -67,8 +81,6 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
         transition: background 0.3s ease, transform 0.2s ease;
         pointer-events: auto;
-        position: absolute;
-        z-index: 5;
       }
 
       .scroll-arrow:hover {
@@ -76,24 +88,10 @@
         transform: scale(1.1);
       }
 
-      #scroll-left {
-        left: 20px;
-        bottom: 20px;
-      }
-
-      #scroll-right {
-        right: 20px;
-        bottom: 20px;
-      }
-
       #model-info {
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
         text-align: center;
         pointer-events: auto;
-        z-index: 5;
+        flex-grow: 1;
       }
 
       #model-name {
@@ -126,12 +124,14 @@
       <img id="logo2" src="https://arqrassets.s3.ap-south-1.amazonaws.com/MeprotechLogo.png" alt="Logo 2">
     </div>
 
-    <!-- Scroll Buttons and Info -->
-    <div id="scroll-left" class="scroll-arrow">&#10094;</div>
-    <div id="scroll-right" class="scroll-arrow">&#10095;</div>
-    <div id="model-info">
-      <div id="model-name"></div>
-      <div id="model-price"></div>
+    <!-- Bottom UI with Buttons and Info -->
+    <div id="bottom-ui">
+      <div id="scroll-left" class="scroll-arrow">&#10094;</div>
+      <div id="model-info">
+        <div id="model-name"></div>
+        <div id="model-price"></div>
+      </div>
+      <div id="scroll-right" class="scroll-arrow">&#10095;</div>
     </div>
 
     <a-scene
