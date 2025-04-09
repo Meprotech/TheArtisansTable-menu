@@ -53,22 +53,32 @@
         transform: translateX(-50%);
       }
 
-      .scroll-arrow {
+      #controls-container {
         position: absolute;
         bottom: 90px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 5;
+        pointer-events: none;
+        gap: 20px;
+      }
+
+      .scroll-arrow {
         width: 50px;
         height: 50px;
         font-size: 24px;
         color: white;
         background: rgba(0, 0, 0, 0.6);
         cursor: pointer;
-        z-index: 3;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
         transition: background 0.3s ease, transform 0.2s ease;
+        pointer-events: auto;
       }
 
       .scroll-arrow:hover {
@@ -76,12 +86,28 @@
         transform: scale(1.1);
       }
 
-      .scroll-arrow.left {
-        left: 10px;
+      #model-name {
+        padding: 10px 20px;
+        font-size: 18px;
+        font-family: sans-serif;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: white;
+        border-radius: 8px;
+        display: none;
+        white-space: nowrap;
+        pointer-events: auto;
       }
 
-      .scroll-arrow.right {
-        right: 10px;
+      #model-price {
+        margin-top: 8px;
+        padding: 6px 16px;
+        font-size: 16px;
+        font-family: sans-serif;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border-radius: 6px;
+        display: none;
+        pointer-events: auto;
       }
     </style>
   </head>
@@ -92,8 +118,15 @@
       <img id="logo2" src="https://arqrassets.s3.ap-south-1.amazonaws.com/MeprotechLogo.png" alt="Logo 2">
     </div>
 
-    <div id="scroll-left" class="scroll-arrow left">&#10094;</div>
-    <div id="scroll-right" class="scroll-arrow right">&#10095;</div>
+    <!-- Controls Container -->
+    <div id="controls-container">
+      <div id="scroll-left" class="scroll-arrow">&#10094;</div>
+      <div style="text-align: center;">
+        <div id="model-name"></div>
+        <div id="model-price"></div>
+      </div>
+      <div id="scroll-right" class="scroll-arrow">&#10095;</div>
+    </div>
 
     <a-scene
       mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/QRTargets.mind;"
@@ -123,24 +156,32 @@
       const model2 = document.getElementById("model2");
       const model3 = document.getElementById("model3");
       const modelButtons = [model1, model2, model3];
+      const modelNames = ["Coffee Cup New", "Coffee Cup With Logo", "Another Model"];
+      const modelPrices = ["₹249", "₹199", "₹299"];
 
       let currentModelIndex = 0;
       let isImageTracked = false;
 
       const scrollLeftBtn = document.getElementById("scroll-left");
       const scrollRightBtn = document.getElementById("scroll-right");
-
       const loadingScreen = document.getElementById("loading-screen");
+      const modelName = document.getElementById("model-name");
+      const modelPrice = document.getElementById("model-price");
 
       function updateVisibleModel() {
         modelButtons.forEach((model, i) => {
           model.setAttribute('visible', i === currentModelIndex && isImageTracked);
         });
-      }
 
-      function showModelByIndex(index) {
-        currentModelIndex = index;
-        updateVisibleModel();
+        if (isImageTracked) {
+          modelName.innerText = modelNames[currentModelIndex];
+          modelPrice.innerText = modelPrices[currentModelIndex];
+          modelName.style.display = 'block';
+          modelPrice.style.display = 'block';
+        } else {
+          modelName.style.display = 'none';
+          modelPrice.style.display = 'none';
+        }
       }
 
       const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
@@ -169,14 +210,12 @@
         updateVisibleModel();
       });
 
-      // Hide loading screen after 5 seconds
       window.addEventListener('load', () => {
         setTimeout(() => {
           loadingScreen.style.display = 'none';
         }, 5000);
       });
 
-      // Disable gestures like zooming and panning
       document.addEventListener('gesturestart', (e) => e.preventDefault());
       document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 
