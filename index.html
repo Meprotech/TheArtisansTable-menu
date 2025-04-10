@@ -5,132 +5,57 @@
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
       html, body {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-        position: fixed;
-        touch-action: none;
-        background: black;
+        margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%;
+        position: fixed; touch-action: none; background: black;
       }
-
-      .a-enter-vr-button {
-        display: none !important;
-      }
-
+      .a-enter-vr-button { display: none !important; }
       #loading-screen {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: #fff;
-        z-index: 10;
-        box-sizing: border-box;
+        position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: #fff; z-index: 10;
       }
-
+      #logo1, #logo2 {
+        object-fit: contain; position: absolute;
+      }
       #logo1 {
-        width: 60%;
-        max-height: 30vh;
-        object-fit: contain;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        width: 60%; max-height: 30vh; top: 50%; left: 50%; transform: translate(-50%, -50%);
       }
-
       #logo2 {
-        width: 35%;
-        max-height: 20vh;
-        object-fit: contain;
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
+        width: 35%; max-height: 20vh; bottom: 20px; left: 50%; transform: translateX(-50%);
       }
-
       #bottom-ui {
-        position: absolute;
-        bottom: 20px;
-        left: 0;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-        box-sizing: border-box;
-        z-index: 5;
-        pointer-events: none;
+        position: absolute; bottom: 20px; left: 0; width: 100%;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 0 20px; box-sizing: border-box; z-index: 5; pointer-events: none;
       }
-
       .scroll-arrow {
-        width: 50px;
-        height: 50px;
-        font-size: 24px;
-        color: white;
-        background: rgba(0, 0, 0, 0.6);
-        cursor: pointer;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-        transition: background 0.3s ease, transform 0.2s ease;
-        pointer-events: auto;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
+        width: 50px; height: 50px; font-size: 24px; color: white; background: rgba(0, 0, 0, 0.6);
+        cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); transition: background 0.3s ease, transform 0.2s ease;
+        pointer-events: auto; user-select: none;
       }
-
-      .scroll-arrow:hover {
-        background: rgba(0, 0, 0, 0.8);
-        transform: scale(1.1);
+      .scroll-arrow:hover { background: rgba(0, 0, 0, 0.8); transform: scale(1.1); }
+      .scroll-arrow:focus { outline: none; }
+      #model-info { text-align: center; pointer-events: auto; flex-grow: 1; }
+      #model-name, #model-price {
+        font-family: sans-serif; border-radius: 8px; display: none;
       }
-
-      .scroll-arrow:focus {
-        outline: none;
-      }
-
-      #model-info {
-        text-align: center;
-        pointer-events: auto;
-        flex-grow: 1;
-      }
-
       #model-name {
-        padding: 10px 20px;
-        font-size: 18px;
-        font-family: sans-serif;
-        background-color: rgba(0, 0, 0, 0.6);
-        color: white;
-        border-radius: 8px;
-        display: none;
-        white-space: nowrap;
+        padding: 10px 20px; font-size: 18px; background-color: rgba(0, 0, 0, 0.6); color: white; white-space: nowrap;
       }
-
       #model-price {
-        margin-top: 8px;
-        padding: 6px 16px;
-        font-size: 16px;
-        font-family: sans-serif;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        border-radius: 6px;
-        display: none;
+        margin-top: 8px; padding: 6px 16px; font-size: 16px; background-color: rgba(0, 0, 0, 0.5); color: #fff;
       }
     </style>
   </head>
   <body>
-    <!-- Loading Screen -->
     <div id="loading-screen">
       <img id="logo1" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeLogo.png" alt="Logo 1">
       <img id="logo2" src="https://arqrassets.s3.ap-south-1.amazonaws.com/MeprotechLogo.png" alt="Logo 2">
     </div>
 
-    <!-- Bottom UI with Buttons and Info -->
     <div id="bottom-ui">
       <div id="scroll-left" class="scroll-arrow">&#10094;</div>
       <div id="model-info">
@@ -163,31 +88,36 @@
       </a-entity>
     </a-scene>
 
+    <!-- ✂️ Rest of the code remains unchanged up to fetchGoogleSheetCSV() -->
+
     <script>
       const model1 = document.getElementById("model1");
       const model2 = document.getElementById("model2");
       const model3 = document.getElementById("model3");
       const modelButtons = [model1, model2, model3];
-      const modelNames = ["Coffee Cup New", "Coffee Cup With Logo", "Another Model"];
-      const modelPrices = ["₹249", "₹199", "₹299"];
-
+    
+      let modelData = [];
       let currentModelIndex = 0;
       let isImageTracked = false;
-
+    
       const scrollLeftBtn = document.getElementById("scroll-left");
       const scrollRightBtn = document.getElementById("scroll-right");
       const loadingScreen = document.getElementById("loading-screen");
       const modelName = document.getElementById("model-name");
       const modelPrice = document.getElementById("model-price");
-
+    
       function updateVisibleModel() {
         modelButtons.forEach((model, i) => {
           model.setAttribute('visible', i === currentModelIndex && isImageTracked);
         });
-
-        if (isImageTracked) {
-          modelName.innerText = modelNames[currentModelIndex];
-          modelPrice.innerText = modelPrices[currentModelIndex];
+    
+        if (isImageTracked && modelData.length > currentModelIndex) {
+          modelName.innerText = modelData[currentModelIndex].name;
+          console.log('modelName.innerText:',modelName.innerText);
+          console.log('modelName.innerText:',modelData[currentModelIndex].name);
+          modelPrice.innerText = modelData[currentModelIndex].price;
+          console.log('modelName.innerText:',modelPrice.innerText);
+          console.log('modelName.innerText:',modelData[currentModelIndex].price);
           modelName.style.display = 'block';
           modelPrice.style.display = 'block';
         } else {
@@ -195,42 +125,75 @@
           modelPrice.style.display = 'none';
         }
       }
+    
+      async function fetchGoogleSheetCSV() {
+        const proxy = "https://api.allorigins.win/raw?url=";
+        const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKjBezjVa5ZwSJrTxN3rsgZ8GIT3h9ySMyKqEfV1SkSMAge3OPyvh_r9-eK6JQAKza4i0S-0puOo64/pub?gid=0&single=true&output=csv";
+        const fullUrl = proxy + encodeURIComponent(sheetUrl + `&t=${Date.now()}`); // prevent caching
+        
+        try {
+          const response = await fetch(fullUrl);
+          const text = await response.text();
+          console.log('text: ',text);
+          const results = Papa.parse(text, { header: true });
+        
+          // Trim headers to avoid mismatch
+          return results.data.map(row => {
+            const cleanRow = {};
+            for (let key in row) {
+              cleanRow[key.trim()] = row[key];
+            }
+            return {
+              name: cleanRow['Model Name'] || 'Unknown',
+              price: cleanRow['Price'] || 'N/A'
+            };
+          });
+        
+        } catch (err) {
+          console.error('Error fetching or parsing sheet:', err);
+          return [];
+        }
+      }
 
+    
       const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
-
+    
       target0.addEventListener("targetFound", () => {
         isImageTracked = true;
         scrollLeftBtn.style.display = "flex";
         scrollRightBtn.style.display = "flex";
         updateVisibleModel();
       });
-
+    
       target0.addEventListener("targetLost", () => {
         isImageTracked = false;
         scrollLeftBtn.style.display = "none";
         scrollRightBtn.style.display = "none";
         updateVisibleModel();
       });
-
+    
       scrollLeftBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex - 1 + modelButtons.length) % modelButtons.length;
         updateVisibleModel();
       });
-
+    
       scrollRightBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex + 1) % modelButtons.length;
         updateVisibleModel();
       });
-
-      window.addEventListener('load', () => {
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-        }, 5000);
+    
+      window.addEventListener('load', async () => {
+        modelData = await fetchGoogleSheetCSV();
+        updateVisibleModel();
       });
-
+    
+      document.querySelector('a-scene').addEventListener('loaded', () => {
+        loadingScreen.style.display = 'none';
+      });
+    
       document.addEventListener('gesturestart', (e) => e.preventDefault());
       document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-
+    
       scrollLeftBtn.style.display = "none";
       scrollRightBtn.style.display = "none";
     </script>
