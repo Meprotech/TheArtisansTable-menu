@@ -73,51 +73,33 @@
       device-orientation-permission-ui="enabled: false"
       embedded
     >
-      <a-assets>
-        <a-asset-item id="CoffeeCupNew" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogo.glb"></a-asset-item>
-        <a-asset-item id="avatarModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeWithLogoNewCup.glb"></a-asset-item>
-        <a-asset-item id="anotherModel" src="https://arqrassets.s3.ap-south-1.amazonaws.com/NewModel.glb"></a-asset-item>
-      </a-assets>
-
+      <a-assets id="dynamic-assets"></a-assets>
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-gltf-model id="model1" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#avatarModel" animation-mixer visible="true"></a-gltf-model>
-        <a-gltf-model id="model2" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#CoffeeCupNew" animation-mixer visible="false"></a-gltf-model>
-        <a-gltf-model id="model3" rotation="90 0 0" position="0 0 0" scale="10 10 10" src="#anotherModel" animation-mixer visible="false"></a-gltf-model>
-      </a-entity>
+      <a-entity id="model-container" mindar-image-target="targetIndex: 0"></a-entity>
     </a-scene>
 
-    <!-- ✂️ Rest of the code remains unchanged up to fetchGoogleSheetCSV() -->
-
     <script>
-      const model1 = document.getElementById("model1");
-      const model2 = document.getElementById("model2");
-      const model3 = document.getElementById("model3");
-      const modelButtons = [model1, model2, model3];
-    
-      let modelData = [];
-      let currentModelIndex = 0;
-      let isImageTracked = false;
-    
       const scrollLeftBtn = document.getElementById("scroll-left");
       const scrollRightBtn = document.getElementById("scroll-right");
       const loadingScreen = document.getElementById("loading-screen");
       const modelName = document.getElementById("model-name");
       const modelPrice = document.getElementById("model-price");
-    
+      const assets = document.getElementById("dynamic-assets");
+      const container = document.getElementById("model-container");
+
+      let modelData = [];
+      let currentModelIndex = 0;
+      let isImageTracked = false;
+      let modelEntities = [];
+
       function updateVisibleModel() {
-        modelButtons.forEach((model, i) => {
+        modelEntities.forEach((model, i) => {
           model.setAttribute('visible', i === currentModelIndex && isImageTracked);
         });
-    
+
         if (isImageTracked && modelData.length > currentModelIndex) {
           modelName.innerText = modelData[currentModelIndex].name;
-          console.log('modelName.innerText:',modelName.innerText);
-          console.log('modelName.innerText:',modelData[currentModelIndex].name);
           modelPrice.innerText = modelData[currentModelIndex].price;
-          console.log('modelName.innerText:',modelPrice.innerText);
-          console.log('modelName.innerText:',modelData[currentModelIndex].price);
           modelName.style.display = 'block';
           modelPrice.style.display = 'block';
         } else {
@@ -125,19 +107,16 @@
           modelPrice.style.display = 'none';
         }
       }
-    
+
       async function fetchGoogleSheetCSV() {
         const proxy = "https://api.allorigins.win/raw?url=";
         const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKjBezjVa5ZwSJrTxN3rsgZ8GIT3h9ySMyKqEfV1SkSMAge3OPyvh_r9-eK6JQAKza4i0S-0puOo64/pub?gid=0&single=true&output=csv";
-        const fullUrl = proxy + encodeURIComponent(sheetUrl + `&t=${Date.now()}`); // prevent caching
-        
+        const fullUrl = proxy + encodeURIComponent(sheetUrl + `&t=${Date.now()}`);
+
         try {
           const response = await fetch(fullUrl);
           const text = await response.text();
-          console.log('text: ',text);
           const results = Papa.parse(text, { header: true });
-        
-          // Trim headers to avoid mismatch
           return results.data.map(row => {
             const cleanRow = {};
             for (let key in row) {
@@ -145,55 +124,78 @@
             }
             return {
               name: cleanRow['Model Name'] || 'Unknown',
-              price: cleanRow['Price'] || 'N/A'
+              price: cleanRow['Price'] || 'N/A',
+              url: cleanRow['Model URL'] || ''
             };
-          });
-        
+          }).filter(model => model.url);
         } catch (err) {
           console.error('Error fetching or parsing sheet:', err);
           return [];
         }
       }
 
-    
+      function createModelEntities(models) {
+        modelEntities = models.map((model, index) => {
+          const assetId = `modelAsset${index}`;
+          const assetItem = document.createElement('a-asset-item');
+          assetItem.setAttribute('id', assetId);
+          assetItem.setAttribute('src', model.url);
+          assets.appendChild(assetItem);
+
+          const entity = document.createElement('a-gltf-model');
+          entity.setAttribute('src', `#${assetId}`);
+          entity.setAttribute('rotation', '90 0 0');
+          entity.setAttribute('position', '0 0 0');
+          entity.setAttribute('scale', '10 10 10');
+          entity.setAttribute('animation-mixer', '');
+          entity.setAttribute('visible', 'false');
+          container.appendChild(entity);
+
+          return entity;
+        });
+      }
+
       const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
-    
+
       target0.addEventListener("targetFound", () => {
         isImageTracked = true;
         scrollLeftBtn.style.display = "flex";
         scrollRightBtn.style.display = "flex";
         updateVisibleModel();
       });
-    
+
       target0.addEventListener("targetLost", () => {
         isImageTracked = false;
         scrollLeftBtn.style.display = "none";
         scrollRightBtn.style.display = "none";
         updateVisibleModel();
       });
-    
+
       scrollLeftBtn.addEventListener("click", () => {
-        currentModelIndex = (currentModelIndex - 1 + modelButtons.length) % modelButtons.length;
+        currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
         updateVisibleModel();
       });
-    
+
       scrollRightBtn.addEventListener("click", () => {
-        currentModelIndex = (currentModelIndex + 1) % modelButtons.length;
+        currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
         updateVisibleModel();
       });
-    
+
       window.addEventListener('load', async () => {
         modelData = await fetchGoogleSheetCSV();
+        createModelEntities(modelData);
         updateVisibleModel();
       });
-    
+
       document.querySelector('a-scene').addEventListener('loaded', () => {
-        loadingScreen.style.display = 'none';
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 5000);
       });
-    
+
       document.addEventListener('gesturestart', (e) => e.preventDefault());
       document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-    
+
       scrollLeftBtn.style.display = "none";
       scrollRightBtn.style.display = "none";
     </script>
