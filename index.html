@@ -117,13 +117,6 @@
       let isImageTracked = false;
       let modelEntities = [];
 
-      document.addEventListener('contextmenu', e => e.preventDefault());
-  document.onkeydown = function(e) {
-    if (e.key === "F12" || (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key)) || (e.ctrlKey && e.key === "U")) {
-      return false;
-    }
-  };
-
       function updateVisibleModel() {
         modelEntities.forEach((model, i) => {
           model.setAttribute('visible', i === currentModelIndex && isImageTracked);
