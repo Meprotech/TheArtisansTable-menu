@@ -91,7 +91,7 @@
     <a-scene background="color: black" embedded>
       <a-assets id="dynamic-assets"></a-assets>
       <a-entity id="cameraRig">
-        <!-- 👇 Disable device motion here -->
+        <!-- Disable device motion here -->
         <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
@@ -107,36 +107,52 @@
         schema: { speed: { type: 'number', default: 1 } },
         init: function () {
           let startX = 0;
+          let startY = 0;
           let dragging = false;
-          let rotate = (deltaX) => {
+
+          // Rotation logic
+          let rotate = (deltaX, deltaY) => {
             let rotation = this.el.getAttribute('rotation');
-            rotation.y -= deltaX * 0.3 * this.data.speed;
+            rotation.y += deltaX * 0.3 * this.data.speed; // Rotate around Y-axis (left/right)
+            rotation.x -= deltaY * 0.3 * this.data.speed; // Rotate around X-axis (up/down)
+            
+            // Limit the X-axis rotation to prevent flipping
+            if (rotation.x < -90) rotation.x = -90;
+            if (rotation.x > 90) rotation.x = 90;
+
             this.el.setAttribute('rotation', rotation);
           };
 
-          const start = (clientX) => {
+          const start = (clientX, clientY) => {
             startX = clientX;
+            startY = clientY;
             dragging = true;
           };
-          const move = (clientX) => {
+
+          const move = (clientX, clientY) => {
             if (!dragging) return;
             const deltaX = clientX - startX;
+            const deltaY = clientY - startY;
             startX = clientX;
-            rotate(deltaX);
+            startY = clientY;
+            rotate(deltaX, deltaY); // Rotate based on X and Y movement
           };
+
           const stop = () => dragging = false;
 
-          document.body.addEventListener('mousedown', (e) => start(e.clientX));
-          document.body.addEventListener('mousemove', (e) => move(e.clientX));
+          // Mouse events
+          document.body.addEventListener('mousedown', (e) => start(e.clientX, e.clientY));
+          document.body.addEventListener('mousemove', (e) => move(e.clientX, e.clientY));
           document.body.addEventListener('mouseup', stop);
 
+          // Touch events for mobile devices
           document.body.addEventListener('touchstart', (e) => {
-            start(e.touches[0].clientX);
+            start(e.touches[0].clientX, e.touches[0].clientY);
             e.preventDefault();
           }, { passive: false });
 
           document.body.addEventListener('touchmove', (e) => {
-            move(e.touches[0].clientX);
+            move(e.touches[0].clientX, e.touches[0].clientY);
             e.preventDefault();
           }, { passive: false });
 
