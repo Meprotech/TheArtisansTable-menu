@@ -1,134 +1,174 @@
 ﻿<!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
       html, body {
-        margin: 0; padding: 0; overflow: hidden; height: 100%; width: 100%;
-        position: fixed; touch-action: none; background: black;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+        background: black;
+        overscroll-behavior: none;
+        touch-action: none;
       }
 
-      * {
-        -webkit-tap-highlight-color: transparent;
-      }
-
-      .a-enter-vr-button { display: none !important; }
-
-      #loading-screen {
-        position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: #fff; z-index: 10;
-      }
-
-      #logo1, #logo2 {
-        object-fit: contain; position: absolute;
-      }
-
-      #logo1 {
-        width: 60%; max-height: 30vh; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      }
-
-      #logo2 {
-        width: 35%; max-height: 20vh; bottom: 20px; left: 50%; transform: translateX(-50%);
+      .a-enter-vr-button {
+        display: none !important;
       }
 
       #bottom-ui {
-        position: absolute; bottom: 20px; left: 0; width: 100%;
-        display: flex; justify-content: space-between; align-items: center;
-        padding: 0 20px; box-sizing: border-box; z-index: 5; pointer-events: none;
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        box-sizing: border-box;
+        z-index: 5;
       }
 
       .scroll-arrow {
-        width: 50px; height: 50px; font-size: 24px; color: white; background: rgba(0, 0, 0, 0.6);
-        cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); transition: background 0.3s ease, transform 0.2s ease;
-        pointer-events: auto; user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        -webkit-touch-callout: none;
-        outline: none;
+        width: 50px;
+        height: 50px;
+        font-size: 24px;
+        color: white;
+        background: rgba(0, 0, 0, 0.6);
+        cursor: pointer;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        transition: background 0.3s ease, transform 0.2s ease;
+        user-select: none;
       }
 
       .scroll-arrow:hover {
-        background: rgba(0, 0, 0, 0.8); transform: scale(1.1);
+        background: rgba(0, 0, 0, 0.8);
+        transform: scale(1.1);
       }
 
-      .scroll-arrow:focus {
-        outline: none;
+      #model-info {
+        text-align: center;
+        flex-grow: 1;
       }
-
-      #model-info { text-align: center; pointer-events: auto; flex-grow: 1; }
 
       #model-name, #model-price {
-        font-family: sans-serif; border-radius: 8px; display: none;
+        font-family: sans-serif;
+        border-radius: 8px;
+        color: white;
+        margin: 5px 0;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: inline-block;
       }
 
       #model-name {
-        padding: 10px 20px; font-size: 18px; background-color: rgba(0, 0, 0, 0.6); color: white; white-space: nowrap;
+        padding: 10px 20px;
+        font-size: 18px;
       }
 
       #model-price {
-        margin-top: 8px; padding: 6px 16px; font-size: 16px; background-color: rgba(0, 0, 0, 0.5); color: #fff;
+        padding: 6px 16px;
+        font-size: 16px;
       }
     </style>
   </head>
   <body>
-    <div id="loading-screen">
-      <img id="logo1" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeLogo.png" alt="Logo 1">
-      <img id="logo2" src="https://arqrassets.s3.ap-south-1.amazonaws.com/MeprotechLogo.png" alt="Logo 2">
-    </div>
-
     <div id="bottom-ui">
       <div id="scroll-left" class="scroll-arrow">&#10094;</div>
       <div id="model-info">
-        <div id="model-name"></div>
+        <div id="model-name">Loading...</div>
         <div id="model-price"></div>
       </div>
       <div id="scroll-right" class="scroll-arrow">&#10095;</div>
     </div>
 
-    <a-scene
-      mindar-image="imageTargetSrc: https://arqrassets.s3.ap-south-1.amazonaws.com/QRTargets.mind;"
-      color-space="sRGB"
-      renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: false"
-      embedded
-    >
+    <a-scene background="color: black" embedded>
       <a-assets id="dynamic-assets"></a-assets>
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-      <a-entity id="model-container" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="cameraRig">
+        <a-camera position="0 1.6 3"></a-camera>
+      </a-entity>
+      <a-entity id="model-container" position="0 1.6 -3">
+        <a-entity id="model-parent" position="0 0 0" drag-rotate>
+          <!-- Model will be added here -->
+        </a-entity>
+      </a-entity>
     </a-scene>
+
+    <!-- 🔄 Drag to Rotate -->
+    <script>
+      AFRAME.registerComponent('drag-rotate', {
+        schema: { speed: { type: 'number', default: 1 } },
+        init: function () {
+          this.startX = 0;
+          this.rotating = false;
+
+          const rotateModel = (deltaX) => {
+            const rotation = this.el.getAttribute('rotation');
+            rotation.y -= deltaX * 0.3 * this.data.speed;
+            this.el.setAttribute('rotation', rotation);
+          };
+
+          const startRotate = (clientX) => {
+            this.startX = clientX;
+            this.rotating = true;
+          };
+
+          const moveRotate = (clientX) => {
+            if (!this.rotating) return;
+            const deltaX = clientX - this.startX;
+            this.startX = clientX;
+            rotateModel(deltaX);
+          };
+
+          // Mouse
+          window.addEventListener('mousedown', (e) => startRotate(e.clientX));
+          window.addEventListener('mousemove', (e) => moveRotate(e.clientX));
+          window.addEventListener('mouseup', () => this.rotating = false);
+
+          // Touch
+          window.addEventListener('touchstart', (e) => {
+            startRotate(e.touches[0].clientX);
+            e.preventDefault();
+          }, { passive: false });
+
+          window.addEventListener('touchmove', (e) => {
+            moveRotate(e.touches[0].clientX);
+            e.preventDefault();
+          }, { passive: false });
+
+          window.addEventListener('touchend', () => this.rotating = false);
+        }
+      });
+    </script>
 
     <script>
       const scrollLeftBtn = document.getElementById("scroll-left");
       const scrollRightBtn = document.getElementById("scroll-right");
-      const loadingScreen = document.getElementById("loading-screen");
       const modelName = document.getElementById("model-name");
       const modelPrice = document.getElementById("model-price");
       const assets = document.getElementById("dynamic-assets");
-      const container = document.getElementById("model-container");
+      const modelParent = document.getElementById("model-parent");
 
       let modelData = [];
       let currentModelIndex = 0;
-      let isImageTracked = false;
       let modelEntities = [];
 
       function updateVisibleModel() {
         modelEntities.forEach((model, i) => {
-          model.setAttribute('visible', i === currentModelIndex && isImageTracked);
+          model.setAttribute('visible', i === currentModelIndex);
         });
 
-        if (isImageTracked && modelData.length > currentModelIndex) {
+        if (modelData.length > currentModelIndex) {
           modelName.innerText = modelData[currentModelIndex].name;
           modelPrice.innerText = modelData[currentModelIndex].price;
-          modelName.style.display = 'block';
-          modelPrice.style.display = 'block';
-        } else {
-          modelName.style.display = 'none';
-          modelPrice.style.display = 'none';
         }
       }
 
@@ -168,47 +208,26 @@
 
           const entity = document.createElement('a-gltf-model');
           entity.setAttribute('src', `#${assetId}`);
-          entity.setAttribute('rotation', '90 0 0');
+          entity.setAttribute('rotation', '0 180 0');
           entity.setAttribute('position', '0 0 0');
-          entity.setAttribute('scale', '10 10 10');
-          entity.setAttribute('animation-mixer', '');
+          entity.setAttribute('scale', '5 5 5');
           entity.setAttribute('visible', 'false');
-          container.appendChild(entity);
+          modelParent.appendChild(entity);
 
           return entity;
         });
       }
 
-      const target0 = document.querySelector('[mindar-image-target="targetIndex: 0"]');
-
-
-      target0.addEventListener("targetFound", () => {
-        if (!isImageTracked) {
-          isImageTracked = true;
-
-          // Prevent retracking
-          target0.removeAttribute("mindar-image-target");
-
-          scrollLeftBtn.style.display = "flex";
-          scrollRightBtn.style.display = "flex";
-          updateVisibleModel();
-
-          const scene = document.querySelector('a-scene');
-          const mindarSystem = scene.systems['mindar-image-system'];
-
-          // To pause tracking but keep camera running
-          mindarSystem.pause(true);  // true = keep camera running
-        }
-      });
-
       scrollLeftBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
         updateVisibleModel();
+        modelParent.setAttribute('rotation', { x: 0, y: 0, z: 0 }); // Reset rotation
       });
 
       scrollRightBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
         updateVisibleModel();
+        modelParent.setAttribute('rotation', { x: 0, y: 0, z: 0 }); // Reset rotation
       });
 
       window.addEventListener('load', async () => {
@@ -216,18 +235,6 @@
         createModelEntities(modelData);
         updateVisibleModel();
       });
-
-      document.querySelector('a-scene').addEventListener('loaded', () => {
-        setTimeout(() => {
-          loadingScreen.style.display = 'none';
-        }, 5000);
-      });
-
-      document.addEventListener('gesturestart', (e) => e.preventDefault());
-      document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-
-      scrollLeftBtn.style.display = "none";
-      scrollRightBtn.style.display = "none";
     </script>
   </body>
 </html>
