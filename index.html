@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -13,8 +13,6 @@
         height: 100%;
         width: 100%;
         background: black;
-        overscroll-behavior: none;
-        touch-action: none;
       }
 
       .a-enter-vr-button {
@@ -93,58 +91,56 @@
     <a-scene background="color: black" embedded>
       <a-assets id="dynamic-assets"></a-assets>
       <a-entity id="cameraRig">
-        <a-camera position="0 1.6 3"></a-camera>
+        <!-- 👇 Disable device motion here -->
+        <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
         <a-entity id="model-parent" position="0 0 0" drag-rotate>
-          <!-- Model will be added here -->
+          <!-- Models dynamically injected here -->
         </a-entity>
       </a-entity>
     </a-scene>
 
-    <!-- 🔄 Drag to Rotate -->
+    <!-- 🌀 Drag to Rotate Component -->
     <script>
       AFRAME.registerComponent('drag-rotate', {
         schema: { speed: { type: 'number', default: 1 } },
         init: function () {
-          this.startX = 0;
-          this.rotating = false;
-
-          const rotateModel = (deltaX) => {
-            const rotation = this.el.getAttribute('rotation');
+          let startX = 0;
+          let dragging = false;
+          let rotate = (deltaX) => {
+            let rotation = this.el.getAttribute('rotation');
             rotation.y -= deltaX * 0.3 * this.data.speed;
             this.el.setAttribute('rotation', rotation);
           };
 
-          const startRotate = (clientX) => {
-            this.startX = clientX;
-            this.rotating = true;
+          const start = (clientX) => {
+            startX = clientX;
+            dragging = true;
           };
-
-          const moveRotate = (clientX) => {
-            if (!this.rotating) return;
-            const deltaX = clientX - this.startX;
-            this.startX = clientX;
-            rotateModel(deltaX);
+          const move = (clientX) => {
+            if (!dragging) return;
+            const deltaX = clientX - startX;
+            startX = clientX;
+            rotate(deltaX);
           };
+          const stop = () => dragging = false;
 
-          // Mouse
-          window.addEventListener('mousedown', (e) => startRotate(e.clientX));
-          window.addEventListener('mousemove', (e) => moveRotate(e.clientX));
-          window.addEventListener('mouseup', () => this.rotating = false);
+          document.body.addEventListener('mousedown', (e) => start(e.clientX));
+          document.body.addEventListener('mousemove', (e) => move(e.clientX));
+          document.body.addEventListener('mouseup', stop);
 
-          // Touch
-          window.addEventListener('touchstart', (e) => {
-            startRotate(e.touches[0].clientX);
+          document.body.addEventListener('touchstart', (e) => {
+            start(e.touches[0].clientX);
             e.preventDefault();
           }, { passive: false });
 
-          window.addEventListener('touchmove', (e) => {
-            moveRotate(e.touches[0].clientX);
+          document.body.addEventListener('touchmove', (e) => {
+            move(e.touches[0].clientX);
             e.preventDefault();
           }, { passive: false });
 
-          window.addEventListener('touchend', () => this.rotating = false);
+          document.body.addEventListener('touchend', stop);
         }
       });
     </script>
@@ -210,7 +206,7 @@
           entity.setAttribute('src', `#${assetId}`);
           entity.setAttribute('rotation', '0 180 0');
           entity.setAttribute('position', '0 0 0');
-          entity.setAttribute('scale', '5 5 5');
+          entity.setAttribute('scale', '15 15 15');
           entity.setAttribute('visible', 'false');
           modelParent.appendChild(entity);
 
