@@ -91,7 +91,7 @@
     <a-scene background="color: black" embedded>
       <a-assets id="dynamic-assets"></a-assets>
       <a-entity id="cameraRig">
-        <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
+        <a-camera id="camera" position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
         <a-entity id="model-parent" position="0 0 0" drag-rotate="speed: 1.2; sensitivity: 0.5; friction: 0.88">
@@ -197,6 +197,7 @@
       const modelPrice = document.getElementById("model-price");
       const assets = document.getElementById("dynamic-assets");
       const modelParent = document.getElementById("model-parent");
+      const camera = document.getElementById("camera");
 
       let modelData = [];
       let currentModelIndex = 0;
@@ -290,6 +291,43 @@
           return entity;
         });
       }
+
+      // Zoom functionality using mouse wheel and pinch gesture
+      let zoomLevel = 3;
+
+      // Mouse scroll zoom
+      window.addEventListener('wheel', (event) => {
+        if (event.deltaY > 0) {
+          zoomLevel = Math.min(zoomLevel + 1, 5); // Prevent zoom-out too far
+        } else {
+          zoomLevel = Math.max(zoomLevel - 1, 1); // Prevent zoom-in too far
+        }
+        camera.setAttribute("position", `0 1.6 ${zoomLevel}`);
+      });
+
+      // Pinch zoom
+      let lastTouchDistance = 0;
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length == 2) {
+          const touch1 = e.touches[0];
+          const touch2 = e.touches[1];
+          const distance = Math.sqrt(
+            Math.pow(touch2.clientX - touch1.clientX, 2) + Math.pow(touch2.clientY - touch1.clientY, 2)
+          );
+
+          if (lastTouchDistance) {
+            const delta = distance - lastTouchDistance;
+            zoomLevel = Math.max(1, Math.min(5, zoomLevel + delta * 0.01)); // Adjust zoom factor as needed
+            camera.setAttribute("position", `0 1.6 ${zoomLevel}`);
+          }
+
+          lastTouchDistance = distance;
+        }
+      });
+
+      window.addEventListener('touchend', () => {
+        lastTouchDistance = 0;
+      });
 
       window.addEventListener('load', async () => {
         modelData = await fetchGoogleSheetCSV();
