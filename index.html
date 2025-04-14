@@ -103,116 +103,156 @@
 
     <!-- 🌀 Improved Drag to Rotate Component with Medium Speed Settings -->
     <script>
-      AFRAME.registerComponent('drag-rotate', {
-        schema: { 
-          speed: { type: 'number', default: 1.2 },          // Increased for medium speed
-          friction: { type: 'number', default: 0.88 },      // Reduced for more momentum
-          minVelocity: { type: 'number', default: 0.001 },
-          sensitivity: { type: 'number', default: 0.5 }     // Increased for better response
-        },
-        init: function () {
-          this.startX = 0;
-          this.startY = 0;
-          this.dragging = false;
-          this.velocityX = 0;
-          this.velocityY = 0;
-          this.lastTime = 0;
-          this.rotation = { x: 0, y: 0, z: 0 };
-          this.lastDeltaX = 0;
-          this.lastDeltaY = 0;
-          
-          const initialRotation = this.el.getAttribute('rotation');
-          if (initialRotation) {
-            this.rotation = AFRAME.utils.clone(initialRotation);
-          }
-          
-          this.tick = AFRAME.utils.throttleTick(this.tick.bind(this), 16, this);
-          
-          const start = (clientX, clientY) => {
-            this.startX = clientX;
-            this.startY = clientY;
-            this.dragging = true;
-            this.velocityX = 0;
-            this.velocityY = 0;
-            this.lastDeltaX = 0;
-            this.lastDeltaY = 0;
-          };
+  AFRAME.registerComponent('drag-rotate', {
+    schema: { 
+      speed: { type: 'number', default: 1.2 },
+      friction: { type: 'number', default: 0.88 },
+      minVelocity: { type: 'number', default: 0.001 },
+      sensitivity: { type: 'number', default: 0.5 }
+    },
+    init: function () {
+      this.startX = 0;
+      this.startY = 0;
+      this.dragging = false;
+      this.velocityX = 0;
+      this.velocityY = 0;
+      this.lastTime = 0;
+      this.lastDeltaX = 0;
+      this.lastDeltaY = 0;
+      
+      // Store initial rotation as quaternion
+      this.initialRotation = new THREE.Quaternion();
+      if (this.el.object3D.quaternion) {
+        this.initialRotation.copy(this.el.object3D.quaternion);
+      }
+      
+      // Current rotation state
+      this.currentRotation = new THREE.Quaternion();
+      this.currentRotation.copy(this.initialRotation);
+      
+      // Temporary quaternion for calculations
+      this.tempQuaternion = new THREE.Quaternion();
+      
+      // Rotation axes
+      this.xAxis = new THREE.Vector3(1, 0, 0);
+      this.yAxis = new THREE.Vector3(0, 1, 0);
+      
+      this.tick = AFRAME.utils.throttleTick(this.tick.bind(this), 16, this);
+      
+      const start = (clientX, clientY) => {
+        this.startX = clientX;
+        this.startY = clientY;
+        this.dragging = true;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.lastDeltaX = 0;
+        this.lastDeltaY = 0;
+      };
 
-          const move = (clientX, clientY) => {
-            if (!this.dragging) return;
-            
-            const deltaX = clientX - this.startX;
-            const deltaY = clientY - this.startY;
-            
-            const now = Date.now();
-            const deltaTime = now - (this.lastTime || now);
-            this.lastTime = now;
-            
-            if (deltaTime > 0) {
-              const smoothDeltaX = (deltaX + this.lastDeltaX) / 2;
-              const smoothDeltaY = (deltaY + this.lastDeltaY) / 2;
-              
-              this.velocityX = (smoothDeltaX * this.data.sensitivity * this.data.speed) / deltaTime;
-              this.velocityY = (-smoothDeltaY * this.data.sensitivity * this.data.speed) / deltaTime;
-              
-              this.lastDeltaX = deltaX;
-              this.lastDeltaY = deltaY;
-            }
-            
-            this.startX = clientX;
-            this.startY = clientY;
-            
-            // Increased multiplier from 0.2 to 0.3 for medium speed
-            this.rotation.y += deltaX * 0.3 * this.data.speed * this.data.sensitivity;
-            this.rotation.x += deltaY * 0.3 * this.data.speed * this.data.sensitivity;
-            
-            this.rotation.x = Math.max(-90, Math.min(90, this.rotation.x));
-            
-            this.el.setAttribute('rotation', this.rotation);
-          };
-
-          const stop = () => {
-            this.dragging = false;
-          };
-
-          document.body.addEventListener('mousedown', (e) => start(e.clientX, e.clientY));
-          document.body.addEventListener('mousemove', (e) => move(e.clientX, e.clientY));
-          document.body.addEventListener('mouseup', stop);
-
-          document.body.addEventListener('touchstart', (e) => {
-            start(e.touches[0].clientX, e.touches[0].clientY);
-            e.preventDefault();
-          }, { passive: false });
-
-          document.body.addEventListener('touchmove', (e) => {
-            move(e.touches[0].clientX, e.touches[0].clientY);
-            e.preventDefault();
-          }, { passive: false });
-
-          document.body.addEventListener('touchend', stop);
-        },
+      const move = (clientX, clientY) => {
+        if (!this.dragging) return;
         
-        tick: function(time, timeDelta) {
-          if (!this.dragging && (Math.abs(this.velocityX) > this.data.minVelocity || 
-                                 Math.abs(this.velocityY) > this.data.minVelocity)) {
-            const easingFactor = 1 - Math.pow(1 - this.data.friction, timeDelta / 16);
-            
-            this.rotation.y += this.velocityX * easingFactor;
-            this.rotation.x += this.velocityY * easingFactor;
-            
-            this.rotation.x = Math.max(-90, Math.min(90, this.rotation.x));
-            
-            this.el.setAttribute('rotation', this.rotation);
-            
-            this.velocityX *= Math.pow(this.data.friction, timeDelta / 16);
-            this.velocityY *= Math.pow(this.data.friction, timeDelta / 16);
-            
-            if (Math.abs(this.velocityX) < this.data.minVelocity) this.velocityX = 0;
-            if (Math.abs(this.velocityY) < this.data.minVelocity) this.velocityY = 0;
-          }
+        const deltaX = clientX - this.startX;
+        const deltaY = clientY - this.startY;
+        
+        const now = Date.now();
+        const deltaTime = now - (this.lastTime || now);
+        this.lastTime = now;
+        
+        if (deltaTime > 0) {
+          const smoothDeltaX = (deltaX + this.lastDeltaX) / 2;
+          const smoothDeltaY = (deltaY + this.lastDeltaY) / 2;
+          
+          this.velocityX = (smoothDeltaX * this.data.sensitivity * this.data.speed) / deltaTime;
+          this.velocityY = (-smoothDeltaY * this.data.sensitivity * this.data.speed) / deltaTime;
+          
+          this.lastDeltaX = deltaX;
+          this.lastDeltaY = deltaY;
         }
-      });
-    </script>
+        
+        this.startX = clientX;
+        this.startY = clientY;
+        
+        // Apply rotation using quaternions
+        const yRotation = new THREE.Quaternion().setFromAxisAngle(
+          this.yAxis, 
+          deltaX * 0.003 * this.data.speed * this.data.sensitivity
+        );
+        
+        const xRotation = new THREE.Quaternion().setFromAxisAngle(
+          this.xAxis, 
+          deltaY * 0.003 * this.data.speed * this.data.sensitivity
+        );
+        
+        // Apply y rotation first, then x rotation
+        this.tempQuaternion.multiplyQuaternions(yRotation, this.currentRotation);
+        this.currentRotation.multiplyQuaternions(xRotation, this.tempQuaternion);
+        
+        // Limit x rotation (up/down) to prevent flipping
+        const euler = new THREE.Euler().setFromQuaternion(this.currentRotation, 'YXZ');
+        euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
+        this.currentRotation.setFromEuler(euler);
+        
+        this.el.object3D.quaternion.copy(this.currentRotation);
+      };
+
+      const stop = () => {
+        this.dragging = false;
+      };
+
+      document.body.addEventListener('mousedown', (e) => start(e.clientX, e.clientY));
+      document.body.addEventListener('mousemove', (e) => move(e.clientX, e.clientY));
+      document.body.addEventListener('mouseup', stop);
+
+      document.body.addEventListener('touchstart', (e) => {
+        start(e.touches[0].clientX, e.touches[0].clientY);
+        e.preventDefault();
+      }, { passive: false });
+
+      document.body.addEventListener('touchmove', (e) => {
+        move(e.touches[0].clientX, e.touches[0].clientY);
+        e.preventDefault();
+      }, { passive: false });
+
+      document.body.addEventListener('touchend', stop);
+    },
+    
+    tick: function(time, timeDelta) {
+      if (!this.dragging && (Math.abs(this.velocityX) > this.data.minVelocity || 
+                             Math.abs(this.velocityY) > this.data.minVelocity)) {
+        const easingFactor = 1 - Math.pow(1 - this.data.friction, timeDelta / 16);
+        
+        // Apply rotation using quaternions
+        const yRotation = new THREE.Quaternion().setFromAxisAngle(
+          this.yAxis, 
+          this.velocityX * easingFactor * 0.01
+        );
+        
+        const xRotation = new THREE.Quaternion().setFromAxisAngle(
+          this.xAxis, 
+          this.velocityY * easingFactor * 0.01
+        );
+        
+        // Apply y rotation first, then x rotation
+        this.tempQuaternion.multiplyQuaternions(yRotation, this.currentRotation);
+        this.currentRotation.multiplyQuaternions(xRotation, this.tempQuaternion);
+        
+        // Limit x rotation (up/down) to prevent flipping
+        const euler = new THREE.Euler().setFromQuaternion(this.currentRotation, 'YXZ');
+        euler.x = Math.max(-Math.PI/2, Math.min(Math.PI/2, euler.x));
+        this.currentRotation.setFromEuler(euler);
+        
+        this.el.object3D.quaternion.copy(this.currentRotation);
+        
+        this.velocityX *= Math.pow(this.data.friction, timeDelta / 16);
+        this.velocityY *= Math.pow(this.data.friction, timeDelta / 16);
+        
+        if (Math.abs(this.velocityX) < this.data.minVelocity) this.velocityX = 0;
+        if (Math.abs(this.velocityY) < this.data.minVelocity) this.velocityY = 0;
+      }
+    }
+  });
+</script>
 
     <script>
       const scrollLeftBtn = document.getElementById("scroll-left");
