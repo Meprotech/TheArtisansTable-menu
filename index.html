@@ -237,6 +237,46 @@
         }
       }
 
+      function setupButtonEvents() {
+        // Common click/touch handler
+        const handleLeftClick = () => {
+          currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
+          updateVisibleModel();
+          modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
+          const dragRotate = modelParent.components['drag-rotate'];
+          if (dragRotate) {
+            dragRotate.velocityX = 0;
+            dragRotate.velocityY = 0;
+          }
+        };
+
+        const handleRightClick = () => {
+          currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
+          updateVisibleModel();
+          modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
+          const dragRotate = modelParent.components['drag-rotate'];
+          if (dragRotate) {
+            dragRotate.velocityX = 0;
+            dragRotate.velocityY = 0;
+          }
+        };
+
+        // Mouse events
+        scrollLeftBtn.addEventListener("click", handleLeftClick);
+        scrollRightBtn.addEventListener("click", handleRightClick);
+
+        // Touch events
+        scrollLeftBtn.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          handleLeftClick();
+        }, { passive: false });
+
+        scrollRightBtn.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          handleRightClick();
+        }, { passive: false });
+      }
+
       async function fetchGoogleSheetCSV() {
         const proxy = "https://api.allorigins.win/raw?url=";
         const sheetUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTKjBezjVa5ZwSJrTxN3rsgZ8GIT3h9ySMyKqEfV1SkSMAge3OPyvh_r9-eK6JQAKza4i0S-0puOo64/pub?gid=0&single=true&output=csv";
@@ -283,32 +323,11 @@
         });
       }
 
-      scrollLeftBtn.addEventListener("click", () => {
-        currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
-        updateVisibleModel();
-        modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
-        const dragRotate = modelParent.components['drag-rotate'];
-        if (dragRotate) {
-          dragRotate.velocityX = 0;
-          dragRotate.velocityY = 0;
-        }
-      });
-
-      scrollRightBtn.addEventListener("click", () => {
-        currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
-        updateVisibleModel();
-        modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
-        const dragRotate = modelParent.components['drag-rotate'];
-        if (dragRotate) {
-          dragRotate.velocityX = 0;
-          dragRotate.velocityY = 0;
-        }
-      });
-
       window.addEventListener('load', async () => {
         modelData = await fetchGoogleSheetCSV();
         createModelEntities(modelData);
         updateVisibleModel();
+        setupButtonEvents(); // Initialize button events after models are loaded
       });
     </script>
   </body>
