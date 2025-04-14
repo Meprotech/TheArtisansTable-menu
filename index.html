@@ -95,20 +95,20 @@
         <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
-        <a-entity id="model-parent" position="0 0 0" drag-rotate="speed: 0.5; sensitivity: 0.3; friction: 0.92">
+        <a-entity id="model-parent" position="0 0 0" drag-rotate="speed: 1.2; sensitivity: 0.5; friction: 0.88">
           <!-- Models dynamically injected here -->
         </a-entity>
       </a-entity>
     </a-scene>
 
-    <!-- 🌀 Improved Drag to Rotate Component with Smooth Momentum -->
+    <!-- 🌀 Improved Drag to Rotate Component with Medium Speed Settings -->
     <script>
       AFRAME.registerComponent('drag-rotate', {
         schema: { 
-          speed: { type: 'number', default: 0.5 },
-          friction: { type: 'number', default: 0.92 },
+          speed: { type: 'number', default: 1.2 },          // Increased for medium speed
+          friction: { type: 'number', default: 0.88 },      // Reduced for more momentum
           minVelocity: { type: 'number', default: 0.001 },
-          sensitivity: { type: 'number', default: 0.3 }
+          sensitivity: { type: 'number', default: 0.5 }     // Increased for better response
         },
         init: function () {
           this.startX = 0;
@@ -162,8 +162,9 @@
             this.startX = clientX;
             this.startY = clientY;
             
-            this.rotation.y += deltaX * 0.2 * this.data.speed * this.data.sensitivity;
-            this.rotation.x += deltaY * 0.2 * this.data.speed * this.data.sensitivity;
+            // Increased multiplier from 0.2 to 0.3 for medium speed
+            this.rotation.y += deltaX * 0.3 * this.data.speed * this.data.sensitivity;
+            this.rotation.x += deltaY * 0.3 * this.data.speed * this.data.sensitivity;
             
             this.rotation.x = Math.max(-90, Math.min(90, this.rotation.x));
             
