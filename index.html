@@ -91,7 +91,6 @@
     <a-scene background="color: black" embedded>
       <a-assets id="dynamic-assets"></a-assets>
       <a-entity id="cameraRig">
-        <!-- Disable device motion here -->
         <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
@@ -101,77 +100,73 @@
       </a-entity>
     </a-scene>
 
-    <!-- 🌀 Improved Drag to Rotate Component with Medium Speed Settings -->
+    <!-- Custom Drag Rotate Component -->
     <script>
       AFRAME.registerComponent('drag-rotate', {
         schema: {
-          speed: { type: 'number', default: 0.2 },
+          speed: { type: 'number', default: 0.5 },
           minPitch: { type: 'number', default: -90 },
           maxPitch: { type: 'number', default: 90 }
         },
         init: function () {
-          this.pitch = 0; // X axis (up/down)
-          this.yaw = 0;   // Y axis (left/right)
+          this.pitch = 0;
+          this.yaw = 0;
           this.dragging = false;
           this.startX = 0;
           this.startY = 0;
-    
+
+          const el = this.el;
+
           this.handleMouseDown = (e) => {
             this.dragging = true;
             this.startX = e.clientX;
             this.startY = e.clientY;
           };
-    
+
           this.handleMouseMove = (e) => {
             if (!this.dragging) return;
             const deltaX = e.clientX - this.startX;
             const deltaY = e.clientY - this.startY;
-    
             this.yaw += deltaX * this.data.speed * 0.01;
             this.pitch += deltaY * this.data.speed * 0.01;
-    
+
             const min = THREE.MathUtils.degToRad(this.data.minPitch);
             const max = THREE.MathUtils.degToRad(this.data.maxPitch);
             this.pitch = THREE.MathUtils.clamp(this.pitch, min, max);
-    
+
             this.startX = e.clientX;
             this.startY = e.clientY;
-    
+
             this.updateRotation();
           };
-    
-          this.handleMouseUp = () => {
-            this.dragging = false;
-          };
-    
+
+          this.handleMouseUp = () => { this.dragging = false; };
+
           this.handleTouchStart = (e) => {
             this.dragging = true;
             this.startX = e.touches[0].clientX;
             this.startY = e.touches[0].clientY;
           };
-    
+
           this.handleTouchMove = (e) => {
             if (!this.dragging) return;
             const deltaX = e.touches[0].clientX - this.startX;
             const deltaY = e.touches[0].clientY - this.startY;
-    
             this.yaw += deltaX * this.data.speed * 0.01;
             this.pitch += deltaY * this.data.speed * 0.01;
-    
+
             const min = THREE.MathUtils.degToRad(this.data.minPitch);
             const max = THREE.MathUtils.degToRad(this.data.maxPitch);
             this.pitch = THREE.MathUtils.clamp(this.pitch, min, max);
-    
+
             this.startX = e.touches[0].clientX;
             this.startY = e.touches[0].clientY;
-    
+
             this.updateRotation();
           };
-    
-          this.handleTouchEnd = () => {
-            this.dragging = false;
-          };
-    
+
+          this.handleTouchEnd = () => { this.dragging = false; };
+
           document.addEventListener('mousedown', this.handleMouseDown);
           document.addEventListener('mousemove', this.handleMouseMove);
           document.addEventListener('mouseup', this.handleMouseUp);
@@ -179,11 +174,11 @@
           document.addEventListener('touchmove', this.handleTouchMove, { passive: false });
           document.addEventListener('touchend', this.handleTouchEnd);
         },
-    
+
         updateRotation: function () {
-          this.el.object3D.rotation.set(this.pitch, this.yaw, 0); // no roll
+          this.el.object3D.rotation.set(this.pitch, this.yaw, 0); // pitch (X), yaw (Y), roll = 0 (Z)
         },
-    
+
         remove: function () {
           document.removeEventListener('mousedown', this.handleMouseDown);
           document.removeEventListener('mousemove', this.handleMouseMove);
@@ -216,45 +211,37 @@
           modelName.innerText = modelData[currentModelIndex].name;
           modelPrice.innerText = modelData[currentModelIndex].price;
         }
+
+        // Reset rotation
+        const comp = modelParent.components['drag-rotate'];
+        if (comp) {
+          comp.pitch = 0;
+          comp.yaw = 0;
+          comp.updateRotation();
+        }
       }
 
       function setupButtonEvents() {
-        // Common click/touch handler
-        const handleLeftClick = () => {
+        scrollLeftBtn.addEventListener("click", () => {
           currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
           updateVisibleModel();
-          modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
-          const dragRotate = modelParent.components['drag-rotate'];
-          if (dragRotate) {
-            dragRotate.velocityX = 0;
-            dragRotate.velocityY = 0;
-          }
-        };
+        });
 
-        const handleRightClick = () => {
+        scrollRightBtn.addEventListener("click", () => {
           currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
           updateVisibleModel();
-          modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
-          const dragRotate = modelParent.components['drag-rotate'];
-          if (dragRotate) {
-            dragRotate.velocityX = 0;
-            dragRotate.velocityY = 0;
-          }
-        };
+        });
 
-        // Mouse events
-        scrollLeftBtn.addEventListener("click", handleLeftClick);
-        scrollRightBtn.addEventListener("click", handleRightClick);
-
-        // Touch events
         scrollLeftBtn.addEventListener("touchstart", (e) => {
           e.preventDefault();
-          handleLeftClick();
+          currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
+          updateVisibleModel();
         }, { passive: false });
 
         scrollRightBtn.addEventListener("touchstart", (e) => {
           e.preventDefault();
-          handleRightClick();
+          currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
+          updateVisibleModel();
         }, { passive: false });
       }
 
@@ -308,7 +295,7 @@
         modelData = await fetchGoogleSheetCSV();
         createModelEntities(modelData);
         updateVisibleModel();
-        setupButtonEvents(); // Initialize button events after models are loaded
+        setupButtonEvents();
       });
     </script>
   </body>
