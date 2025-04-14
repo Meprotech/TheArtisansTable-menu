@@ -95,57 +95,89 @@
         <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
-        <a-entity id="model-parent" position="0 0 0" drag-rotate>
+        <a-entity id="model-parent" position="0 0 0" drag-rotate="speed: 0.5; sensitivity: 0.3; friction: 0.92">
           <!-- Models dynamically injected here -->
         </a-entity>
       </a-entity>
     </a-scene>
 
-    <!-- 🌀 Drag to Rotate Component -->
+    <!-- 🌀 Improved Drag to Rotate Component with Smooth Momentum -->
     <script>
       AFRAME.registerComponent('drag-rotate', {
-        schema: { speed: { type: 'number', default: 1 } },
+        schema: { 
+          speed: { type: 'number', default: 0.5 },
+          friction: { type: 'number', default: 0.92 },
+          minVelocity: { type: 'number', default: 0.001 },
+          sensitivity: { type: 'number', default: 0.3 }
+        },
         init: function () {
-          let startX = 0;
-          let startY = 0;
-          let dragging = false;
-
-          // Rotation logic
-          let rotate = (deltaX, deltaY) => {
-            let rotation = this.el.getAttribute('rotation');
-            rotation.y += deltaX * 0.3 * this.data.speed; // Rotate around Y-axis (left/right)
-            rotation.x -= deltaY * 0.3 * this.data.speed; // Rotate around X-axis (up/down)
-            
-            // Limit the X-axis rotation to prevent flipping
-            if (rotation.x < -90) rotation.x = -90;
-            if (rotation.x > 90) rotation.x = 90;
-
-            this.el.setAttribute('rotation', rotation);
-          };
-
+          this.startX = 0;
+          this.startY = 0;
+          this.dragging = false;
+          this.velocityX = 0;
+          this.velocityY = 0;
+          this.lastTime = 0;
+          this.rotation = { x: 0, y: 0, z: 0 };
+          this.lastDeltaX = 0;
+          this.lastDeltaY = 0;
+          
+          const initialRotation = this.el.getAttribute('rotation');
+          if (initialRotation) {
+            this.rotation = AFRAME.utils.clone(initialRotation);
+          }
+          
+          this.tick = AFRAME.utils.throttleTick(this.tick.bind(this), 16, this);
+          
           const start = (clientX, clientY) => {
-            startX = clientX;
-            startY = clientY;
-            dragging = true;
+            this.startX = clientX;
+            this.startY = clientY;
+            this.dragging = true;
+            this.velocityX = 0;
+            this.velocityY = 0;
+            this.lastDeltaX = 0;
+            this.lastDeltaY = 0;
           };
 
           const move = (clientX, clientY) => {
-            if (!dragging) return;
-            const deltaX = clientX - startX;
-            const deltaY = clientY - startY;
-            startX = clientX;
-            startY = clientY;
-            rotate(deltaX, deltaY); // Rotate based on X and Y movement
+            if (!this.dragging) return;
+            
+            const deltaX = clientX - this.startX;
+            const deltaY = clientY - this.startY;
+            
+            const now = Date.now();
+            const deltaTime = now - (this.lastTime || now);
+            this.lastTime = now;
+            
+            if (deltaTime > 0) {
+              const smoothDeltaX = (deltaX + this.lastDeltaX) / 2;
+              const smoothDeltaY = (deltaY + this.lastDeltaY) / 2;
+              
+              this.velocityX = (smoothDeltaX * this.data.sensitivity * this.data.speed) / deltaTime;
+              this.velocityY = (-smoothDeltaY * this.data.sensitivity * this.data.speed) / deltaTime;
+              
+              this.lastDeltaX = deltaX;
+              this.lastDeltaY = deltaY;
+            }
+            
+            this.startX = clientX;
+            this.startY = clientY;
+            
+            this.rotation.y += deltaX * 0.2 * this.data.speed * this.data.sensitivity;
+            this.rotation.x += deltaY * 0.2 * this.data.speed * this.data.sensitivity;
+            
+            this.rotation.x = Math.max(-90, Math.min(90, this.rotation.x));
+            
+            this.el.setAttribute('rotation', this.rotation);
           };
 
-          const stop = () => dragging = false;
+          const stop = () => {
+            this.dragging = false;
+          };
 
-          // Mouse events
           document.body.addEventListener('mousedown', (e) => start(e.clientX, e.clientY));
           document.body.addEventListener('mousemove', (e) => move(e.clientX, e.clientY));
           document.body.addEventListener('mouseup', stop);
 
-          // Touch events for mobile devices
           document.body.addEventListener('touchstart', (e) => {
             start(e.touches[0].clientX, e.touches[0].clientY);
             e.preventDefault();
@@ -157,6 +189,26 @@
           }, { passive: false });
 
           document.body.addEventListener('touchend', stop);
+        },
+        
+        tick: function(time, timeDelta) {
+          if (!this.dragging && (Math.abs(this.velocityX) > this.data.minVelocity || 
+                                 Math.abs(this.velocityY) > this.data.minVelocity)) {
+            const easingFactor = 1 - Math.pow(1 - this.data.friction, timeDelta / 16);
+            
+            this.rotation.y += this.velocityX * easingFactor;
+            this.rotation.x += this.velocityY * easingFactor;
+            
+            this.rotation.x = Math.max(-90, Math.min(90, this.rotation.x));
+            
+            this.el.setAttribute('rotation', this.rotation);
+            
+            this.velocityX *= Math.pow(this.data.friction, timeDelta / 16);
+            this.velocityY *= Math.pow(this.data.friction, timeDelta / 16);
+            
+            if (Math.abs(this.velocityX) < this.data.minVelocity) this.velocityX = 0;
+            if (Math.abs(this.velocityY) < this.data.minVelocity) this.velocityY = 0;
+          }
         }
       });
     </script>
@@ -233,13 +285,23 @@
       scrollLeftBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex - 1 + modelEntities.length) % modelEntities.length;
         updateVisibleModel();
-        modelParent.setAttribute('rotation', { x: 0, y: 0, z: 0 }); // Reset rotation
+        modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
+        const dragRotate = modelParent.components['drag-rotate'];
+        if (dragRotate) {
+          dragRotate.velocityX = 0;
+          dragRotate.velocityY = 0;
+        }
       });
 
       scrollRightBtn.addEventListener("click", () => {
         currentModelIndex = (currentModelIndex + 1) % modelEntities.length;
         updateVisibleModel();
-        modelParent.setAttribute('rotation', { x: 0, y: 0, z: 0 }); // Reset rotation
+        modelParent.setAttribute('rotation', { x: 0, y: 180, z: 0 });
+        const dragRotate = modelParent.components['drag-rotate'];
+        if (dragRotate) {
+          dragRotate.velocityX = 0;
+          dragRotate.velocityY = 0;
+        }
       });
 
       window.addEventListener('load', async () => {
