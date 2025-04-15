@@ -128,8 +128,8 @@
             const dx = e.clientX - this.startX;
             const dy = e.clientY - this.startY;
 
-            this.yaw += dx * 0.005 * this.data.speed;
-            this.pitch += dy * 0.005 * this.data.speed;
+            this.yaw += dx * 0.01 * this.data.speed;
+            this.pitch += dy * 0.01 * this.data.speed;
 
             this.pitch = THREE.MathUtils.clamp(this.pitch, THREE.MathUtils.degToRad(-90), THREE.MathUtils.degToRad(90));
 
@@ -219,7 +219,7 @@
         // Reset rotation and reapply initial view
         const comp = modelParent.components['drag-rotate'];
         if (comp) {
-          comp.pitch = THREE.MathUtils.degToRad(30); // Reset pitch angle
+          comp.pitch = THREE.MathUtils.degToRad(45); // Reset pitch angle
           comp.yaw = 0;
           comp.updateRotation();
         }
