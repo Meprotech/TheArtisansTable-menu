@@ -20,22 +20,25 @@
       }
 
       #bottom-ui {
-        position: absolute;
-        bottom: 20px;
+        position: fixed;
+        bottom: 0;
         left: 0;
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0 20px;
+        padding: 10px 5px;
         box-sizing: border-box;
         z-index: 5;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
       }
 
       .scroll-arrow {
-        width: 50px;
-        height: 50px;
-        font-size: 24px;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 20px;
         color: white;
         background: rgba(0, 0, 0, 0.6);
         cursor: pointer;
@@ -43,9 +46,10 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
         transition: background 0.3s ease, transform 0.2s ease;
         user-select: none;
+        margin: 0 5px;
       }
 
       .scroll-arrow:hover {
@@ -59,22 +63,28 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 10px;
+        gap: 5px;
+        flex-wrap: wrap;
+        max-width: calc(100% - 100px);
       }
 
       #model-name, #model-price {
         font-family: 'Arial', sans-serif;
-        border-radius: 8px;
+        border-radius: 6px;
         color: white;
-        margin: 5px 0;
+        margin: 2px 0;
         background-color: rgba(0, 0, 0, 0.6);
         display: inline-block;
-        font-size: 18px;
-        width: 160px;
-        height: 50px;
-        line-height: 50px;
+        font-size: 14px;
+        min-width: 100px;
+        height: 36px;
+        line-height: 36px;
         text-align: center;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        padding: 0 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       #model-price {
@@ -102,13 +112,13 @@
       }
 
       .spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid rgba(255, 255, 255, 0.3);
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
         border-top-color: #fff;
         animation: spin 1s ease-in-out infinite;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
       }
 
       @keyframes spin {
@@ -117,7 +127,37 @@
 
       #loading-text {
         margin-top: 10px;
-        font-size: 18px;
+        font-size: 16px;
+        text-align: center;
+        padding: 0 15px;
+      }
+
+      @media (min-width: 768px) {
+        .scroll-arrow {
+          width: 50px;
+          height: 50px;
+          font-size: 24px;
+        }
+        
+        #model-name, #model-price {
+          font-size: 16px;
+          height: 40px;
+          line-height: 40px;
+          min-width: 120px;
+        }
+        
+        #bottom-ui {
+          padding: 15px 20px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #model-name, #model-price {
+          font-size: 18px;
+          height: 50px;
+          line-height: 50px;
+          min-width: 160px;
+        }
       }
     </style>
   </head>
@@ -417,6 +457,19 @@
       window.addEventListener('touchend', () => {
         initialPinchDistance = null;
       });
+
+      // Handle safe area for mobile devices
+      function updateSafeArea() {
+        const bottomUI = document.getElementById('bottom-ui');
+        const safeAreaBottom = window.visualViewport 
+          ? window.visualViewport.height - window.innerHeight
+          : 0;
+        
+        bottomUI.style.paddingBottom = `calc(env(safe-area-inset-bottom, 0px) + ${safeAreaBottom}px)`;
+      }
+
+      window.addEventListener('resize', updateSafeArea);
+      updateSafeArea();
     </script>
   </body>
 </html>
