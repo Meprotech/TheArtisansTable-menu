@@ -128,8 +128,8 @@
             const dx = e.clientX - this.startX;
             const dy = e.clientY - this.startY;
 
-            this.yaw += dx * 0.03 * this.data.speed;
-            this.pitch += dy * 0.03 * this.data.speed;
+            this.yaw += dx * 0.02 * this.data.speed;
+            this.pitch += dy * 0.02 * this.data.speed;
 
             this.pitch = THREE.MathUtils.clamp(this.pitch, THREE.MathUtils.degToRad(-90), THREE.MathUtils.degToRad(90));
 
@@ -151,8 +151,8 @@
             const dx = e.touches[0].clientX - this.startX;
             const dy = e.touches[0].clientY - this.startY;
 
-            this.yaw += dx * 0.03 * this.data.speed;
-            this.pitch += dy * 0.03 * this.data.speed;
+            this.yaw += dx * 0.02 * this.data.speed;
+            this.pitch += dy * 0.02 * this.data.speed;
 
             this.pitch = THREE.MathUtils.clamp(this.pitch, THREE.MathUtils.degToRad(-90), THREE.MathUtils.degToRad(90));
 
