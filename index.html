@@ -91,16 +91,16 @@
     <a-scene background="color: black" embedded>
       <a-assets id="dynamic-assets"></a-assets>
       <a-entity id="cameraRig">
-        <a-camera id="camera" position="0 1.6 3" look-controls="enabled: false"></a-camera>
+        <a-camera position="0 1.6 3" look-controls="enabled: false"></a-camera>
       </a-entity>
       <a-entity id="model-container" position="0 1.6 -3">
-        <a-entity id="model-parent" position="0 0 0" drag-rotate="speed: 1.2; sensitivity: 0.5; friction: 0.88" pinch-zoom>
+        <a-entity id="model-parent" position="0 0 0" drag-rotate="speed: 1.2; sensitivity: 0.5; friction: 0.88">
           <!-- Models dynamically injected here -->
         </a-entity>
       </a-entity>
     </a-scene>
 
-    <!-- Drag Rotate -->
+    <!-- Custom Drag Rotate Component -->
     <script>
       AFRAME.registerComponent('drag-rotate', {
         schema: {
@@ -176,7 +176,7 @@
         },
 
         updateRotation: function () {
-          this.el.object3D.rotation.set(this.pitch, this.yaw, 0);
+          this.el.object3D.rotation.set(this.pitch, this.yaw, 0); // pitch (X), yaw (Y), roll = 0 (Z)
         },
 
         remove: function () {
@@ -186,56 +186,6 @@
           document.removeEventListener('touchstart', this.handleTouchStart);
           document.removeEventListener('touchmove', this.handleTouchMove);
           document.removeEventListener('touchend', this.handleTouchEnd);
-        }
-      });
-    </script>
-
-    <!-- Pinch Zoom -->
-    <script>
-      AFRAME.registerComponent('pinch-zoom', {
-        schema: {
-          minScale: { type: 'number', default: 0.5 },
-          maxScale: { type: 'number', default: 5 },
-          zoomSpeed: { type: 'number', default: 0.005 }
-        },
-        init: function () {
-          this.scaleFactor = 1;
-          this.initialDistance = null;
-          this.model = this.el;
-          this.handleWheel = this.handleWheel.bind(this);
-          window.addEventListener('wheel', this.handleWheel);
-        },
-        remove: function () {
-          window.removeEventListener('wheel', this.handleWheel);
-        },
-        handleWheel: function (e) {
-          const delta = e.deltaY > 0 ? -1 : 1;
-          this.scaleFactor += delta * this.data.zoomSpeed;
-          this.applyScale();
-        },
-        tick: function () {
-          const touches = this.el.sceneEl.canvas ? this.el.sceneEl.canvas.ownerDocument.touches : [];
-
-          if (touches && touches.length === 2) {
-            const dx = touches[0].clientX - touches[1].clientX;
-            const dy = touches[0].clientY - touches[1].clientY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (!this.initialDistance) {
-              this.initialDistance = distance;
-            } else {
-              const scaleChange = (distance - this.initialDistance) * this.data.zoomSpeed;
-              this.scaleFactor += scaleChange;
-              this.initialDistance = distance;
-              this.applyScale();
-            }
-          } else {
-            this.initialDistance = null;
-          }
-        },
-        applyScale: function () {
-          this.scaleFactor = Math.max(this.data.minScale, Math.min(this.data.maxScale, this.scaleFactor));
-          this.model.setAttribute('scale', `${this.scaleFactor * 15} ${this.scaleFactor * 15} ${this.scaleFactor * 15}`);
         }
       });
     </script>
@@ -262,6 +212,7 @@
           modelPrice.innerText = modelData[currentModelIndex].price;
         }
 
+        // Reset rotation
         const comp = modelParent.components['drag-rotate'];
         if (comp) {
           comp.pitch = 0;
@@ -330,7 +281,7 @@
 
           const entity = document.createElement('a-gltf-model');
           entity.setAttribute('src', `#${assetId}`);
-          entity.setAttribute('rotation', '30 0 0');
+          entity.setAttribute('rotation', '0 180 0');
           entity.setAttribute('position', '0 0 0');
           entity.setAttribute('scale', '15 15 15');
           entity.setAttribute('visible', 'false');
