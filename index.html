@@ -226,11 +226,14 @@
         }
 
         /* New back button styles */
+        /* Updated back button styles */
         #back-button {
             position: fixed;
             top: 20px;
             left: 20px;
-            width: 30px; height: 30px;
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
             color: white;
             background: rgba(0, 0, 0, 0.6);
             cursor: pointer;
@@ -252,7 +255,12 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            outline: none;        }
+            outline: none;
+            /* Ensure perfect centering of arrow */
+            text-align: center;
+            line-height: 60px; /* Match height for vertical centering */
+        }
+
 
         #back-button.active {
             opacity: 1;
