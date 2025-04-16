@@ -181,33 +181,53 @@
             font-family: 'Arial', sans-serif;
         }
 
-        #view-pdf-button, #view-3d-button {
+         /* Updated button styles to match square design */
+        #view-pdf-button, #view-3d-button, #whatsapp-button {
             color: white;
             border: none;
-            border-radius: 30px;
-            padding: 15px 30px;
+            border-radius: 8px; /* Slightly rounded corners instead of fully rounded */
+            padding: 30px 30px;
             font-size: 18px;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 150px;
+            width: 100px; /* Fixed width for square appearance */
+            height: 100px; /* Fixed height */
             text-align: center;
             box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px 0; /* Space between buttons */
+            font-weight: bold;
         }
 
         #view-pdf-button {
-            background: #ff6b6b;
-            margin-bottom: 15px;
+        background: #ff6b6b;
         }
 
         #view-3d-button {
             background: #1e90ff;
         }
 
+        #whatsapp-button {
+        background: #25D366;
+        gap: 8px;
+        }
+
+        /* Button container adjustments */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            margin-top: 20px; /* Space below logo */
+        }
+
+         /* Logo adjustments */
         #logo {
-            max-width: 150px;
-            margin-bottom: 30px;
-            position: relative;
-            top: -100px;
+            max-width: 180px; /* Slightly larger */
+            margin-bottom: 20px;
         }
 
         #welcome-description {
@@ -218,26 +238,19 @@
             opacity: 0.8;
         }
 
-        .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-        }
-
-        /* New back button styles */
         /* Updated back button styles */
         #back-button {
             position: fixed;
             top: 20px;
             left: 20px;
-            width: 30px;
-            height: 30px;
-            font-size: 14px;
+            width: 80px; /* Slightly wider to accommodate text */
+            height: 40px; /* More rectangular shape */
+            font-size: 16px;
+            font-weight: bold;
             color: white;
             background: rgba(0, 0, 0, 0.6);
             cursor: pointer;
-            border-radius: 50%;
+            border-radius: 20px; /* More rectangular rounded corners */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -256,16 +269,13 @@
             -ms-user-select: none;
             user-select: none;
             outline: none;
-            /* Ensure perfect centering of arrow */
-            text-align: center;
-            line-height: 60px; /* Match height for vertical centering */
+            text-transform: uppercase;
         }
-
-
         #back-button.active {
             opacity: 1;
             pointer-events: all;
         }
+
     </style>
 </head>
 <body>
@@ -276,6 +286,10 @@
         <div class="button-container">
             <button id="view-pdf-button">Menu</button>
             <button id="view-3d-button">3D Menu</button>
+             <!-- Added WhatsApp button -->
+            <button id="whatsapp-button">
+                <i class="fab fa-whatsapp"></i> WhatsApp Us
+            </button>
         </div>
         <div id="welcome-description">
             Click the buttons above to explore our collection in PDF or immersive 3D.
@@ -289,7 +303,8 @@
     </div>
 
     <!-- New back button -->
-    <div id="back-button" class="back-button">&#8592;</div>
+     <!-- Back button with "BACK" text -->
+    <button id="back-button" class="back-button">Back</button>
 
     <div id="scroll-left" class="scroll-arrow">&#10094;</div>
     <div id="scroll-right" class="scroll-arrow">&#10095;</div>
@@ -401,6 +416,7 @@
             const welcomeScreen = document.getElementById("welcome-screen");
             const viewPdfButton = document.getElementById("view-pdf-button");
             const view3dButton = document.getElementById("view-3d-button");
+            const whatsappButton = document.getElementById("whatsapp-button");
             const scrollLeftBtn = document.getElementById("scroll-left");
             const scrollRightBtn = document.getElementById("scroll-right");
             const backButton = document.getElementById("back-button");
@@ -445,6 +461,15 @@
                         // Hide welcome screen and show 3D viewer
                         welcomeScreen.style.display = 'none';
                         show3DViewer();
+                    });
+
+                    // Set up WhatsApp button click handler
+                    whatsappButton.addEventListener('click', () => {
+                        // Replace with your WhatsApp number (include country code, remove +)
+                        const phoneNumber = '1234567890'; 
+                        // Replace with your default message
+                        const message = 'Hello, I have a question about your products';
+                        window.open(`https://wa.me/${+918128955751}?text=${encodeURIComponent(message)}`, '_blank');
                     });
                     
                     loadingScreen.style.display = 'none';
