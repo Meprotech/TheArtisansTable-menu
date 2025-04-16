@@ -368,6 +368,7 @@
             let modelData = [];
             let currentModelIndex = 0;
             let modelEntities = [];
+            let modelsLoaded = false;
 
             const ZOOM_MIN = 5;
             const ZOOM_MAX = 12;
@@ -376,46 +377,35 @@
 
             // Initialize the app
             async function initApp() {
-                // Hide loading screen initially
-                loadingScreen.style.display = 'none';
+                // Show loading screen while loading models
+                loadingScreen.style.display = 'flex';
                 
-                // Load model data
+                // Load model data and create model entities
                 modelData = await fetchGoogleSheetCSV();
                 
                 if (modelData.length > 0) {
+                    // Create all model entities but keep them hidden
+                    await createModelEntities(modelData);
+                    modelsLoaded = true;
+                    
                     viewPdfButton.addEventListener('click', () => {
                         // Open PDF in new tab
                         window.open(modelData[currentModelIndex].pdfUrl || 'https://example.com/default.pdf', '_blank');
                     });
 
-                    view3dButton.addEventListener('click', async () => {
+                    view3dButton.addEventListener('click', () => {
+                        // Hide welcome screen and show 3D viewer
                         welcomeScreen.style.display = 'none';
-                        loadingScreen.style.display = 'flex';
-                        
-                        // Initialize scene and load models
-                        await initialize3DViewer();
+                        show3DViewer();
                     });
+                    
+                    loadingScreen.style.display = 'none';
                 } else {
                     loadingText.textContent = "No models available";
                     viewPdfButton.disabled = true;
                     view3dButton.disabled = true;
                     viewPdfButton.textContent = "No Models Available";
                     view3dButton.textContent = "No Models Available";
-                }
-            }
-
-            // Initialize 3D viewer and load models
-            async function initialize3DViewer() {
-                try {
-                    // Make scene visible immediately when button is clicked
-                    scene.classList.add('active');
-                    
-                    await createModelEntities(modelData);
-                    setupButtonEvents();
-                    show3DViewer();
-                } catch (error) {
-                    console.error("Error initializing 3D viewer:", error);
-                    loadingText.textContent = "Error loading models. Please try again.";
                 }
             }
 
@@ -456,7 +446,6 @@
             // Fetch model data from Google Sheets
             async function fetchGoogleSheetCSV() {
                 loadingText.textContent = "Fetching model data...";
-                loadingScreen.style.display = 'flex';
                 
                 try {
                     const proxy = "https://api.allorigins.win/raw?url=";
@@ -464,8 +453,6 @@
                     const response = await fetch(proxy + encodeURIComponent(sheetUrl));
                     const text = await response.text();
                     const results = Papa.parse(text, { header: true });
-                    
-                    loadingScreen.style.display = 'none';
                     
                     return results.data.map(row => {
                         return {
@@ -486,14 +473,15 @@
             function createModelEntities(models) {
                 return new Promise((resolve) => {
                     let loadedCount = 0;
+                    const totalModels = models.filter(model => model.url).length;
+                    
+                    if (totalModels === 0) {
+                        resolve();
+                        return;
+                    }
                     
                     modelEntities = models.map((model, index) => {
                         if (!model.url) {
-                            loadedCount++;
-                            if (loadedCount === models.length) {
-                                loadingScreen.style.display = 'none';
-                                resolve();
-                            }
                             return null;
                         }
 
@@ -511,21 +499,17 @@
                         
                         entity.addEventListener('model-loaded', () => {
                             loadedCount++;
-                            loadingText.textContent = `Loading models (${loadedCount}/${models.length})...`;
+                            loadingText.textContent = `Loading models (${loadedCount}/${totalModels})...`;
                             
-                            if (loadedCount === models.length) {
-                                setTimeout(() => {
-                                    loadingScreen.style.display = 'none';
-                                    resolve();
-                                }, 500);
+                            if (loadedCount === totalModels) {
+                                resolve();
                             }
                         });
                         
                         entity.addEventListener('error', () => {
                             console.error(`Failed to load model: ${model.url}`);
                             loadedCount++;
-                            if (loadedCount === models.length) {
-                                loadingScreen.style.display = 'none';
+                            if (loadedCount === totalModels) {
                                 resolve();
                             }
                         });
@@ -538,9 +522,16 @@
 
             // Show 3D viewer
             function show3DViewer() {
+                // Make scene visible
+                scene.classList.add('active');
+                
+                // Setup UI elements
+                setupButtonEvents();
                 scrollLeftBtn.classList.add('active');
                 scrollRightBtn.classList.add('active');
                 bottomUI.style.display = 'flex';
+                
+                // Show the first model
                 updateVisibleModel();
             }
 
