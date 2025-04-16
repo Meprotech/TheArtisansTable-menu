@@ -181,14 +181,7 @@
             font-family: 'Arial', sans-serif;
         }
 
-        #welcome-title {
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        #view-pdf-button {
-            background: #ff6b6b;
+        #view-pdf-button, #view-3d-button {
             color: white;
             border: none;
             border-radius: 30px;
@@ -196,18 +189,25 @@
             font-size: 18px;
             cursor: pointer;
             transition: all 0.3s ease;
+            width: 150px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        #view-pdf-button {
+            background: #ff6b6b;
             margin-bottom: 15px;
         }
 
         #view-3d-button {
             background: #1e90ff;
-            color: white;
-            border: none;
-            border-radius: 30px;
-            padding: 15px 30px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        }
+
+        #logo {
+            max-width: 150px;
+            margin-bottom: 30px;
+            position: relative;
+            top: -100px;
         }
 
         #welcome-description {
@@ -224,14 +224,52 @@
             align-items: center;
             gap: 15px;
         }
+
+        /* New back button styles */
+        #back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 30px;
+            height: 30px;
+            color: white;
+            background: rgba(0, 0, 0, 0.6);
+            cursor: pointer;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+            user-select: none;
+            z-index: 15;
+            opacity: 0;
+            pointer-events: none;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            outline: none;
+        }
+
+        #back-button.active {
+            opacity: 1;
+            pointer-events: all;
+        }
     </style>
 </head>
 <body>
     <div id="welcome-screen">
-        <div id="welcome-title">3D Model Viewer</div>
+        <div>  
+        <img id="logo" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeLogo.png" alt="Logo" />
+        </div>
         <div class="button-container">
-            <button id="view-pdf-button">View PDF</button>
-            <button id="view-3d-button">View in 3D</button>
+            <button id="view-pdf-button">Menu</button>
+            <button id="view-3d-button">3D Menu</button>
         </div>
         <div id="welcome-description">
             Click the buttons above to explore our collection in PDF or immersive 3D.
@@ -243,6 +281,9 @@
         <div class="spinner"></div>
         <div id="loading-text">Loading 3D Models...</div>
     </div>
+
+    <!-- New back button -->
+    <div id="back-button" class="back-button">&#8592;</div>
 
     <div id="scroll-left" class="scroll-arrow">&#10094;</div>
     <div id="scroll-right" class="scroll-arrow">&#10095;</div>
@@ -356,6 +397,7 @@
             const view3dButton = document.getElementById("view-3d-button");
             const scrollLeftBtn = document.getElementById("scroll-left");
             const scrollRightBtn = document.getElementById("scroll-right");
+            const backButton = document.getElementById("back-button");
             const modelName = document.getElementById("model-name");
             const modelPrice = document.getElementById("model-price");
             const assets = document.getElementById("dynamic-assets");
@@ -441,6 +483,17 @@
 
                 scrollLeftBtn.addEventListener("click", () => changeModel(-1));
                 scrollRightBtn.addEventListener("click", () => changeModel(1));
+                
+                // Add back button event
+                backButton.addEventListener("click", () => {
+                    // Hide 3D viewer and show welcome screen
+                    scene.classList.remove('active');
+                    scrollLeftBtn.classList.remove('active');
+                    scrollRightBtn.classList.remove('active');
+                    bottomUI.style.display = 'none';
+                    backButton.classList.remove('active');
+                    welcomeScreen.style.display = 'flex';
+                });
             }
 
             // Fetch model data from Google Sheets
@@ -530,6 +583,7 @@
                 scrollLeftBtn.classList.add('active');
                 scrollRightBtn.classList.add('active');
                 bottomUI.style.display = 'flex';
+                backButton.classList.add('active');
                 
                 // Show the first model
                 updateVisibleModel();
