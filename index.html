@@ -9,7 +9,7 @@
         html, body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            overflow: auto; /* changed from hidden */
             height: 100%;
             width: 100%;
             background: black;
@@ -484,18 +484,6 @@
             const ZOOM_MAX = 12;
             const ZOOM_DEFAULT = 5;
             let zoomFactor = ZOOM_DEFAULT;
-
-            const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
-
-            cssLinks.forEach(link => {
-              link.addEventListener('load', () => {
-                // Reload the page once if CSS loads completely
-                if (!sessionStorage.getItem('cssReloaded')) {
-                  sessionStorage.setItem('cssReloaded', 'true');
-                  location.reload();
-                }
-              });
-            });
 
             // Initialize the app
             async function initApp() {
