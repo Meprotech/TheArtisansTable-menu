@@ -170,7 +170,8 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
+            overflow: hidden;
             background: url('https://arqrassets.s3.ap-south-1.amazonaws.com/BackGround.png') no-repeat center center;
             background-size: cover;
             display: flex;
@@ -203,33 +204,30 @@
         .button-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            width: 90vw;
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 10px 0;
-            justify-items: center;
+            gap: 2vh;
+            width: 100%;
+            padding: 2vh;
+            box-sizing: border-box;
+            max-height: 60vh;  /* Limit total height */
+            overflow: hidden;
+            place-items: center;
         }
         
         .grid-button {
+            width: 22vw;
+            height: 22vw;
+            max-width: 100px;
+            max-height: 100px;
+            padding: 8px;
+            font-size: 13px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: space-between;
-            width: 26vw;           /* Responsive size */
-            height: 26vw;
-            max-width: 110px;
-            max-height: 110px;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.15);
-            color: black;
-            text-align: center;
+            align-items: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s ease;
         }
         
         .button-icon {
@@ -247,8 +245,8 @@
 
         .button-icon,
         .grid-button svg {
-            width: 60%;
-            height: 60%;
+            width: 70%;
+            height: 70%;
             object-fit: contain;
             display: block;
             margin: 0 auto;
