@@ -204,27 +204,25 @@
         .button-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 2vw;
-            padding: 2vw;
-            width: 100vw;
+            grid-auto-rows: 1fr;
+            gap: 16px; /* Equal spacing horizontally and vertically */
+            padding: 16px;
+            width: 100%;
             box-sizing: border-box;
-            justify-items: center;
-            align-items: center;
         }
         
         .grid-button {
+            aspect-ratio: 1 / 1; /* Force perfect square */
             width: 100%;
-            aspect-ratio: 1 / 1; /* Makes the button perfectly square */
-            max-width: 120px;
-            font-size: 14px;
-            border-radius: 16px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
+            border-radius: 16px;
+            padding: 8px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
