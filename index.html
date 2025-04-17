@@ -485,6 +485,18 @@
             const ZOOM_DEFAULT = 5;
             let zoomFactor = ZOOM_DEFAULT;
 
+            const cssLinks = document.querySelectorAll('link[rel="stylesheet"]');
+
+            cssLinks.forEach(link => {
+              link.addEventListener('load', () => {
+                // Reload the page once if CSS loads completely
+                if (!sessionStorage.getItem('cssReloaded')) {
+                  sessionStorage.setItem('cssReloaded', 'true');
+                  location.reload();
+                }
+              });
+            });
+
             // Initialize the app
             async function initApp() {
                 // Show loading screen while loading models
