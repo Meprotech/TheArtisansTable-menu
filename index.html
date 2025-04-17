@@ -204,7 +204,7 @@
         .button-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 2vw; /* Equal horizontal and vertical gaps */
+            gap: 2vw;
             padding: 2vw;
             width: 100vw;
             box-sizing: border-box;
@@ -213,12 +213,12 @@
         }
         
         .grid-button {
-            aspect-ratio: 1 / 1; /* Keep buttons square */
-            width: 100%; /* Fully occupy grid cell */
-            max-width: 120px; /* Limit max size */
-            padding: 8px;
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Makes the button perfectly square */
+            max-width: 120px;
             font-size: 14px;
             border-radius: 16px;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             display: flex;
