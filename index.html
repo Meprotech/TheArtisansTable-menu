@@ -205,21 +205,20 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2vh;
-            width: 100%;
+            width: 100vw;
+            height: 60vh;
             padding: 2vh;
             box-sizing: border-box;
-            max-height: 60vh;  /* Limit total height */
-            overflow: hidden;
             place-items: center;
         }
         
         .grid-button {
-            width: 25vw;
-            height: 25vw;
-            max-width: 110px;
-            max-height: 110px;
+            width: 28vw;
+            height: 28vw;
+            max-width: 120px;
+            max-height: 120px;
             padding: 8px;
-            font-size: 13px;
+            font-size: 14px;
             border-radius: 16px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
@@ -230,10 +229,13 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
-        .button-icon {
-            width: 48px;     /* previously 36px */
-            height: 48px;
+        .button-icon,
+        .grid-button svg {
+            width: 70%;
+            height: 70%;
             object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
 
         .grid-button * {
