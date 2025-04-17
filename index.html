@@ -203,20 +203,19 @@
         /* Button Grid Layout */
         .button-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2vh;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 2vw; /* Equal horizontal and vertical gaps */
+            padding: 2vw;
             width: 100vw;
-            height: 60vh;
-            padding: 2vh;
             box-sizing: border-box;
-            place-items: center;
+            justify-items: center;
+            align-items: center;
         }
         
         .grid-button {
-            width: 28vw;
-            height: 28vw;
-            max-width: 120px;
-            max-height: 120px;
+            aspect-ratio: 1 / 1; /* Keep buttons square */
+            width: 100%; /* Fully occupy grid cell */
+            max-width: 120px; /* Limit max size */
             padding: 8px;
             font-size: 14px;
             border-radius: 16px;
@@ -244,16 +243,6 @@
         .grid-button {
             pointer-events: auto;
         }
-
-        .button-icon,
-        .grid-button svg {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-            display: block;
-            margin: 0 auto;
-        }
-
         #logo {
             max-width: 180px;
         }
