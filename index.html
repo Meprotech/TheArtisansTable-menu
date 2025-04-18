@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -174,8 +174,9 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100);
             overflow: auto;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
@@ -187,6 +188,8 @@
             z-index: 20;
             color: white;
             font-family: 'Arial', sans-serif;
+            box-sizing: border-box;
+            padding: 20px;
         }
 
         /* Logo container styles */
@@ -209,17 +212,20 @@
         /* Button Grid Layout */
         .button-container {
             display: grid;
-            grid-template-columns: repeat(3, minmax(100px, 1fr));
+            grid-template-columns: repeat(3, minmax(80px, 1fr));
             grid-auto-rows: 1fr;
-            gap: 16px;
-            padding: 16px;
+            gap: 12px;
+            padding: 12px;
             width: 100%;
-            max-width: 500px;
+            max-width: 100%;
             box-sizing: border-box;
         }
         
         .grid-button {
+            aspect-ratio: 1 / 1;
             width: 100%;
+            min-width: 0;
+            min-height: 0;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -288,6 +294,19 @@
         #back-button.active {
             opacity: 1;
             pointer-events: all;
+        }
+
+        /* Chrome specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            #welcome-screen {
+                min-height: -webkit-fill-available;
+            }
+        }
+        
+        /* Prevent elastic scrolling in Chrome */
+        html {
+            overscroll-behavior: none;
+            touch-action: manipulation;
         }
 
         /* Chrome specific fixes */
@@ -379,22 +398,26 @@
 <script>
 
         window.addEventListener('load', () => {
-          const welcomeScreen = document.getElementById('welcome-screen');
-          
-          // Safety check
-          if (!welcomeScreen) return;
-
-          // Force visibility
-          welcomeScreen.style.display = 'flex';
-          welcomeScreen.style.visibility = 'visible';
-          welcomeScreen.style.opacity = '1';
-
-          // Fix for Chrome rendering issues with fixed elements
-          setTimeout(() => {
-            window.scrollTo(0, 0);  // Ensure page doesn't start mid-scroll
-            welcomeScreen.scrollIntoView({ block: 'start' });
-          }, 50);
+            const welcomeScreen = document.getElementById('welcome-screen');
+            if (welcomeScreen) {
+                // Force reflow to trigger proper rendering
+                welcomeScreen.style.display = 'none';
+                welcomeScreen.offsetHeight; // Trigger reflow
+                welcomeScreen.style.display = 'flex';
+                
+                // Scroll to top to prevent any initial offset
+                window.scrollTo(0, 0);
+            }
         });
+        function setFullHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            document.documentElement.style.height = `${window.innerHeight}px`;
+        }
+        
+        window.addEventListener('resize', setFullHeight);
+        window.addEventListener('orientationchange', setFullHeight);
+        setFullHeight();
 
         // Register drag-rotate component
         AFRAME.registerComponent('drag-rotate', {
