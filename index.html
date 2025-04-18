@@ -297,6 +297,18 @@
     height: 100vh;
     overflow: hidden;
 }
+
+@supports (-webkit-touch-callout: none) {
+    html, body {
+        height: 100%;
+    }
+
+    #welcome-screen {
+        min-height: -webkit-fill-available;
+        height: -webkit-fill-available;
+    }
+}
+
 </style>
 <meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/></head>
 <body><div id="scroll-wrapper">
@@ -741,5 +753,16 @@
             initApp();
         });
     </script>
-</div></body>
+</div>
+<script>
+    // Chrome mobile fix for viewport height on initial load
+    window.addEventListener("DOMContentLoaded", () => {
+        const welcome = document.getElementById("welcome-screen");
+        if (welcome && window.innerHeight) {
+            welcome.style.height = `${window.innerHeight}px`;
+        }
+    });
+</script>
+
+</body>
 </html>
