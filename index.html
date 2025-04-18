@@ -309,13 +309,32 @@
     }
 }
 
+
+html, body {
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+    height: 100%;
+}
+
+@supports (-webkit-touch-callout: none) {
+    html, body {
+        height: 100%;
+    }
+
+    #welcome-screen {
+        min-height: -webkit-fill-available;
+        height: -webkit-fill-available;
+    }
+}
+
 </style>
 <meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/></head>
-<body><div id="scroll-wrapper">
+<body>
 <div id="welcome-screen">
 <div class="logo-container">
 <img alt="Logo" id="logo" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeLogo.png"/>
-<div class="logo-name">ENSO COFFEE</div>
+<div class="logo-name">ENSO COFFEE
 </div>
 <div class="button-container">
 <button class="grid-button" id="view-pdf-button">
