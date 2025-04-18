@@ -171,7 +171,7 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh;
+            height: calc(var(--vh, 1vh) * 100); /* ✅ Use JS-calculated height */
             overflow: hidden;
             background: #1e1e1e; /* solid background color */
             display: flex;
@@ -484,6 +484,16 @@
             const ZOOM_MAX = 12;
             const ZOOM_DEFAULT = 5;
             let zoomFactor = ZOOM_DEFAULT;
+
+             function setFullHeight() {
+                 const vh = window.innerHeight * 0.01;
+                 document.documentElement.style.setProperty('--vh', `${vh}px`);
+             }
+
+             window.addEventListener('resize', setFullHeight);
+             window.addEventListener('orientationchange', setFullHeight);
+             window.addEventListener('load', setFullHeight);
+             setFullHeight();
 
             // Initialize the app
             async function initApp() {
