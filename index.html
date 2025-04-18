@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" name="viewport"/>
+<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -379,6 +379,25 @@
     <a-entity environment="preset: default; groundColor: #445; grid: none"></a-entity>
     </a-scene>
 <script>
+
+        window.addEventListener('load', () => {
+          const welcomeScreen = document.getElementById('welcome-screen');
+          
+          // Safety check
+          if (!welcomeScreen) return;
+
+          // Force visibility
+          welcomeScreen.style.display = 'flex';
+          welcomeScreen.style.visibility = 'visible';
+          welcomeScreen.style.opacity = '1';
+
+          // Fix for Chrome rendering issues with fixed elements
+          setTimeout(() => {
+            window.scrollTo(0, 0);  // Ensure page doesn't start mid-scroll
+            welcomeScreen.scrollIntoView({ block: 'start' });
+          }, 50);
+        });
+
         // Register drag-rotate component
         AFRAME.registerComponent('drag-rotate', {
             schema: {
