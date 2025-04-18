@@ -297,54 +297,13 @@
     height: 100vh;
     overflow: hidden;
 }
-
-@supports (-webkit-touch-callout: none) {
-    html, body {
-        height: 100%;
-    }
-
-    #welcome-screen {
-        min-height: -webkit-fill-available;
-        height: -webkit-fill-available;
-    }
-}
-
-
-html, body {
-    overflow: hidden;
-    overscroll-behavior: none;
-    touch-action: none;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-#welcome-screen {
-    height: 100vh;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-}
-
-@supports (-webkit-touch-callout: none) {
-    html, body {
-        height: 100%;
-    }
-
-    #welcome-screen {
-        min-height: -webkit-fill-available;
-        height: -webkit-fill-available;
-    }
-}
-
 </style>
 <meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/></head>
-<body>
+<body><div id="scroll-wrapper">
 <div id="welcome-screen">
 <div class="logo-container">
 <img alt="Logo" id="logo" src="https://arqrassets.s3.ap-south-1.amazonaws.com/CoffeeLogo.png"/>
-<div class="logo-name">ENSO COFFEE
+<div class="logo-name">ENSO COFFEE</div>
 </div>
 <div class="button-container">
 <button class="grid-button" id="view-pdf-button">
@@ -782,16 +741,5 @@ html, body {
             initApp();
         });
     </script>
-</div>
-<script>
-    // Chrome mobile fix for viewport height on initial load
-    window.addEventListener("DOMContentLoaded", () => {
-        const welcome = document.getElementById("welcome-screen");
-        if (welcome && window.innerHeight) {
-            welcome.style.height = `${window.innerHeight}px`;
-        }
-    });
-</script>
-
-</body>
+</div></body>
 </html>
