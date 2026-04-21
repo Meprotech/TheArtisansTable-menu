@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Pizza",
+    "price": "₹ 500",
+    "url": "pizza.glb",
+    "pdfUrl": "https://drive.google.com/file/d/1Au9lHxpezua6WbAT0c2HvfV2VgRNxM-U/view?usp=sharing"
+  },
+  {
+    "name": "Hamburger",
+    "price": "₹ 200",
+    "url": "hamburger.glb",
+    "scale": 5.0,
+    "pdfUrl": "https://drive.google.com/file/d/1Au9lHxpezua6WbAT0c2HvfV2VgRNxM-U/view?usp=sharing"
+  }
+]
