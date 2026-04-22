@@ -405,6 +405,36 @@
                 font-size: 14px;
                 padding: 4px 12px;
             }
+            .menu-category-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            .menu-item {
+                font-size: 18px;
+                padding: 12px 15px;
+                margin-bottom: 10px;
+            }
+            .menu-item-price {
+                font-size: 17px;
+                padding: 5px 12px;
+            }
+            #slide-menu-panel {
+                width: 90%;
+                max-width: 95%;
+            }
+            #slide-menu-title {
+                font-size: 28px;
+            }
+            .menu-category-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+                margin-top: 10px;
+            }
+            .menu-item {
+                font-size: 22px;
+                padding: 15px 18px;
+                margin-bottom: 12px;
+            }
         }
 
         /* Back button styles */
@@ -507,8 +537,8 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 320px;
-            max-width: 85%;
+            width: 350px;
+            max-width: 90%;
             height: 100%;
             background: rgba(15, 15, 15, 0.85);
             backdrop-filter: blur(20px);
@@ -569,6 +599,7 @@
             padding: 20px;
             overflow-y: auto;
             flex-grow: 1;
+            scroll-behavior: smooth;
         }
         
         /* Custom scrollbar for menu */
@@ -602,9 +633,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-size: 15px;
             font-weight: 500;
+            padding: 10px 12px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border-left: 0px solid #FF4757;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item.active {
+            background: rgba(255, 71, 87, 0.2);
+            border-left: 4px solid #FF4757;
+            color: white;
         }
 
         .menu-item-name {
@@ -620,6 +665,11 @@
             padding: 3px 8px;
             border-radius: 4px;
             font-size: 13px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
     
 #scroll-wrapper {
@@ -994,8 +1044,28 @@ html, body {
 
                 // Menu toggle events
                 function toggleSlideMenu() {
+                    const isOpen = slideMenuPanel.classList.toggle('active');
                     slideMenuOverlay.classList.toggle('active');
-                    slideMenuPanel.classList.toggle('active');
+                    
+                    if (isOpen) {
+                        updateMenuHighlights();
+                    }
+                }
+
+                function updateMenuHighlights() {
+                    const currentModel = modelData[currentModelIndex];
+                    if (!currentModel) return;
+
+                    const menuItems = document.querySelectorAll('.menu-item');
+                    menuItems.forEach(itemDiv => {
+                        const itemName = itemDiv.querySelector('.menu-item-name').textContent;
+                        if (currentModel.name.toLowerCase().includes(itemName.toLowerCase()) || 
+                            itemName.toLowerCase().includes(currentModel.name.toLowerCase())) {
+                            itemDiv.classList.add('active');
+                        } else {
+                            itemDiv.classList.remove('active');
+                        }
+                    });
                 }
                 
                 menuPopupBtn.addEventListener('click', toggleSlideMenu);
@@ -1056,6 +1126,13 @@ html, body {
                         itemDiv.appendChild(nameSpan);
                         itemDiv.appendChild(priceSpan);
 
+                        // Highlight if this is the currently selected model
+                        if (modelData[currentModelIndex] && 
+                            (modelData[currentModelIndex].name.toLowerCase().includes(item.name.toLowerCase()) || 
+                             item.name.toLowerCase().includes(modelData[currentModelIndex].name.toLowerCase()))) {
+                            itemDiv.classList.add('active');
+                        }
+
                         // Add click event to navigate to model
                         itemDiv.addEventListener('click', () => {
                             // Find corresponding model index
@@ -1065,6 +1142,10 @@ html, body {
                             );
 
                             if (targetIndex !== -1) {
+                                // Clear other active classes
+                                document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+                                itemDiv.classList.add('active');
+
                                 currentModelIndex = targetIndex;
                                 updateVisibleModel();
                                 
