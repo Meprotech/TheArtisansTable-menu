@@ -182,9 +182,10 @@
             background-size: cover;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
+            justify-content: center; /* Center vertically */
             align-items: center;
-            padding-top: 20px;
+            padding: 20px;
+            box-sizing: border-box;
             z-index: 20;
             color: white;
             font-family: 'Arial', sans-serif;
@@ -195,67 +196,149 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
+            animation: floatLogo 4s ease-in-out infinite;
+            perspective: 1000px;
+        }
+
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(5deg); }
         }
 
         .logo-name {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Inter', 'Arial', sans-serif;
             color: white;
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 15px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
         }
 
-        /* Button Grid Layout */
+        /* Button Flex Layout with 3D Perspective */
         .button-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            grid-auto-rows: 1fr;
-            gap: 16px; /* Equal spacing horizontally and vertically */
-            padding: 16px;
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: stretch;
+            gap: 15px;
             width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
             box-sizing: border-box;
+            perspective: 1500px; /* Enhanced 3D depth */
+            transform-style: preserve-3d;
         }
         
         .grid-button {
-            aspect-ratio: 1 / 1; /* Force perfect square */
-            width: 100%;
+            flex: 1 1 0;
+            min-width: 0;
+            width: auto;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            border-radius: 16px;
-            padding: 8px;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 15px 5px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            word-wrap: break-word;
+        }
+
+        /* Shine effect on hover */
+        .grid-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(45deg) translateY(-100%);
+            transition: transform 0.6s ease-in-out;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .grid-button:hover::after {
+            transform: rotate(45deg) translateY(100%);
+        }
+
+        .grid-button:hover {
+            transform: translateY(-12px) translateZ(30px) rotateX(10deg) rotateY(-5deg);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            border-color: rgba(255, 255, 255, 0.5);
         }
         
         .button-icon,
         .grid-button svg {
-            width: 70%;
-            height: 70%;
+            width: 55%;
+            height: 55%;
             object-fit: contain;
             display: block;
             margin: 0 auto;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+            filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
+            transform: translateZ(25px); /* Popping out in 3D */
+            z-index: 2;
+        }
+
+        .grid-button:hover .button-icon,
+        .grid-button:hover svg {
+            transform: translateZ(55px) scale(1.2) rotate(8deg);
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
         }
 
         .grid-button * {
             pointer-events: none;
+            transform: translateZ(10px);
+            z-index: 2;
         }
+
         .grid-button {
             pointer-events: auto;
         }
         #logo {
             max-width: 180px;
+            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+            transition: transform 0.5s ease;
+        }
+        
+        #logo:hover {
+            transform: scale(1.05) translateZ(20px);
         }
 
         /* Responsive adjustments */
         @media (max-width: 600px) {
             .button-container {
-                grid-template-columns: repeat(3, 1fr); /* ✅ Fix: Force 3 buttons on small screens too */
+                gap: 5px;
+                padding: 0 5px;
+            }
+            .grid-button {
+                padding: 10px 2px;
+                border-radius: 10px;
+                font-size: 8px; /* Extremely small text to fit all 9 buttons */
+            }
+            .button-icon,
+            .grid-button svg {
+                width: 70%;
+                height: 70%;
             }
         }
 
