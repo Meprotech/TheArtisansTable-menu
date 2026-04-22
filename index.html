@@ -8,6 +8,14 @@
 <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script src="https://unpkg.com/scrollreveal"></script>
+<script>document.documentElement.classList.add('sr');</script>
+<style>
+    .sr .grid-button,
+    .sr #logo,
+    .sr .logo-name {
+        visibility: hidden;
+    }
+</style>
 <style>
         html, body {
             margin: 0;
@@ -272,7 +280,7 @@
             -webkit-backdrop-filter: blur(15px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: background 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
             cursor: pointer;
             position: relative;
@@ -587,6 +595,21 @@ html, body {
 
         // Main application
         document.addEventListener('DOMContentLoaded', function() {
+            // Initialize ScrollReveal for welcome screen FIRST to prevent FOUC during A-Frame load
+            if (typeof ScrollReveal !== 'undefined') {
+                const sr = ScrollReveal({
+                    distance: '40px',
+                    duration: 1200,
+                    delay: 200,
+                    reset: false,
+                    useDelay: 'always'
+                });
+                
+                sr.reveal('#logo', { origin: 'top' });
+                sr.reveal('.logo-name', { origin: 'bottom', delay: 400 });
+                sr.reveal('.grid-button', { origin: 'bottom', interval: 100, delay: 500, useDelay: 'always' });
+            }
+
             const welcomeScreen = document.getElementById("welcome-screen");
             const viewPdfButton = document.getElementById("view-pdf-button");
             const view3dButton = document.getElementById("menu-3d-button");
@@ -869,23 +892,8 @@ html, body {
                 }
             }, { passive: false });
 
-            // Start the application
+            // Start the application after everything else is set up
             initApp();
-
-            // Initialize ScrollReveal for welcome screen
-            if (typeof ScrollReveal !== 'undefined') {
-                const sr = ScrollReveal({
-                    distance: '40px',
-                    duration: 1200,
-                    delay: 200,
-                    reset: false,
-                    useDelay: 'always'
-                });
-                
-                sr.reveal('#logo', { origin: 'top' });
-                sr.reveal('.logo-name', { origin: 'bottom', delay: 400 });
-                sr.reveal('.grid-button', { origin: 'bottom', interval: 100, delay: 500 });
-            }
         });
     </script>
 </div></body>
