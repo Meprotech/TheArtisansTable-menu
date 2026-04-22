@@ -1021,6 +1021,7 @@ html, body {
                     category.items.forEach(item => {
                         const itemDiv = document.createElement('div');
                         itemDiv.className = 'menu-item';
+                        itemDiv.style.cursor = 'pointer';
                         
                         const nameSpan = document.createElement('span');
                         nameSpan.className = 'menu-item-name';
@@ -1032,6 +1033,25 @@ html, body {
                         
                         itemDiv.appendChild(nameSpan);
                         itemDiv.appendChild(priceSpan);
+
+                        // Add click event to navigate to model
+                        itemDiv.addEventListener('click', () => {
+                            // Find corresponding model index
+                            const targetIndex = modelData.findIndex(m => 
+                                m.name.toLowerCase().includes(item.name.toLowerCase()) || 
+                                item.name.toLowerCase().includes(m.name.toLowerCase())
+                            );
+
+                            if (targetIndex !== -1) {
+                                currentModelIndex = targetIndex;
+                                updateVisibleModel();
+                                
+                                // Close the slide menu
+                                slideMenuOverlay.classList.remove('active');
+                                slideMenuPanel.classList.remove('active');
+                            }
+                        });
+
                         categoryDiv.appendChild(itemDiv);
                     });
                     
