@@ -380,7 +380,22 @@
                 top: 25px;
                 right: 20px;
                 bottom: auto;
-                left: auto;
+                left: auto !important;
+                width: auto !important;
+                min-width: 110px;
+                height: 45px;
+                transform: none !important;
+                z-index: 10;
+            }
+            #back-button {
+                top: 25px;
+                left: 20px !important;                
+                right: auto !important;
+                width: auto !important;
+                min-width: 110px;
+                height: 45px;
+                z-index: 20;
+                display: flex !important;
             }
             #bottom-ui {
                 width: auto;
@@ -436,35 +451,55 @@
             }
         }
 
+        /* Smaller mobile devices */
+        @media (max-width: 480px) {
+            #back-button, #menu-popup-btn {
+                top: 24px;
+                height: 40px;
+                padding: 0 12px;
+                font-size: 12px;
+                gap: 5px;
+                min-width: 90px;
+            }
+            #back-button { left: 15px !important; }
+            #menu-popup-btn { right: 15px !important; }
+        }
+
         /* Back button styles */
         #back-button {
             position: fixed;
             top: 25px;
             left: 20px;
             width: auto;
-            padding: 0 18px;
-            height: 40px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 0 16px;
+            height: 45px;
+            border-radius: 25px;
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             color: white;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            cursor: pointer;
-            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            user-select: none;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
             z-index: 15;
+            transition: all 0.3s ease;
             opacity: 0;
             pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
+            text-transform: uppercase;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
         }
         
         #back-button.active {
@@ -825,7 +860,10 @@ html, body {
         </div>
     </div>
     
-    <button class="back-button" id="back-button">Back</button>
+    <button class="back-button" id="back-button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <span>Back</span>
+    </button>
     <button id="menu-popup-btn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         <span>MENU</span>
