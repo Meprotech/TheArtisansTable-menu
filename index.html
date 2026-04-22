@@ -118,8 +118,27 @@
             line-height: normal;
         }
 
+        #scene-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('1.jpg') no-repeat center center;
+            background-size: cover;
+            filter: blur(15px) brightness(0.4);
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        #scene-bg.active {
+            opacity: 1;
+        }
+
         a-scene {
-            background: radial-gradient(circle at center, #353b48, #2f3640, #111111);
+            background: transparent;
             display: block;
             opacity: 0;
             transition: opacity 0.5s ease;
@@ -128,6 +147,7 @@
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 2;
         }
 
         a-scene.active {
@@ -339,7 +359,8 @@
             .grid-button {
                 padding: 15px 5px;
                 border-radius: 12px;
-                font-size: 11px;
+                font-size: 14px;
+                font-weight: bold;
             }
             .button-icon,
             .grid-button svg {
@@ -460,6 +481,7 @@ html, body {
     <div id="model-price">Loading...</div>
     </div>
     </div>
+    <div id="scene-bg"></div>
     <a-scene embedded="">
     <a-assets id="dynamic-assets"></a-assets>
     <a-entity id="cameraRig">
@@ -470,13 +492,13 @@ html, body {
     <!-- Models will be added here -->
     </a-entity>
     </a-entity>
-    <a-entity environment="preset: default; groundColor: #445; grid: none"></a-entity>
     </a-scene>
 <script>
         // Register drag-rotate component
         AFRAME.registerComponent('drag-rotate', {
             schema: {
-                speed: { type: 'number', default: 0.5 }
+                speed: { type: 'number', default: 0.5 },
+                autoRotateSpeed: { type: 'number', default: 0.5 }
             },
             init: function () {
                 this.pitch = THREE.MathUtils.degToRad(20); // Static downward angle to perfectly view food
@@ -484,11 +506,13 @@ html, body {
                 this.dragging = false;
                 this.startX = 0;
                 this.startY = 0;
+                this.lastInteractionTime = Date.now();
                 this.updateRotation();
 
                 this.onMouseDown = (e) => {
                     this.dragging = true;
                     this.startX = e.clientX;
+                    this.lastInteractionTime = Date.now();
                 };
 
                 this.onMouseMove = (e) => {
@@ -499,15 +523,20 @@ html, body {
                     // Pitch (vertical rotation) forms underneath view is completely disabled
                     
                     this.startX = e.clientX;
+                    this.lastInteractionTime = Date.now();
                     this.updateRotation();
                 };
 
-                this.onMouseUp = () => { this.dragging = false; };
+                this.onMouseUp = () => { 
+                    this.dragging = false; 
+                    this.lastInteractionTime = Date.now();
+                };
 
                 this.onTouchStart = (e) => {
                     if (e.touches.length === 1) {
                         this.dragging = true;
                         this.startX = e.touches[0].clientX;
+                        this.lastInteractionTime = Date.now();
                     }
                 };
 
@@ -519,10 +548,14 @@ html, body {
                     // Pitch (vertical rotation) forms underneath view is completely disabled
 
                     this.startX = e.touches[0].clientX;
+                    this.lastInteractionTime = Date.now();
                     this.updateRotation();
                 };
 
-                this.onTouchEnd = () => { this.dragging = false; };
+                this.onTouchEnd = () => { 
+                    this.dragging = false; 
+                    this.lastInteractionTime = Date.now();
+                };
 
                 window.addEventListener('mousedown', this.onMouseDown);
                 window.addEventListener('mousemove', this.onMouseMove);
@@ -530,6 +563,13 @@ html, body {
                 window.addEventListener('touchstart', this.onTouchStart, { passive: false });
                 window.addEventListener('touchmove', this.onTouchMove, { passive: false });
                 window.addEventListener('touchend', this.onTouchEnd);
+            },
+            tick: function (time, timeDelta) {
+                // Auto rotate after 2 seconds of inactivity
+                if (!this.dragging && (Date.now() - this.lastInteractionTime > 2000)) {
+                    this.yaw += (this.data.autoRotateSpeed * timeDelta) / 1000;
+                    this.updateRotation();
+                }
             },
             updateRotation: function () {
                 this.el.object3D.rotation.set(this.pitch, this.yaw, 0);
@@ -567,6 +607,7 @@ html, body {
             const loadingText = document.getElementById("loading-text");
             const scene = document.querySelector("a-scene");
             const bottomUI = document.getElementById("bottom-ui");
+            const sceneBg = document.getElementById("scene-bg");
 
             let modelData = [];
             let currentModelIndex = 0;
@@ -665,6 +706,7 @@ html, body {
                 if (comp) {
                     comp.pitch = THREE.MathUtils.degToRad(20); // Keep static food viewing angle
                     comp.yaw = 0;
+                    comp.lastInteractionTime = Date.now();
                     comp.updateRotation();
                 }
             }
@@ -683,6 +725,7 @@ html, body {
                 backButton.addEventListener("click", () => {
                     // Hide 3D viewer and show welcome screen
                     scene.classList.remove('active');
+                    sceneBg.classList.remove('active');
                     scrollLeftBtn.classList.remove('active');
                     scrollRightBtn.classList.remove('active');
                     bottomUI.style.display = 'none';
@@ -766,6 +809,7 @@ html, body {
             function show3DViewer() {
                 // Make scene visible
                 scene.classList.add('active');
+                sceneBg.classList.add('active');
                 
                 // Setup UI elements
                 setupButtonEvents();
