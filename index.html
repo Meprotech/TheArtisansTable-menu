@@ -17,7 +17,8 @@
     }
 </style>
 <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
             overflow: auto;
@@ -99,6 +100,112 @@
             justify-content: space-between;
             align-items: center;
             flex-direction: row;
+            position: relative;
+        }
+
+        .model-name-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+            position: relative;
+        }
+
+        .info-icon {
+            width: 22px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            padding: 0;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .info-icon:hover {
+            background: #FF4757;
+            border-color: #FF4757;
+            transform: scale(1.1);
+        }
+
+        /* Favorites Heart Button */
+        #heart-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #heart-btn.active {
+            color: #FF4757;
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 8px rgba(255, 71, 87, 0.6));
+        }
+
+        .menu-item-heart {
+            margin-left: 8px;
+            font-size: 14px;
+            color: #FF4757;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-item.favorited .menu-item-heart {
+            opacity: 1;
+        }
+
+        .ingredient-popup {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            background: rgba(20, 20, 20, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 13px;
+            width: 200px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(10px);
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .info-icon:hover+.ingredient-popup,
+        .ingredient-popup.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translateY(0);
+        }
+
+        .ingredient-title {
+            font-weight: bold;
+            color: #FF4757;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
         }
 
         #model-name {
@@ -107,11 +214,8 @@
             font-size: 24px;
             font-weight: 800;
             text-shadow: none;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 65%;
             margin: 0;
+            line-height: 1.2;
         }
 
         #model-price {
@@ -147,7 +251,7 @@
 
         a-scene {
             background: transparent;
-            display: block;
+            visibility: hidden;
             opacity: 0;
             transition: opacity 0.5s ease;
             position: absolute;
@@ -159,6 +263,7 @@
         }
 
         a-scene.active {
+            visibility: visible;
             opacity: 1;
         }
 
@@ -190,7 +295,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         #loading-text {
@@ -206,11 +313,12 @@
             width: 100%;
             height: 100vh;
             overflow: auto;
-            background: url('1.webp') no-repeat center center;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('1.webp') no-repeat center center;
             background-size: cover;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center vertically */
+            justify-content: center;
+            /* Center vertically */
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
@@ -230,8 +338,21 @@
         }
 
         @keyframes floatLogo {
-            0%, 100% { transform: translateY(0) rotateX(0deg); }
-            50% { transform: translateY(-10px) rotateX(5deg); }
+
+            0%,
+            100% {
+                transform: translateY(0) rotateX(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotateX(5deg);
+            }
+        }
+
+        .logo-container,
+        .grid-button,
+        .button-icon {
+            will-change: transform;
         }
 
         .logo-name {
@@ -256,10 +377,11 @@
             margin: 0 auto;
             padding: 10px;
             box-sizing: border-box;
-            perspective: 1500px; /* Enhanced 3D depth */
+            perspective: 1500px;
+            /* Enhanced 3D depth */
             transform-style: preserve-3d;
         }
-        
+
         .grid-button {
             flex: 1 1 0;
             min-width: 0;
@@ -296,7 +418,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
             transform: rotate(45deg) translateY(-100%);
             transition: transform 0.6s ease-in-out;
             z-index: 1;
@@ -313,7 +435,7 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
             border-color: rgba(255, 255, 255, 0.5);
         }
-        
+
         .button-icon,
         .grid-button svg {
             width: 55%;
@@ -322,18 +444,29 @@
             display: block;
             margin: 0 auto;
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
-            filter: drop-shadow(0 5px 8px rgba(0,0,0,0.4));
-            transform: translateZ(25px); /* Popping out in 3D */
+            filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.4));
+            transform: translateZ(25px);
+            /* Popping out in 3D */
             z-index: 2;
+        }
+
+        /* Specific override for 3D Menu icon to make it big */
+        #menu-3d-button .button-icon {
+            width: 65%;
+            height: 65%;
+        }
+
+        #menu-3d-button:hover .button-icon {
+            transform: translateZ(65px) scale(1.2) rotate(8deg);
         }
 
         .grid-button:hover .button-icon,
         .grid-button:hover svg {
             transform: translateZ(55px) scale(1.2) rotate(8deg);
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.6));
         }
 
-        .grid-button > * {
+        .grid-button>* {
             pointer-events: none;
             transform: translateZ(10px);
             z-index: 2;
@@ -342,15 +475,75 @@
         .grid-button {
             pointer-events: auto;
         }
+
         #logo {
             max-width: 180px;
-            filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5));
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
             transition: transform 0.5s ease;
         }
-        
+
         #logo:hover {
             transform: scale(1.05) translateZ(20px);
         }
+
+        /* ── Featured highlight: 3D Menu & Scan Me ─────────────────────────── */
+        #menu-3d-button,
+        #scan-me-button {
+            background: linear-gradient(135deg,
+                rgba(255, 200, 80, 0.28),
+                rgba(255, 140, 30, 0.18),
+                rgba(255, 255, 255, 0.08));
+            border: 1.5px solid rgba(255, 195, 60, 0.7);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.35),
+                0 0 18px rgba(255, 185, 40, 0.35),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            animation: featuredPulse 2.8s ease-in-out infinite;
+        }
+
+        #menu-3d-button:hover,
+        #scan-me-button:hover {
+            background: linear-gradient(135deg,
+                rgba(255, 215, 100, 0.42),
+                rgba(255, 160, 40, 0.28),
+                rgba(255, 255, 255, 0.12));
+            border-color: rgba(255, 215, 80, 0.95);
+            box-shadow:
+                0 18px 45px rgba(0, 0, 0, 0.45),
+                0 0 32px rgba(255, 195, 50, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        /* "★" badge pinned to top-right corner */
+        #menu-3d-button::before,
+        #scan-me-button::before {
+            content: '★';
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            font-size: 10px;
+            color: rgba(255, 220, 80, 0.9);
+            text-shadow: 0 0 6px rgba(255, 190, 40, 0.8);
+            pointer-events: none;
+            z-index: 3;
+            line-height: 1;
+        }
+
+        @keyframes featuredPulse {
+            0%, 100% {
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.35),
+                    0 0 18px rgba(255, 185, 40, 0.35),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            }
+            50% {
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.35),
+                    0 0 28px rgba(255, 200, 60, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            }
+        }
+        /* ─────────────────────────────────────────────────────────────────── */
 
         /* Responsive adjustments */
         @media (max-width: 600px) {
@@ -358,24 +551,34 @@
                 font-size: 22px;
                 margin-top: 10px;
             }
+
             .button-container {
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
                 padding: 15px;
             }
+
             .grid-button {
                 padding: 15px 5px;
                 border-radius: 12px;
                 font-size: 14px;
                 font-weight: bold;
             }
+
             .button-icon,
             .grid-button svg {
                 width: 70%;
                 height: 70%;
                 margin-bottom: 5px;
             }
+
+            /* Even bigger for 3D Menu on mobile */
+            #menu-3d-button .button-icon {
+                width: 80%;
+                height: 80%;
+            }
+
             #menu-popup-btn {
                 top: 25px;
                 right: 20px;
@@ -387,9 +590,10 @@
                 transform: none !important;
                 z-index: 10;
             }
+
             #back-button {
                 top: 25px;
-                left: 20px !important;                
+                left: 20px !important;
                 right: auto !important;
                 width: auto !important;
                 min-width: 110px;
@@ -397,9 +601,10 @@
                 z-index: 20;
                 display: flex !important;
             }
+
             #bottom-ui {
                 width: auto;
-                min-width: 260px;
+                min-width: 290px;
                 max-width: 90%;
                 height: 45px;
                 padding: 5px 25px;
@@ -408,42 +613,67 @@
                 flex-direction: row;
                 justify-content: center;
             }
+
             #model-info {
                 gap: 12px;
             }
+
             #model-name {
                 font-size: 16px;
-                max-width: 150px;
+                max-width: none;
             }
+
             #model-price {
                 font-size: 14px;
                 padding: 4px 12px;
             }
+
+            .ingredient-popup {
+                bottom: 45px;
+                width: 180px;
+                font-size: 12px;
+                backdrop-filter: blur(10px);
+                /* Reduced blur for performance */
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .info-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
             .menu-category-title {
                 font-size: 20px;
                 margin-bottom: 15px;
             }
+
             .menu-item {
                 font-size: 18px;
                 padding: 12px 15px;
                 margin-bottom: 10px;
             }
+
             .menu-item-price {
                 font-size: 17px;
                 padding: 5px 12px;
             }
+
             #slide-menu-panel {
                 width: 90%;
                 max-width: 95%;
             }
+
             #slide-menu-title {
                 font-size: 28px;
             }
+
             .menu-category-title {
                 font-size: 24px;
                 margin-bottom: 20px;
                 margin-top: 10px;
             }
+
             .menu-item {
                 font-size: 22px;
                 padding: 15px 18px;
@@ -453,7 +683,9 @@
 
         /* Smaller mobile devices */
         @media (max-width: 480px) {
-            #back-button, #menu-popup-btn {
+
+            #back-button,
+            #menu-popup-btn {
                 top: 24px;
                 height: 40px;
                 padding: 0 12px;
@@ -461,8 +693,14 @@
                 gap: 5px;
                 min-width: 90px;
             }
-            #back-button { left: 15px !important; }
-            #menu-popup-btn { right: 15px !important; }
+
+            #back-button {
+                left: 15px !important;
+            }
+
+            #menu-popup-btn {
+                right: 15px !important;
+            }
         }
 
         /* Back button styles */
@@ -501,7 +739,7 @@
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.05);
         }
-        
+
         #back-button.active {
             opacity: 1;
             pointer-events: all;
@@ -701,14 +939,16 @@
             flex-grow: 1;
             scroll-behavior: smooth;
         }
-        
+
         /* Custom scrollbar for menu */
         #slide-menu-content::-webkit-scrollbar {
             width: 6px;
         }
+
         #slide-menu-content::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.2);
         }
+
         #slide-menu-content::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
@@ -771,22 +1011,22 @@
             align-items: center;
             justify-content: center;
         }
-    
-#scroll-wrapper {
-    height: 100vh;
-    overflow: hidden;
-}
 
-html, body {
-    overflow: hidden;
-    overscroll-behavior: none;
-    touch-action: none;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
+        #scroll-wrapper {
+            height: 100vh;
+            overflow: hidden;
+        }
 
-</style>
+        html,
+        body {
+            overflow: hidden;
+            overscroll-behavior: none;
+            touch-action: none;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
     <meta content="yes" name="apple-mobile-web-app-capable"/><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/></head>
     <body><div id="scroll-wrapper">
     <div id="welcome-screen">
@@ -795,10 +1035,16 @@ html, body {
     <div class="logo-name">The Artisan's Table</div>
     </div>
     <div class="button-container">
-    <button class="grid-button" id="maps-button">
-    <svg class="mx-auto mb-1 drop-shadow-xl" fill="none" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M64.4804 77.9004C47.7169 79.6896 30.9026 79.6896 14.1391 77.9004C7.45472 77.187 2.17505 71.9073 1.46164 65.2224C-0.327547 48.4589 -0.327547 31.6451 1.46164 14.8816C2.17505 8.19727 7.45472 2.9176 14.1391 2.2042C30.9026 0.415007 47.7163 0.415007 64.4798 2.2042C71.1648 2.9176 76.4445 8.19727 77.1579 14.8816C78.947 31.6451 78.947 48.4589 77.1579 65.2224C76.4445 71.9073 71.1654 77.187 64.4804 77.9004Z" fill="white"></path><path d="M44.9239 15.9894C43.1595 15.4319 41.2347 15.1133 39.2697 15.1133C33.6156 15.1133 28.5229 17.6621 25.1144 21.6844L33.8562 28.9724L44.9239 15.9894Z" fill="#1A73E8"></path><path d="M25.114 21.6843C22.4273 24.8703 20.7832 29.0121 20.7832 33.4725C20.7832 36.9373 21.4649 39.7251 22.6278 42.2341L33.8559 28.9723L25.114 21.6843Z" fill="#EA4335"></path><path d="M39.3102 26.4632C43.24 26.4632 46.4079 29.6094 46.4079 33.5123C46.4079 35.2248 45.7663 36.8178 44.7237 38.0523C44.7237 38.0523 50.2976 31.4414 55.7513 25.0295C53.5057 20.7284 49.6159 17.4628 44.9242 15.9893L33.8566 28.9722C35.1799 27.4589 37.1047 26.4632 39.3102 26.4632Z" fill="#4285F4"></path><path d="M39.3097 40.5217C35.3799 40.5217 32.212 37.3755 32.212 33.4726C32.212 31.7602 32.8135 30.1672 33.8561 28.9724L22.6281 42.2342C24.5529 46.4556 27.7609 49.8806 31.0491 54.1418L44.7233 38.0127C43.3999 39.5659 41.4751 40.5217 39.3097 40.5217Z" fill="#FBBC04"></path><path d="M44.4829 58.6021C50.6583 49.0042 57.8362 44.6633 57.8362 33.5123C57.8362 30.4457 57.0743 27.5783 55.751 25.0295L31.0493 54.1417C32.0919 55.4957 33.1746 57.0489 34.2172 58.6419C37.9866 64.4165 36.944 67.8415 39.3501 67.8415C41.7561 67.8415 40.7135 64.3767 44.4829 58.6021Z" fill="#34A853"></path></svg>
-                    Maps
+        <button class="grid-button" id="scan-me-button">
+                    <svg class="mx-auto mb-1 drop-shadow-xl" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Scan Me
                 </button>
+   
     <button class="grid-button" id="menu-3d-button">
     <img alt="Menu" class="button-icon" src="3DMenuicon.webp"/>
                     3D Menu
@@ -806,6 +1052,10 @@ html, body {
     <button class="grid-button" id="view-pdf-button">
     <img alt="Menu" class="button-icon" src="logo.webp"/>
                     Menu
+                </button>
+                 <button class="grid-button" id="maps-button">
+    <svg class="mx-auto mb-1 drop-shadow-xl" fill="none" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M64.4804 77.9004C47.7169 79.6896 30.9026 79.6896 14.1391 77.9004C7.45472 77.187 2.17505 71.9073 1.46164 65.2224C-0.327547 48.4589 -0.327547 31.6451 1.46164 14.8816C2.17505 8.19727 7.45472 2.9176 14.1391 2.2042C30.9026 0.415007 47.7163 0.415007 64.4798 2.2042C71.1648 2.9176 76.4445 8.19727 77.1579 14.8816C78.947 31.6451 78.947 48.4589 77.1579 65.2224C76.4445 71.9073 71.1654 77.187 64.4804 77.9004Z" fill="white"></path><path d="M44.9239 15.9894C43.1595 15.4319 41.2347 15.1133 39.2697 15.1133C33.6156 15.1133 28.5229 17.6621 25.1144 21.6844L33.8562 28.9724L44.9239 15.9894Z" fill="#1A73E8"></path><path d="M25.114 21.6843C22.4273 24.8703 20.7832 29.0121 20.7832 33.4725C20.7832 36.9373 21.4649 39.7251 22.6278 42.2341L33.8559 28.9723L25.114 21.6843Z" fill="#EA4335"></path><path d="M39.3102 26.4632C43.24 26.4632 46.4079 29.6094 46.4079 33.5123C46.4079 35.2248 45.7663 36.8178 44.7237 38.0523C44.7237 38.0523 50.2976 31.4414 55.7513 25.0295C53.5057 20.7284 49.6159 17.4628 44.9242 15.9893L33.8566 28.9722C35.1799 27.4589 37.1047 26.4632 39.3102 26.4632Z" fill="#4285F4"></path><path d="M39.3097 40.5217C35.3799 40.5217 32.212 37.3755 32.212 33.4726C32.212 31.7602 32.8135 30.1672 33.8561 28.9724L22.6281 42.2342C24.5529 46.4556 27.7609 49.8806 31.0491 54.1418L44.7233 38.0127C43.3999 39.5659 41.4751 40.5217 39.3097 40.5217Z" fill="#FBBC04"></path><path d="M44.4829 58.6021C50.6583 49.0042 57.8362 44.6633 57.8362 33.5123C57.8362 30.4457 57.0743 27.5783 55.751 25.0295L31.0493 54.1417C32.0919 55.4957 33.1746 57.0489 34.2172 58.6419C37.9866 64.4165 36.944 67.8415 39.3501 67.8415C41.7561 67.8415 40.7135 64.3767 44.4829 58.6021Z" fill="#34A853"></path></svg>
+                    Maps
                 </button>
     <button class="grid-button" id="instagram-button">
     <svg class="mx-auto mb-1 drop-shadow-xl" fill="none" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M65.1859 77.7432C48.4224 79.5324 31.608 79.5324 14.8445 77.7432C8.16016 77.0298 2.88049 71.7501 2.16709 65.0652C0.377897 48.3016 0.377897 31.4879 2.16709 14.7244C2.88049 8.04005 8.16016 2.76038 14.8445 2.04697C31.608 0.25778 48.4218 0.25778 65.1853 2.04697C71.8702 2.76038 77.1499 8.04005 77.8633 14.7244C79.6525 31.4879 79.6525 48.3016 77.8633 65.0652C77.1499 71.7501 71.8708 77.0298 65.1859 77.7432Z" fill="url(#paint0_radial_467_8740)"></path><path d="M65.1859 77.7432C48.4224 79.5324 31.608 79.5324 14.8445 77.7432C8.16016 77.0298 2.88049 71.7501 2.16709 65.0652C0.377897 48.3016 0.377897 31.4879 2.16709 14.7244C2.88049 8.04005 8.16016 2.76038 14.8445 2.04697C31.608 0.25778 48.4218 0.25778 65.1853 2.04697C71.8702 2.76038 77.1499 8.04005 77.8633 14.7244C79.6525 31.4879 79.6525 48.3016 77.8633 65.0652C77.1499 71.7501 71.8708 77.0298 65.1859 77.7432Z" fill="url(#paint1_radial_467_8740)"></path><path d="M40.0177 12.106C32.277 12.106 31.3055 12.1398 28.2653 12.2782C25.231 12.4171 23.1599 12.8975 21.3476 13.6023C19.473 14.3303 17.8828 15.3041 16.2986 16.8889C14.7131 18.4731 13.7393 20.0633 13.009 21.9373C12.3023 23.7501 11.8214 25.8219 11.6848 28.8549C11.5488 31.8951 11.5132 32.8672 11.5132 40.6078C11.5132 48.3484 11.5476 49.3169 11.6854 52.3571C11.8249 55.3913 12.3053 57.4624 13.0095 59.2747C13.7381 61.1493 14.712 62.7394 16.2968 64.3237C17.8804 65.9091 19.4706 66.8853 21.344 67.6132C23.1575 68.3181 25.2292 68.7984 28.2629 68.9374C31.3032 69.0757 32.274 69.1096 40.0141 69.1096C47.7554 69.1096 48.7239 69.0757 51.7641 68.9374C54.7984 68.7984 56.8719 68.3181 58.6854 67.6132C60.5594 66.8853 62.1472 65.9091 63.7308 64.3237C65.3163 62.7394 66.2901 61.1493 67.0205 59.2753C67.7211 57.4624 68.2021 55.3907 68.3446 52.3577C68.4812 49.3175 68.5168 48.3484 68.5168 40.6078C68.5168 32.8672 68.4812 31.8957 68.3446 28.8555C68.2021 25.8213 67.7211 23.7501 67.0205 21.9379C66.2901 20.0633 65.3163 18.4731 63.7308 16.8889C62.1454 15.3035 60.56 14.3297 58.6836 13.6023C56.8666 12.8975 54.7942 12.4171 51.7599 12.2782C48.7197 12.1398 47.7518 12.106 40.0088 12.106H40.0177ZM37.4608 17.2422C38.2197 17.241 39.0664 17.2422 40.0177 17.2422C47.6277 17.2422 48.5297 17.2695 51.5349 17.4061C54.3139 17.5332 55.8221 17.9975 56.8268 18.3876C58.1569 18.9042 59.1052 19.5218 60.1022 20.5193C61.0997 21.5169 61.7173 22.467 62.2351 23.797C62.6252 24.8005 63.0901 26.3088 63.2166 29.0877C63.3532 32.0923 63.3829 32.9948 63.3829 40.6012C63.3829 48.2077 63.3532 49.1102 63.2166 52.1148C63.0895 54.8937 62.6252 56.4019 62.2351 57.4054C61.7185 58.7355 61.0997 59.6826 60.1022 60.6796C59.1046 61.6772 58.1575 62.2947 56.8268 62.8113C55.8233 63.2032 54.3139 63.6663 51.5349 63.7934C48.5303 63.93 47.6277 63.9597 40.0177 63.9597C32.407 63.9597 31.505 63.93 28.5004 63.7934C25.7215 63.6651 24.2133 63.2008 23.208 62.8107C21.8779 62.2941 20.9278 61.6766 19.9302 60.679C18.9326 59.6814 18.3151 58.7337 17.7973 57.4031C17.4072 56.3996 16.9422 54.8913 16.8158 52.1124C16.6792 49.1078 16.6519 48.2053 16.6519 40.5941C16.6519 32.9829 16.6792 32.0851 16.8158 29.0806C16.9428 26.3016 17.4072 24.7934 17.7973 23.7887C18.3139 22.4586 18.9326 21.5086 19.9302 20.511C20.9278 19.5135 21.8779 18.8959 23.208 18.3781C24.2127 17.9862 25.7215 17.5231 28.5004 17.3954C31.1298 17.2767 32.1487 17.241 37.4608 17.2351V17.2422ZM55.2319 21.9747C53.3436 21.9747 51.8116 23.5049 51.8116 25.3937C51.8116 27.282 53.3436 28.814 55.2319 28.814C57.1201 28.814 58.6521 27.282 58.6521 25.3937C58.6521 23.5055 57.1201 21.9735 55.2319 21.9735V21.9747ZM40.0177 25.9709C31.9344 25.9709 25.3806 32.5245 25.3806 40.6078C25.3806 48.691 31.9344 55.2417 40.0177 55.2417C48.101 55.2417 54.6523 48.691 54.6523 40.6078C54.6523 32.5245 48.1004 25.9709 40.0171 25.9709H40.0177ZM40.0177 31.1072C45.2644 31.1072 49.5184 35.3605 49.5184 40.6078C49.5184 45.8545 45.2644 50.1084 40.0177 50.1084C34.7703 50.1084 30.517 45.8545 30.517 40.6078C30.517 35.3605 34.7703 31.1072 40.0177 31.1072Z" fill="white"></path><defs><radialgradient cx="0" cy="0" gradienttransform="translate(21.645 85.122) rotate(-90) scale(77.6804 72.2489)" gradientunits="userSpaceOnUse" id="paint0_radial_467_8740" r="1"><stop stop-color="#FFDD55"></stop><stop offset="0.1" stop-color="#FFDD55"></stop><stop offset="0.5" stop-color="#FF543E"></stop><stop offset="1" stop-color="#C837AB"></stop></radialgradient><radialgradient cx="0" cy="0" gradienttransform="translate(-12.3039 6.35144) rotate(78.6806) scale(34.7234 143.132)" gradientunits="userSpaceOnUse" id="paint1_radial_467_8740" r="1"><stop stop-color="#3771C8"></stop><stop offset="0.128" stop-color="#3771C8"></stop><stop offset="1" stop-color="#6600FF" stop-opacity="0"></stop></radialgradient></defs></svg>
@@ -827,612 +1077,745 @@ html, body {
     <svg class="mx-auto mb-1 drop-shadow-xl" fill="none" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M64.7204 77.9004C47.9569 79.6896 31.1426 79.6896 14.3791 77.9004C7.69471 77.187 2.41504 71.9073 1.70164 65.2224C-0.0875567 48.4589 -0.0875567 31.6451 1.70164 14.8816C2.41504 8.19727 7.69471 2.9176 14.3791 2.2042C31.1426 0.415007 47.9563 0.415007 64.7198 2.2042C71.4048 2.9176 76.6844 8.19727 77.3978 14.8816C79.187 31.6451 79.187 48.4589 77.3978 65.2224C76.6844 71.9073 71.4054 77.187 64.7204 77.9004Z" fill="url(#paint0_linear_2307_926)"></path><path d="M16.7455 62.8543L20.0026 50.9618C17.9937 47.4816 16.9368 43.5331 16.9381 39.4882C16.9433 26.8339 27.2413 16.5388 39.8961 16.5388C46.0371 16.5418 51.801 18.9317 56.1361 23.2697C60.4699 27.6078 62.8563 33.3739 62.8541 39.5067C62.8485 52.1602 52.5487 62.457 39.8961 62.457C39.8952 62.457 39.8971 62.457 39.8961 62.457H39.8862C36.0443 62.4554 32.2691 61.4917 28.9157 59.6629L16.7455 62.8543Z" fill="white"></path><path d="M39.9029 20.416C29.3774 20.416 20.8177 28.9726 20.8138 39.4899C20.8123 43.094 21.8209 46.6044 23.7309 49.6418L24.185 50.3634L22.2568 57.4021L29.4789 55.5085L30.1763 55.9217C33.1053 57.6601 36.4634 58.5794 39.8883 58.5811H39.8955C50.4129 58.5811 58.9725 50.0236 58.9768 39.5054C58.9787 34.4084 56.996 29.6154 53.3932 26.01C49.7904 22.4046 44.9999 20.4182 39.9029 20.416Z" fill="url(#paint1_linear_2307_926)"></path><path clip-rule="evenodd" d="M34.1586 29.8931C33.7286 28.9381 33.2762 28.9188 32.8678 28.902C32.5332 28.8878 32.1505 28.8887 31.7683 28.8887C31.3856 28.8887 30.7643 29.0323 30.2388 29.6063C29.713 30.1803 28.2308 31.5679 28.2308 34.3903C28.2308 37.2127 30.2866 39.9396 30.5729 40.3227C30.8597 40.7054 34.5412 46.6822 40.3722 48.9813C45.2177 50.8921 46.2036 50.512 47.2558 50.4166C48.3075 50.3211 50.6496 49.029 51.1273 47.6896C51.6055 46.3502 51.6055 45.2026 51.4623 44.9627C51.3187 44.7232 50.9364 44.58 50.3624 44.2932C49.7888 44.0064 46.9686 42.6184 46.4427 42.4271C45.9168 42.2357 45.5346 42.1403 45.1519 42.7143C44.7696 43.2883 43.671 44.58 43.3361 44.9627C43.0016 45.3458 42.667 45.3935 42.093 45.1067C41.5194 44.8191 39.6718 44.2141 37.4802 42.2598C35.7749 40.7394 34.6238 38.8617 34.2888 38.2876C33.9543 37.7136 34.2532 37.4032 34.5408 37.1172C34.7984 36.8601 35.1144 36.4473 35.4016 36.1124C35.6876 35.7774 35.7835 35.5383 35.9744 35.1561C36.1657 34.773 36.0703 34.438 35.9266 34.1512C35.7835 33.8644 34.6685 31.0274 34.1586 29.8931Z" fill="white" fill-rule="evenodd"></path><defs><lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_2307_926" x1="38.7519" x2="39.1493" y1="5.56595" y2="72.5462"><stop stop-color="#57D163"></stop><stop offset="1" stop-color="#23B33A"></stop></lineargradient><lineargradient gradientunits="userSpaceOnUse" id="paint1_linear_2307_926" x1="39.5069" x2="39.7004" y1="22.7063" y2="55.3206"><stop stop-color="#57D163"></stop><stop offset="1" stop-color="#23B33A"></stop></lineargradient></defs></svg>
                     WhatsApp
                 </button>
-    <button class="grid-button" id="contactcard-button">
-    <svg class="mx-auto mb-1 drop-shadow-xl" fill="none" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M65.1097 77.8916C48.3462 79.6808 31.5319 79.6808 14.7683 77.8916C8.08399 77.1782 2.80432 71.8985 2.09092 65.2136C0.301725 48.4501 0.301725 31.6363 2.09092 14.8728C2.80432 8.18848 8.08399 2.90881 14.7683 2.19541C31.5319 0.406218 48.3456 0.406218 65.1091 2.19541C71.7941 2.90881 77.0737 8.18848 77.7871 14.8728C79.5763 31.6363 79.5763 48.4501 77.7871 65.2136C77.0737 71.8985 71.7946 77.1782 65.1097 77.8916Z" fill="#E0E2E2"></path><mask height="80" id="mask0_467_8843" maskunits="userSpaceOnUse" width="80" x="0" y="0"><path d="M65.1097 77.8916C48.3462 79.6808 31.5319 79.6808 14.7683 77.8916C8.08399 77.1782 2.80432 71.8985 2.09092 65.2136C0.301725 48.4501 0.301725 31.6363 2.09092 14.8728C2.80432 8.18848 8.08399 2.90881 14.7683 2.19541C31.5319 0.406218 48.3456 0.406218 65.1091 2.19541C71.7941 2.90881 77.0737 8.18848 77.7871 14.8728C79.5763 31.6363 79.5763 48.4501 77.7871 65.2136C77.0737 71.8985 71.7946 77.1782 65.1097 77.8916Z" fill="#E0E2E2"></path></mask><g mask="url(#mask0_467_8843)"><path d="M20.8148 79.8579C16.8052 79.7388 15.0118 79.5034 12.7174 78.7952C9.44387 77.7847 6.4155 75.5626 4.41947 72.7067C3.8067 71.8299 2.88672 70.123 2.88672 69.8629C2.88672 69.5238 8.26044 67.1692 11.7649 65.9727C13.0322 65.5401 15.3753 64.8355 16.034 64.689C16.5167 64.5816 18.7388 63.9396 19.9456 63.5589C21.7334 62.9948 22.6999 62.4412 23.0426 61.7848C23.1961 61.4909 23.564 59.7037 23.7512 58.3424C23.8041 57.9577 23.8975 57.3041 23.9588 56.8898C24.1502 55.5958 24.1173 55.3234 23.7184 54.8993C22.3098 53.4016 21.6975 51.9627 21.3601 49.358C21.1921 48.0614 20.7285 45.7754 20.5646 45.4354C20.492 45.2848 20.1811 45.028 19.8736 44.8645C19.0521 44.4278 18.7049 43.8275 18.4898 42.4717C18.332 41.4771 18.1644 40.8902 17.5791 39.2834C17.1782 38.1827 16.9873 37.0912 17.0279 36.1312C17.0613 35.3431 17.1013 35.1889 17.3379 34.9383C17.5767 34.6853 17.6666 34.6582 18.0827 34.714C18.4697 34.7659 18.5448 34.7488 18.495 34.6202C18.1548 33.7423 17.6743 29.6654 17.3707 25.0803C17.2671 23.516 17.63 21.7822 18.3998 20.1629C19.0284 18.8409 19.7628 18.0579 20.6832 17.7286C20.9647 17.6278 21.3418 17.4906 21.5211 17.4235C21.7004 17.3565 22.152 17.0006 22.5248 16.6326C23.9535 15.2221 25.17 14.487 27.1344 13.8469C27.812 13.6261 28.8633 13.2584 29.4706 13.0299C30.9758 12.4635 31.9535 12.2689 33.3645 12.2548C35.2413 12.2361 36.4128 12.5045 39.1775 13.5866C40.0441 13.9257 41.2664 14.3544 41.8939 14.5391C44.257 15.2349 45.6379 16.1455 46.3485 17.4765C46.5476 17.8495 46.9004 18.4401 47.1326 18.7889C47.9132 19.9619 48.0772 20.4026 48.3582 22.082C48.8519 25.032 48.6057 29.0197 47.6838 33.0031C47.3066 34.633 47.2847 34.7785 47.4166 34.7785C47.4796 34.7785 47.5614 34.7301 47.5983 34.6709C47.7122 34.4884 48.1424 34.5517 48.3994 34.7888C48.7714 35.1321 48.8741 35.4998 48.8769 36.5001C48.8801 37.5893 48.6486 38.713 48.0904 40.3198C47.8642 40.9707 47.6247 41.9073 47.5582 42.4011C47.3949 43.6136 46.9417 44.4724 46.3099 44.7669C46.0624 44.8823 45.7762 45.0684 45.6739 45.1806C45.2977 45.5933 45.0365 46.717 44.4408 50.4857C44.1468 52.3458 43.6202 53.5021 42.5288 54.6841L41.9824 55.2759L42.0364 56.6746C42.112 58.6333 42.4883 61.0522 42.8258 61.7479C43.4107 62.9539 44.6759 63.5279 49.4267 64.7426C55.0371 66.177 57.6198 67.0748 62.6139 69.327C62.8646 69.44 63.3781 69.5325 63.4411 69.5325L63.4531 79.3741C63.1946 79.5323 60.9726 79.7681 57.7576 79.8605C53.7522 79.9756 24.7091 79.9735 20.8148 79.8579L20.8148 79.8579Z" fill="#9A9A9A"></path><path d="M62.8892 0.853516C63.0444 0.879987 63.199 0.908267 63.3529 0.938333C63.9684 1.0586 64.5728 1.20743 65.1647 1.38334C65.7565 1.55925 66.3357 1.76224 66.9006 1.9908C67.4656 2.21937 68.0164 2.47352 68.5515 2.75175C69.0865 3.02999 70.4325 2.66624 70.9345 2.99115C71.4365 3.31606 71.8938 3.69137 72.3596 4.05997C72.8254 4.42857 73.2723 4.81827 73.6988 5.22756C74.1254 5.63686 75.182 5.7506 75.5661 6.19761C75.9502 6.64461 75.94 7.49725 76.2786 7.97897C76.6172 8.4607 77.0575 8.89061 77.3474 9.40406C77.6374 9.91751 78.1781 10.6432 78.4162 11.1854C78.6544 11.7276 78.1358 12.6031 78.3191 13.171C78.5024 13.739 78.6472 14.5137 78.7725 15.1044C78.8978 15.6951 78.2549 16.2193 78.3191 16.8298C78.3834 17.4402 78.4162 18.0599 78.4162 18.6871V19.9045L62.8892 19.9045V10.651V0.853516Z" fill="#C9C8C4"></path><path d="M68.6113 14.6028L70.2561 10.498H70.8639L72.616 14.6028H71.9679L71.4718 13.3589H69.684L69.2147 14.6028H68.6113ZM69.8449 12.9171H71.2975L70.8505 11.7805C70.7015 11.4002 70.6002 11.1171 70.5466 10.9313C70.493 11.1943 70.4155 11.4545 70.3142 11.7119L69.8449 12.9171Z" fill="#676362"></path><path d="M78.4162 19.8712L79.1288 21.5171C79.1288 27.7565 79.4851 33.5384 79.4851 39.7778H62.8892V30.2299V19.8711L78.4162 19.8712Z" fill="#4FC9F8"></path><path d="M69.0327 32.259V28.1543H70.6373C71.1319 28.1543 71.4917 28.258 71.7166 28.4653C71.9416 28.6726 72.0541 28.9192 72.0541 29.2051C72.0541 29.5969 71.8544 29.8871 71.4552 30.0758C71.9945 30.2274 72.2641 30.5591 72.2641 31.0709C72.2641 31.863 71.7308 32.259 70.6641 32.259H69.0327ZM69.6003 29.8785H70.5255C70.7341 29.8785 70.9047 29.865 71.0373 29.8378C71.1699 29.8106 71.2801 29.7492 71.368 29.6534C71.4559 29.5576 71.4999 29.4296 71.4999 29.2695C71.4999 29.1036 71.4604 28.9714 71.3814 28.8727C71.3024 28.7741 71.1929 28.7105 71.0529 28.6819C70.9129 28.6533 70.7132 28.639 70.454 28.639H69.6003V29.8785ZM69.6003 31.7743H70.6641C70.8041 31.7743 70.9278 31.7679 71.035 31.755C71.1423 31.7422 71.2481 31.7086 71.3524 31.6542C71.4567 31.5999 71.5364 31.5234 71.5915 31.4248C71.6466 31.3261 71.6742 31.2082 71.6742 31.0709C71.6742 30.8479 71.5997 30.6742 71.4507 30.5498C71.3017 30.4254 71.0142 30.3632 70.5881 30.3632H69.6003V31.7743Z" fill="#1C627A"></path><path d="M79.8413 39.6948L80.1976 45.0311C80.1976 50.3924 79.1288 53.2083 79.1288 58.5695L78.4162 59.7994L62.8892 59.7995V49.7995V39.6948H79.8413Z" fill="#47D86F"></path><path d="M71.945 50.5974L72.5126 50.7347C72.2683 51.6497 71.6768 52.1072 70.7382 52.1072C70.05 52.1072 69.5434 51.9006 69.2186 51.4874C68.8938 51.0742 68.7314 50.5631 68.7314 49.954C68.7314 49.2621 68.9251 48.7409 69.3125 48.3907C69.6998 48.0404 70.1781 47.8652 70.7472 47.8652C71.6321 47.8652 72.1953 48.2627 72.4366 49.0576L71.8824 49.1863C71.6917 48.6144 71.3103 48.3285 70.7382 48.3285C70.2764 48.3285 69.9233 48.4714 69.679 48.7574C69.4347 49.0433 69.3125 49.4422 69.3125 49.954C69.3125 50.546 69.4443 50.9756 69.708 51.2429C69.9717 51.5103 70.3002 51.644 70.6936 51.644C71.3699 51.644 71.7871 51.2951 71.945 50.5974Z" fill="#10782D"></path><path d="M78.4162 59.7993V61.3996C78.4162 62.0268 78.3834 62.6465 78.3191 63.2569C78.2549 63.8674 78.1594 64.4687 78.0341 65.0594C77.9087 65.6501 78.5024 67.0855 78.3191 67.6535C78.1358 68.2214 77.5856 68.8935 77.3474 69.4357C77.1093 69.9779 76.9248 71.0284 76.6349 71.5418C76.345 72.0553 76.2609 72.6948 75.9223 73.1766C75.5838 73.6583 74.8813 73.4421 74.4972 73.8891C74.1132 74.3361 73.8549 75.2612 73.4284 75.6705C73.0019 76.0798 72.1129 75.6581 71.6471 76.0267C71.1813 76.3953 71.0802 76.4144 70.5782 76.7393C70.0763 77.0642 69.0865 77.0567 68.5515 77.335C68.0164 77.6132 67.4656 77.8673 66.9006 78.0959C66.3357 78.3245 65.7565 78.5275 65.1647 78.7034C64.5728 78.8793 63.9684 79.0281 63.3529 79.1484C63.199 79.1784 63.0444 79.2067 62.8892 79.2332V69.4357V59.7994L78.4162 59.7993Z" fill="#FF9327"></path><path d="M69.0509 69.9602V65.8555H70.5258C70.8059 65.8555 71.0554 65.874 71.2745 65.9112C71.4934 65.9484 71.7035 66.0435 71.9047 66.1965C72.1058 66.3494 72.2696 66.5682 72.3963 66.8527C72.5229 67.1372 72.5862 67.4811 72.5862 67.8842C72.5862 68.5019 72.4335 69.0023 72.1281 69.3854C71.8227 69.7686 71.311 69.9602 70.5929 69.9602H69.0509ZM69.6185 69.4755H70.5303C70.9057 69.4755 71.1933 69.4226 71.3929 69.3168C71.5925 69.211 71.7445 69.0344 71.8488 68.7871C71.9531 68.5398 72.0052 68.2359 72.0052 67.8757C72.0052 67.624 71.9791 67.4039 71.927 67.2151C71.8749 67.0264 71.7966 66.8677 71.6924 66.739C71.5881 66.6104 71.4555 66.5117 71.2946 66.4431C71.1337 66.3745 70.8744 66.3401 70.5169 66.3401H69.6185V69.4755Z" fill="#884308"></path></g></svg>
-                    Contact Card
-                </button>
-    </div>
-    </div>
-    <div id="loading-screen">
-    <div class="spinner"></div>
-    <div id="loading-text">Loading 3D Menu...</div>
-    </div>
     
-    <!-- Slide Menu Structure -->
-    <div id="slide-menu-overlay"></div>
-    <div id="slide-menu-panel">
-        <div id="slide-menu-header">
-            <div class="header-top">
-                <h2 id="slide-menu-title">Menu</h2>
-                <button id="close-menu-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
+    </div>
+    </div>
+  <div id="loading-screen">
+            <div class="spinner"></div>
+            <div id="loading-text">Loading 3D Menu...</div>
+        </div>
+
+        <!-- Slide Menu Structure -->
+        <div id="slide-menu-overlay"></div>
+        <div id="slide-menu-panel">
+            <div id="slide-menu-header">
+                <div class="header-top">
+                    <h2 id="slide-menu-title">Menu</h2>
+                    <button id="close-menu-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div id="menu-search-container">
+                    <svg class="search-icon-left" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="menu-search" placeholder="Search food items...">
+                    <button id="clear-search">&times;</button>
+                </div>
             </div>
-            <div id="menu-search-container">
-                <svg class="search-icon-left" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="menu-search" placeholder="Search food items...">
-                <button id="clear-search">&times;</button>
+            <div id="slide-menu-content">
+                <div id="no-results">No items found.</div>
+                <!-- Dynamically populated -->
             </div>
         </div>
-        <div id="slide-menu-content">
-            <div id="no-results">No items found.</div>
-            <!-- Dynamically populated -->
+
+        <button class="back-button" id="back-button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back</span>
+        </button>
+        <button id="menu-popup-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+            <span>MENU</span>
+        </button>
+        <div class="scroll-arrow" id="scroll-left">❮</div>
+        <div class="scroll-arrow" id="scroll-right">❯</div>
+        <div id="bottom-ui">
+            <div id="model-info">
+                <div class="model-name-wrapper">
+                    <button id="heart-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                            </path>
+                        </svg>
+                    </button>
+                    <div id="model-name">Loading...</div>
+                    <button class="info-icon" id="info-icon-btn">i</button>
+                    <div class="ingredient-popup">
+                        <div class="ingredient-title">Ingredients</div>
+                        <div id="ingredient-list">Loading...</div>
+                    </div>
+                </div>
+                <div id="model-price">Loading...</div>
+            </div>
         </div>
-    </div>
-    
-    <button class="back-button" id="back-button">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        <span>Back</span>
-    </button>
-    <button id="menu-popup-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        <span>MENU</span>
-    </button>
-    <div class="scroll-arrow" id="scroll-left">❮</div>
-    <div class="scroll-arrow" id="scroll-right">❯</div>
-    <div id="bottom-ui">
-    <div id="model-info">
-    <div id="model-name">Loading...</div>
-    <div id="model-price">Loading...</div>
-    </div>
-    </div>
-    <div id="scene-bg"></div>
-    <a-scene embedded="">
-    <a-assets id="dynamic-assets"></a-assets>
-    <a-entity id="cameraRig">
-    <a-camera look-controls="enabled: false" position="0 1.6 0"></a-camera>
-    </a-entity>
-    <a-entity id="model-container" position="0 1.2 -2.5">
-    <a-entity drag-rotate="" id="model-parent" position="0 0 0" scale="2.5 2.5 2.5">
-    <!-- Models will be added here -->
-    </a-entity>
-    </a-entity>
-    </a-scene>
+        <div id="scene-bg"></div>
+        <a-scene embedded="" loading-screen="enabled: false"
+            renderer="antialias: false; precision: medium; devicePixelRatio: 1;">
+            <a-assets id="dynamic-assets"></a-assets>
+            <a-entity id="cameraRig">
+                <a-camera look-controls="enabled: false" position="0 1.6 0"></a-camera>
+            </a-entity>
+            <a-entity id="model-container" position="0 1.2 -2.5">
+                <a-entity drag-rotate="" id="model-parent" position="0 0 0" scale="2.5 2.5 2.5">
+                    <!-- Models will be added here -->
+                </a-entity>
+            </a-entity>
+        </a-scene>
 <script>
-        // Register drag-rotate component
-        AFRAME.registerComponent('drag-rotate', {
-            schema: {
-                speed: { type: 'number', default: 0.5 },
-                autoRotateSpeed: { type: 'number', default: 0.5 }
-            },
-            init: function () {
-                this.pitch = THREE.MathUtils.degToRad(20); // Static downward angle to perfectly view food
-                this.yaw = 0;
-                this.dragging = false;
-                this.startX = 0;
-                this.startY = 0;
-                this.lastInteractionTime = Date.now();
-                this.updateRotation();
-
-                this.onMouseDown = (e) => {
-                    this.dragging = true;
-                    this.startX = e.clientX;
-                    this.lastInteractionTime = Date.now();
-                };
-
-                this.onMouseMove = (e) => {
-                    if (!this.dragging) return;
-                    const dx = e.clientX - this.startX;
-
-                    this.yaw += dx * 0.02 * this.data.speed;
-                    // Pitch (vertical rotation) forms underneath view is completely disabled
-                    
-                    this.startX = e.clientX;
+            // Register drag-rotate component
+            AFRAME.registerComponent('drag-rotate', {
+                schema: {
+                    speed: { type: 'number', default: 0.5 },
+                    autoRotateSpeed: { type: 'number', default: 0.5 }
+                },
+                init: function () {
+                    this.pitch = THREE.MathUtils.degToRad(20); // Static downward angle to perfectly view food
+                    this.yaw = 0;
+                    this.dragging = false;
+                    this.startX = 0;
+                    this.startY = 0;
                     this.lastInteractionTime = Date.now();
                     this.updateRotation();
-                };
 
-                this.onMouseUp = () => { 
-                    this.dragging = false; 
-                    this.lastInteractionTime = Date.now();
-                };
-
-                this.onTouchStart = (e) => {
-                    if (e.touches.length === 1) {
+                    this.onMouseDown = (e) => {
                         this.dragging = true;
+                        this.startX = e.clientX;
+                        this.lastInteractionTime = Date.now();
+                    };
+
+                    this.onMouseMove = (e) => {
+                        if (!this.dragging) return;
+                        const dx = e.clientX - this.startX;
+
+                        this.yaw += dx * 0.02 * this.data.speed;
+                        // Pitch (vertical rotation) forms underneath view is completely disabled
+
+                        this.startX = e.clientX;
+                        this.lastInteractionTime = Date.now();
+                        this.updateRotation();
+                    };
+
+                    this.onMouseUp = () => {
+                        this.dragging = false;
+                        this.lastInteractionTime = Date.now();
+                    };
+
+                    this.onTouchStart = (e) => {
+                        if (e.touches.length === 1) {
+                            this.dragging = true;
+                            this.startX = e.touches[0].clientX;
+                            this.lastInteractionTime = Date.now();
+                        }
+                    };
+
+                    this.onTouchMove = (e) => {
+                        if (!this.dragging || e.touches.length !== 1) return;
+                        const dx = e.touches[0].clientX - this.startX;
+
+                        this.yaw += dx * 0.02 * this.data.speed;
+                        // Pitch (vertical rotation) forms underneath view is completely disabled
+
                         this.startX = e.touches[0].clientX;
                         this.lastInteractionTime = Date.now();
+                        this.updateRotation();
+                    };
+
+                    this.onTouchEnd = () => {
+                        this.dragging = false;
+                        this.lastInteractionTime = Date.now();
+                    };
+
+                    window.addEventListener('mousedown', this.onMouseDown);
+                    window.addEventListener('mousemove', this.onMouseMove);
+                    window.addEventListener('mouseup', this.onMouseUp);
+                    window.addEventListener('touchstart', this.onTouchStart, { passive: false });
+                    window.addEventListener('touchmove', this.onTouchMove, { passive: false });
+                    window.addEventListener('touchend', this.onTouchEnd);
+                },
+                tick: function (time, timeDelta) {
+                    // Auto rotate after 2 seconds of inactivity
+                    if (!this.dragging && (Date.now() - this.lastInteractionTime > 2000)) {
+                        this.yaw += (this.data.autoRotateSpeed * timeDelta) / 1000;
+                        this.updateRotation();
                     }
-                };
-
-                this.onTouchMove = (e) => {
-                    if (!this.dragging || e.touches.length !== 1) return;
-                    const dx = e.touches[0].clientX - this.startX;
-
-                    this.yaw += dx * 0.02 * this.data.speed;
-                    // Pitch (vertical rotation) forms underneath view is completely disabled
-
-                    this.startX = e.touches[0].clientX;
-                    this.lastInteractionTime = Date.now();
-                    this.updateRotation();
-                };
-
-                this.onTouchEnd = () => { 
-                    this.dragging = false; 
-                    this.lastInteractionTime = Date.now();
-                };
-
-                window.addEventListener('mousedown', this.onMouseDown);
-                window.addEventListener('mousemove', this.onMouseMove);
-                window.addEventListener('mouseup', this.onMouseUp);
-                window.addEventListener('touchstart', this.onTouchStart, { passive: false });
-                window.addEventListener('touchmove', this.onTouchMove, { passive: false });
-                window.addEventListener('touchend', this.onTouchEnd);
-            },
-            tick: function (time, timeDelta) {
-                // Auto rotate after 2 seconds of inactivity
-                if (!this.dragging && (Date.now() - this.lastInteractionTime > 2000)) {
-                    this.yaw += (this.data.autoRotateSpeed * timeDelta) / 1000;
-                    this.updateRotation();
-                }
-            },
-            updateRotation: function () {
-                this.el.object3D.rotation.set(this.pitch, this.yaw, 0);
-            },
-            remove: function () {
-                window.removeEventListener('mousedown', this.onMouseDown);
-                window.removeEventListener('mousemove', this.onMouseMove);
-                window.removeEventListener('mouseup', this.onMouseUp);
-                window.removeEventListener('touchstart', this.onTouchStart);
-                window.removeEventListener('touchmove', this.onTouchMove);
-                window.removeEventListener('touchend', this.onTouchEnd);
-            }
-        });
-
-        // Main application
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize ScrollReveal for welcome screen FIRST to prevent FOUC during A-Frame load
-            if (typeof ScrollReveal !== 'undefined') {
-                const sr = ScrollReveal({
-                    distance: '40px',
-                    duration: 1200,
-                    delay: 200,
-                    reset: false,
-                    useDelay: 'always'
-                });
-                
-                sr.reveal('#logo', { origin: 'top' });
-                sr.reveal('.logo-name', { origin: 'bottom', delay: 400 });
-                sr.reveal('.grid-button', { origin: 'bottom', interval: 100, delay: 500, useDelay: 'always' });
-            }
-
-            const welcomeScreen = document.getElementById("welcome-screen");
-            const viewPdfButton = document.getElementById("view-pdf-button");
-            const view3dButton = document.getElementById("menu-3d-button");
-            const whatsappButton = document.getElementById("whatsapp-button");
-            const instagramButton = document.getElementById("instagram-button");
-            const mailButton = document.getElementById("mail-button");
-            const callButton = document.getElementById("call-button");
-            const reviewButton = document.getElementById("review-button");
-            const mapsButton = document.getElementById("maps-button");
-            const contactCardButton = document.getElementById("contactcard-button");
-            const scrollLeftBtn = document.getElementById("scroll-left");
-            const scrollRightBtn = document.getElementById("scroll-right");
-            const backButton = document.getElementById("back-button");
-            const menuPopupBtn = document.getElementById("menu-popup-btn");
-            const slideMenuOverlay = document.getElementById('slide-menu-overlay');
-            const slideMenuPanel = document.getElementById('slide-menu-panel');
-            const closeMenuBtn = document.getElementById('close-menu-btn');
-            const modelName = document.getElementById("model-name");
-            const modelPrice = document.getElementById("model-price");
-            const assets = document.getElementById("dynamic-assets");
-            const modelParent = document.getElementById("model-parent");
-            const loadingScreen = document.getElementById("loading-screen");
-            const loadingText = document.getElementById("loading-text");
-            const scene = document.querySelector("a-scene");
-            const bottomUI = document.getElementById("bottom-ui");
-            const sceneBg = document.getElementById("scene-bg");
-            const menuSearch = document.getElementById("menu-search");
-            const clearSearchBtn = document.getElementById("clear-search");
-            const noResultsMsg = document.getElementById("no-results");
-
-            let modelData = [];
-            let currentModelIndex = 0;
-            let modelEntities = [];
-            let modelsLoaded = false;
-
-            const ZOOM_MIN = 1.5;
-            const ZOOM_MAX = 5.0;
-            const ZOOM_DEFAULT = 2.5;
-            let zoomFactor = ZOOM_DEFAULT;
-
-            // Initialize the app
-            async function initApp() {
-                // Show loading screen while loading models
-                loadingScreen.style.display = 'flex';
-                
-                // Load model data and create model entities
-                modelData = await fetchGoogleSheetCSV();
-                
-                if (modelData.length > 0) {
-                    // Create all model entities but keep them hidden
-                    await createModelEntities(modelData);
-                    modelsLoaded = true;
-                    
-                    viewPdfButton.addEventListener('click', () => {
-                        // Open Zomato Menu in new tab
-                        window.open('https://www.zomato.com/surat/the-artisans-table-vesu/menu', '_blank');
-                    });
-
-                    view3dButton.addEventListener('click', () => {
-                        // Hide welcome screen and show 3D viewer
-                        welcomeScreen.style.display = 'none';
-                        show3DViewer();
-                    });
-
-                    // Set up WhatsApp button click handler
-                    whatsappButton.addEventListener('click', () => {
-                        const phoneNumber = '12345478650'; 
-                        const message = 'Hello, I have a question about your products';
-                        window.open(`https://wa.me/${+918228954751}?text=${encodeURIComponent(message)}`, '_blank');
-                    });
-
-                    instagramButton.addEventListener('click', () => {
-                        window.open('https://www.instagram.com/theartisanstable.srt/', '_blank');
-                    });
-                    
-                    mailButton.addEventListener('click', () => {
-                        window.location.href = 'mailto:artisanstable@gmail.com';
-                    });
-                    
-                    callButton.addEventListener('click', () => {
-                        window.location.href = 'tel:+918128955751';
-                    });
-
-                    reviewButton.addEventListener('click', () => {
-                        // Link to Google Review Page
-                        window.open('https://www.google.com/search?sca_esv=a39b70e8861fd680&si=APYL9bs7Hg2KMLB-4tSoTdxuOx8BdRvHbByC_AuVpNyh0x2KzQQslIoW1mNeQsU0H6ECd7GUg239yPDmBTAQxgc1wjuYaIDefAA0sWjOonUMqhCa4EPAUM_Cjgbhv-WkGlp3FvviwC3Xe_-ZQhGk0_8GTDD-uOdWbg%3D%3D&q=The+Artisan%27s+Table+Reviews&sa=X&ved=2ahUKEwiVo9HhsuGMAxU8wjgGHQEwIcMQ0bkNegQILhAD&cshid=1744973124229684&biw=1536&bih=747&dpr=1.25#lrd=0x3be05320b5dbf477:0x96f3b9cb64211979,3,,,,', '_blank');
-                    });
-                    
-                    mapsButton.addEventListener('click', () => {
-                        // Link to Google Maps location
-                        window.open('https://maps.app.goo.gl/YnAzv92zmnZgu4BD6', '_blank');
-                    });
-                    
-                    contactCardButton.addEventListener('click', () => {
-                        // Link to VCF/Contact page or contact info
-                   window.open("The Artisan's Table.vcf", '_blank');
-                    });
-                    
-                    loadingScreen.style.display = 'none';
-                } else {
-                    loadingText.textContent = "No models available";
-                    viewPdfButton.disabled = true;
-                    view3dButton.disabled = true;
-                    viewPdfButton.textContent = "No Models Available";
-                    view3dButton.textContent = "No Models Available";
-                }
-            }
-
-            // Update visible model
-            function updateVisibleModel() {
-                modelEntities.forEach((model, i) => {
-                    model.setAttribute('visible', i === currentModelIndex);
-                });
-
-                if (modelData[currentModelIndex]) {
-                    modelName.textContent = modelData[currentModelIndex].name;
-                    modelPrice.textContent = modelData[currentModelIndex].price;
-                }
-
-                // Reset zoom and rotation
-                zoomFactor = ZOOM_DEFAULT;
-                modelParent.setAttribute('scale', `${zoomFactor} ${zoomFactor} ${zoomFactor}`);
-                
-                const comp = modelParent.components['drag-rotate'];
-                if (comp) {
-                    comp.pitch = THREE.MathUtils.degToRad(20); // Keep static food viewing angle
-                    comp.yaw = 0;
-                    comp.lastInteractionTime = Date.now();
-                    comp.updateRotation();
-                }
-            }
-
-            // Set up button events
-            function setupButtonEvents() {
-                const changeModel = (dir) => {
-                    currentModelIndex = (currentModelIndex + dir + modelEntities.length) % modelEntities.length;
-                    updateVisibleModel();
-                };
-
-                scrollLeftBtn.addEventListener("click", () => changeModel(-1));
-                scrollRightBtn.addEventListener("click", () => changeModel(1));
-                
-                // Add back button event
-                backButton.addEventListener("click", () => {
-                    // Hide 3D viewer and show welcome screen
-                    scene.classList.remove('active');
-                    sceneBg.classList.remove('active');
-                    scrollLeftBtn.classList.remove('active');
-                    scrollRightBtn.classList.remove('active');
-                    bottomUI.style.display = 'none';
-                    backButton.classList.remove('active');
-                    menuPopupBtn.classList.remove('active');
-                    
-                    // Close menu if open
-                    slideMenuOverlay.classList.remove('active');
-                    slideMenuPanel.classList.remove('active');
-                    
-                    welcomeScreen.style.display = 'flex';
-                });
-
-                // Menu toggle events
-                function toggleSlideMenu() {
-                    const isOpen = slideMenuPanel.classList.toggle('active');
-                    slideMenuOverlay.classList.toggle('active');
-                    
-                    if (isOpen) {
-                        updateMenuHighlights();
-                    }
-                }
-
-                function updateMenuHighlights() {
-                    const currentModel = modelData[currentModelIndex];
-                    if (!currentModel) return;
-
-                    const menuItems = document.querySelectorAll('.menu-item');
-                    menuItems.forEach(itemDiv => {
-                        const itemName = itemDiv.querySelector('.menu-item-name').textContent;
-                        if (currentModel.name.toLowerCase().includes(itemName.toLowerCase()) || 
-                            itemName.toLowerCase().includes(currentModel.name.toLowerCase())) {
-                            itemDiv.classList.add('active');
-                        } else {
-                            itemDiv.classList.remove('active');
-                        }
-                    });
-                }
-                
-                menuPopupBtn.addEventListener('click', toggleSlideMenu);
-                closeMenuBtn.addEventListener('click', toggleSlideMenu);
-                slideMenuOverlay.addEventListener('click', toggleSlideMenu);
-
-                // Improved Search Logic
-                menuSearch.addEventListener('input', (e) => {
-                    const term = e.target.value.toLowerCase();
-                    clearSearchBtn.style.display = term !== '' ? 'block' : 'none';
-                    
-                    let hasResults = false;
-                    const menuItems = document.querySelectorAll('.menu-item');
-                    const categories = document.querySelectorAll('.menu-category');
-
-                    menuItems.forEach(item => {
-                        const name = item.querySelector('.menu-item-name').textContent.toLowerCase();
-                        if (name.includes(term)) {
-                            item.style.display = 'flex';
-                            hasResults = true;
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
-
-                    // Hide categories if all their items are hidden
-                    categories.forEach(cat => {
-                        const visibleItems = cat.querySelectorAll('.menu-item[style*="display: flex"]');
-                        cat.style.display = (visibleItems.length > 0 || term === '') ? 'block' : 'none';
-                    });
-
-                    noResultsMsg.style.display = (!hasResults && term !== '') ? 'block' : 'none';
-                });
-
-                clearSearchBtn.addEventListener('click', () => {
-                    menuSearch.value = '';
-                    clearSearchBtn.style.display = 'none';
-                    menuSearch.dispatchEvent(new Event('input'));
-                    menuSearch.focus();
-                });
-            }
-
-            // Fetch model data from local JSON file
-            async function fetchGoogleSheetCSV() {
-                try {
-                    const response = await fetch('models.json');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const data = await response.json();
-                    
-                    // Handle new object schema vs old array schema
-                    if (data.models && data.menu) {
-                        renderSlideMenu(data.menu);
-                        return data.models;
-                    }
-                    
-                    return Array.isArray(data) ? data : [];
-                } catch (error) {
-                    console.error("Error loading models.json file:", error);
-                    loadingText.textContent = "Error loading data. Please try again.";
-                    return [];
-                }
-            }
-
-            // Render Slide Menu
-            function renderSlideMenu(menuData) {
-                const contentDiv = document.getElementById('slide-menu-content');
-                contentDiv.innerHTML = '';
-                
-                menuData.forEach(category => {
-                    const categoryDiv = document.createElement('div');
-                    categoryDiv.className = 'menu-category';
-                    
-                    const title = document.createElement('div');
-                    title.className = 'menu-category-title';
-                    title.textContent = category.category;
-                    categoryDiv.appendChild(title);
-                    
-                    category.items.forEach(item => {
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'menu-item';
-                        itemDiv.style.cursor = 'pointer';
-                        
-                        const nameSpan = document.createElement('span');
-                        nameSpan.className = 'menu-item-name';
-                        nameSpan.textContent = item.name;
-                        
-                        const priceSpan = document.createElement('span');
-                        priceSpan.className = 'menu-item-price';
-                        priceSpan.textContent = '₹ ' + item.price;
-                        
-                        itemDiv.appendChild(nameSpan);
-                        itemDiv.appendChild(priceSpan);
-
-                        // Highlight if this is the currently selected model
-                        if (modelData[currentModelIndex] && 
-                            (modelData[currentModelIndex].name.toLowerCase().includes(item.name.toLowerCase()) || 
-                             item.name.toLowerCase().includes(modelData[currentModelIndex].name.toLowerCase()))) {
-                            itemDiv.classList.add('active');
-                        }
-
-                        // Add click event to navigate to model
-                        itemDiv.addEventListener('click', () => {
-                            // Find corresponding model index
-                            const targetIndex = modelData.findIndex(m => 
-                                m.name.toLowerCase().includes(item.name.toLowerCase()) || 
-                                item.name.toLowerCase().includes(m.name.toLowerCase())
-                            );
-
-                            if (targetIndex !== -1) {
-                                // Clear other active classes
-                                document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-                                itemDiv.classList.add('active');
-
-                                currentModelIndex = targetIndex;
-                                updateVisibleModel();
-                                
-                                // Close the slide menu
-                                slideMenuOverlay.classList.remove('active');
-                                slideMenuPanel.classList.remove('active');
-                            }
-                        });
-
-                        categoryDiv.appendChild(itemDiv);
-                    });
-                    
-                    contentDiv.appendChild(categoryDiv);
-                });
-            }
-
-            // Create model entities
-            function createModelEntities(models) {
-                return new Promise((resolve) => {
-                    let loadedCount = 0;
-                    const totalModels = models.filter(model => model.url).length;
-                    
-                    if (totalModels === 0) {
-                        resolve();
-                        return;
-                    }
-                    
-                    modelEntities = models.map((model, index) => {
-                        if (!model.url) {
-                            return null;
-                        }
-
-                        const assetId = `model-${index}`;
-                        const assetItem = document.createElement('a-asset-item');
-                        assetItem.setAttribute('id', assetId);
-                        assetItem.setAttribute('src', model.url);
-                        assets.appendChild(assetItem);
-
-                        const entity = document.createElement('a-entity');
-                        entity.setAttribute('gltf-model', `#${assetId}`);
-                        entity.setAttribute('position', '0 0 0');
-                        entity.setAttribute('visible', 'false');
-                        entity.setAttribute('class', 'model-entity');
-                        
-                        // Apply individual scale if provided in json, otherwise default to 1.0
-                        const indScale = model.scale ? model.scale : 1.0;
-                        entity.setAttribute('scale', `${indScale} ${indScale} ${indScale}`);
-                        
-                        entity.addEventListener('model-loaded', () => {
-                            loadedCount++;
-                            loadingText.textContent = `Loading models (${loadedCount}/${totalModels})...`;
-                            
-                            if (loadedCount === totalModels) {
-                                resolve();
-                            }
-                        });
-                        
-                        entity.addEventListener('error', () => {
-                            console.error(`Failed to load model: ${model.url}`);
-                            loadedCount++;
-                            if (loadedCount === totalModels) {
-                                resolve();
-                            }
-                        });
-                        
-                        modelParent.appendChild(entity);
-                        return entity;
-                    }).filter(entity => entity !== null);
-                });
-            }
-
-            // Show 3D viewer
-            function show3DViewer() {
-                // Make scene visible
-                scene.classList.add('active');
-                sceneBg.classList.add('active');
-                
-                // Setup UI elements
-                setupButtonEvents();
-                scrollLeftBtn.classList.add('active');
-                scrollRightBtn.classList.add('active');
-                bottomUI.style.display = 'flex';
-                backButton.classList.add('active');
-                menuPopupBtn.classList.add('active');
-                
-                // Show the first model
-                updateVisibleModel();
-            }
-
-            // Zoom functions
-            function applyZoom() {
-                zoomFactor = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoomFactor));
-                modelParent.setAttribute('scale', `${zoomFactor} ${zoomFactor} ${zoomFactor}`);
-            }
-
-            function zoomIn() {
-                zoomFactor *= 1.1;
-                applyZoom();
-            }
-
-            function zoomOut() {
-                zoomFactor /= 1.1;
-                applyZoom();
-            }
-
-            // Event listeners for zoom
-            window.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                if (e.deltaY < 0) zoomIn();
-                else zoomOut();
-            }, { passive: false });
-
-            let initialPinchDistance = null;
-            window.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 2) {
-                    const dx = e.touches[0].clientX - e.touches[1].clientX;
-                    const dy = e.touches[0].clientY - e.touches[1].clientY;
-                    initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+                },
+                updateRotation: function () {
+                    this.el.object3D.rotation.set(this.pitch, this.yaw, 0);
+                },
+                remove: function () {
+                    window.removeEventListener('mousedown', this.onMouseDown);
+                    window.removeEventListener('mousemove', this.onMouseMove);
+                    window.removeEventListener('mouseup', this.onMouseUp);
+                    window.removeEventListener('touchstart', this.onTouchStart);
+                    window.removeEventListener('touchmove', this.onTouchMove);
+                    window.removeEventListener('touchend', this.onTouchEnd);
                 }
             });
 
-            window.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 2 && initialPinchDistance) {
-                    e.preventDefault();
-                    const dx = e.touches[0].clientX - e.touches[1].clientX;
-                    const dy = e.touches[0].clientY - e.touches[1].clientY;
-                    const currentPinchDistance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (currentPinchDistance > initialPinchDistance * 1.05) zoomIn();
-                    else if (currentPinchDistance < initialPinchDistance * 0.95) zoomOut();
-                    
-                    initialPinchDistance = currentPinchDistance;
-                }
-            }, { passive: false });
+            // Main application
+            document.addEventListener('DOMContentLoaded', function () {
+                const triggerHaptic = (dur = 10) => {
+                    if (navigator.vibrate) navigator.vibrate(dur);
+                };
+                // Initialize ScrollReveal for welcome screen FIRST to prevent FOUC during A-Frame load
+                if (typeof ScrollReveal !== 'undefined') {
+                    const sr = ScrollReveal({
+                        distance: '40px',
+                        duration: 1200,
+                        delay: 200,
+                        reset: false,
+                        useDelay: 'always'
+                    });
 
-            // Start the application after everything else is set up
-            initApp();
-        });
-    </script>
+                    sr.reveal('#logo', { origin: 'top' });
+                    sr.reveal('.logo-name', { origin: 'bottom', delay: 400 });
+                    sr.reveal('.grid-button', { origin: 'bottom', interval: 100, delay: 500, useDelay: 'always' });
+                }
+
+                const welcomeScreen = document.getElementById("welcome-screen");
+                const viewPdfButton = document.getElementById("view-pdf-button");
+                const view3dButton = document.getElementById("menu-3d-button");
+                const whatsappButton = document.getElementById("whatsapp-button");
+                const instagramButton = document.getElementById("instagram-button");
+                const mailButton = document.getElementById("mail-button");
+                const callButton = document.getElementById("call-button");
+                const reviewButton = document.getElementById("review-button");
+                const mapsButton = document.getElementById("maps-button");
+                const scanMeButton = document.getElementById("scan-me-button");
+                const scrollLeftBtn = document.getElementById("scroll-left");
+                const scrollRightBtn = document.getElementById("scroll-right");
+                const backButton = document.getElementById("back-button");
+                const menuPopupBtn = document.getElementById("menu-popup-btn");
+                const slideMenuOverlay = document.getElementById('slide-menu-overlay');
+                const slideMenuPanel = document.getElementById('slide-menu-panel');
+                const closeMenuBtn = document.getElementById('close-menu-btn');
+                const modelName = document.getElementById("model-name");
+                const modelPrice = document.getElementById("model-price");
+                const ingredientList = document.getElementById("ingredient-list");
+                const infoIconBtn = document.getElementById("info-icon-btn");
+                const heartBtn = document.getElementById("heart-btn");
+                const ingredientPopup = document.querySelector(".ingredient-popup");
+                const assets = document.getElementById("dynamic-assets");
+                const modelParent = document.getElementById("model-parent");
+                const loadingScreen = document.getElementById("loading-screen");
+                const loadingText = document.getElementById("loading-text");
+                const scene = document.querySelector("a-scene");
+                const bottomUI = document.getElementById("bottom-ui");
+                const sceneBg = document.getElementById("scene-bg");
+                const menuSearch = document.getElementById("menu-search");
+                const clearSearchBtn = document.getElementById("clear-search");
+                const noResultsMsg = document.getElementById("no-results");
+
+                let modelData = [];
+                let currentModelIndex = 0;
+                let modelsLoaded = false;
+                let urlToId = {};
+                let buttonEventsSetup = false; // guard: only attach listeners once
+                let favorites = JSON.parse(localStorage.getItem('hoc_favorites')) || [];
+
+                const ZOOM_MIN = 1.5;
+                const ZOOM_MAX = 5.0;
+                const ZOOM_DEFAULT = 2.5;
+                let zoomFactor = ZOOM_DEFAULT;
+
+                // Initialize the app
+                async function initApp() {
+                    // Show loading screen while loading models
+                    loadingScreen.style.display = 'flex';
+
+                    // Load model data and create model entities
+                    modelData = await fetchGoogleSheetCSV();
+
+                    if (modelData.length > 0) {
+                        // Create the single active-model entity (no assets downloaded yet)
+                        initModelEntity();
+                        modelsLoaded = true;
+
+                        viewPdfButton.addEventListener('click', () => {
+                            window.open('https://www.zomato.com/surat/the-artisans-table-vesu/menu', '_blank');
+                        });
+
+                        view3dButton.addEventListener('click', () => {
+                            welcomeScreen.style.display = 'none';
+                            show3DViewer();
+                        });
+
+                        whatsappButton.addEventListener('click', () => {
+                           const phoneNumber = '12345478650'; 
+                        const message = 'Hello, I have a question about your products';
+                        window.open(`https://wa.me/${+918228954751}?text=${encodeURIComponent(message)}`, '_blank');
+                        });
+
+                        instagramButton.addEventListener('click', () => {
+                            window.open('https://www.instagram.com/theartisanstable.srt/', '_blank');
+                        });
+
+                        mailButton.addEventListener('click', () => {
+                            window.location.href = 'mailto:artisanstable@gmail.com';
+                        });
+
+                        callButton.addEventListener('click', () => {
+                            window.location.href = 'tel:+918128955751';
+                        });
+
+                        reviewButton.addEventListener('click', () => {
+                        window.open('https://www.google.com/search?sca_esv=a39b70e8861fd680&si=APYL9bs7Hg2KMLB-4tSoTdxuOx8BdRvHbByC_AuVpNyh0x2KzQQslIoW1mNeQsU0H6ECd7GUg239yPDmBTAQxgc1wjuYaIDefAA0sWjOonUMqhCa4EPAUM_Cjgbhv-WkGlp3FvviwC3Xe_-ZQhGk0_8GTDD-uOdWbg%3D%3D&q=The+Artisan%27s+Table+Reviews&sa=X&ved=2ahUKEwiVo9HhsuGMAxU8wjgGHQEwIcMQ0bkNegQILhAD&cshid=1744973124229684&biw=1536&bih=747&dpr=1.25#lrd=0x3be05320b5dbf477:0x96f3b9cb64211979,3,,,,', '_blank');                        });
+
+                        mapsButton.addEventListener('click', () => {
+                        window.open('https://maps.app.goo.gl/YnAzv92zmnZgu4BD6', '_blank');});
+
+                        scanMeButton.addEventListener('click', () => {
+                            triggerHaptic(20);
+                            window.location.href = 'new.html';
+                        });
+
+                        loadingScreen.style.display = 'none';
+                    } else {
+                        loadingText.textContent = "No models available";
+                        viewPdfButton.disabled = true;
+                        view3dButton.disabled = true;
+                        viewPdfButton.textContent = "No Models Available";
+                        view3dButton.textContent = "No Models Available";
+                    }
+                }
+
+                // --- Lazy loading helpers ---
+
+                // Create the single reusable model entity (no asset loaded yet)
+                function initModelEntity() {
+                    if (!document.getElementById('active-model')) {
+                        const entity = document.createElement('a-entity');
+                        entity.setAttribute('id', 'active-model');
+                        entity.setAttribute('position', '0 0 0');
+                        modelParent.appendChild(entity);
+                    }
+                }
+
+                // Lazily register a URL as an <a-asset-item> and return a Promise that
+                // resolves with its id once the browser has downloaded the file.
+                function ensureAssetLoaded(url) {
+                    // Already cached — resolve immediately
+                    if (urlToId[url]) return Promise.resolve(urlToId[url]);
+
+                    return new Promise((resolve, reject) => {
+                        const index = Object.keys(urlToId).length;
+                        const id = `asset-${index}`;
+                        urlToId[url] = id;
+
+                        const assetItem = document.createElement('a-asset-item');
+                        assetItem.setAttribute('id', id);
+                        assetItem.setAttribute('src', url);
+
+                        const timeout = setTimeout(() => {
+                            console.warn(`Asset load timed out: ${url}`);
+                            resolve(id); // continue anyway
+                        }, 15000);
+
+                        assetItem.addEventListener('loaded', () => {
+                            clearTimeout(timeout);
+                            resolve(id);
+                        });
+                        assetItem.addEventListener('error', () => {
+                            clearTimeout(timeout);
+                            console.error(`Failed to load asset: ${url}`);
+                            resolve(id); // still resolve so UI isn't stuck
+                        });
+
+                        assets.appendChild(assetItem);
+                    });
+                }
+
+                // Silently prefetch a model in the background (fire-and-forget)
+                function prefetchModel(index) {
+                    const model = modelData[index];
+                    if (model && model.url && !urlToId[model.url]) {
+                        ensureAssetLoaded(model.url).catch(() => {});
+                    }
+                }
+
+                // Update visible model — loads on demand, then prefetches neighbours
+                async function updateVisibleModel() {
+                    const activeModel = modelData[currentModelIndex];
+                    const activeModelEntity = document.getElementById('active-model');
+                    if (!activeModel || !activeModelEntity) return;
+
+                    // Update text UI immediately (feels responsive)
+                    modelName.textContent = activeModel.name;
+                    modelPrice.textContent = activeModel.price;
+                    ingredientList.textContent = activeModel.ingredients || 'Premium ingredients';
+                    if (favorites.includes(activeModel.name)) {
+                        heartBtn.classList.add('active');
+                    } else {
+                        heartBtn.classList.remove('active');
+                    }
+
+                    // Reset zoom and rotation
+                    zoomFactor = ZOOM_DEFAULT;
+                    modelParent.setAttribute('scale', `${zoomFactor} ${zoomFactor} ${zoomFactor}`);
+                    const comp = modelParent.components['drag-rotate'];
+                    if (comp) {
+                        comp.pitch = THREE.MathUtils.degToRad(20);
+                        comp.yaw = 0;
+                        comp.lastInteractionTime = Date.now();
+                        comp.updateRotation();
+                    }
+
+                    if (!activeModel.url) return;
+
+                    // If already cached, apply instantly
+                    if (urlToId[activeModel.url]) {
+                        activeModelEntity.setAttribute('gltf-model', `#${urlToId[activeModel.url]}`);
+                        const s = activeModel.scale || 1.0;
+                        activeModelEntity.setAttribute('scale', `${s} ${s} ${s}`);
+                        // Prefetch neighbours in background
+                        const total = modelData.length;
+                        prefetchModel((currentModelIndex + 1) % total);
+                        prefetchModel((currentModelIndex - 1 + total) % total);
+                        return;
+                    }
+
+                    // Not cached yet — show inline spinner
+                    loadingText.textContent = 'Loading model...';
+                    loadingScreen.style.display = 'flex';
+
+                    const id = await ensureAssetLoaded(activeModel.url);
+
+                    loadingScreen.style.display = 'none';
+
+                    activeModelEntity.setAttribute('gltf-model', `#${id}`);
+                    const s = activeModel.scale || 1.0;
+                    activeModelEntity.setAttribute('scale', `${s} ${s} ${s}`);
+
+                    // Prefetch neighbours in background
+                    const total = modelData.length;
+                    prefetchModel((currentModelIndex + 1) % total);
+                    prefetchModel((currentModelIndex - 1 + total) % total);
+                }
+
+                // Set up button events
+                function setupButtonEvents() {
+                    const changeModel = (dir) => {
+                        triggerHaptic(15);
+                        currentModelIndex = (currentModelIndex + dir + modelData.length) % modelData.length;
+                        updateVisibleModel();
+                    };
+
+                    scrollLeftBtn.addEventListener("click", () => changeModel(-1));
+                    scrollRightBtn.addEventListener("click", () => changeModel(1));
+
+                    // Add back button event
+                    backButton.addEventListener("click", () => {
+                        triggerHaptic(20);
+                        scene.classList.remove('active');
+                        sceneBg.classList.remove('active');
+                        scrollLeftBtn.classList.remove('active');
+                        scrollRightBtn.classList.remove('active');
+                        bottomUI.style.display = 'none';
+                        backButton.classList.remove('active');
+                        menuPopupBtn.classList.remove('active');
+
+                        // Close menu if open
+                        slideMenuOverlay.classList.remove('active');
+                        slideMenuPanel.classList.remove('active');
+
+                        welcomeScreen.style.display = 'flex';
+                    });
+
+                    // Menu toggle events
+                    function toggleSlideMenu() {
+                        triggerHaptic(15);
+                        const isOpen = slideMenuPanel.classList.toggle('active');
+                        slideMenuOverlay.classList.toggle('active');
+
+                        if (isOpen) {
+                            updateMenuHighlights();
+                        }
+                    }
+
+                    function updateMenuHighlights() {
+                        const currentModel = modelData[currentModelIndex];
+                        if (!currentModel) return;
+
+                        const menuItems = document.querySelectorAll('.menu-item');
+                        menuItems.forEach(itemDiv => {
+                            const itemName = itemDiv.querySelector('.menu-item-name').textContent;
+                            if (currentModel.name.toLowerCase().includes(itemName.toLowerCase()) ||
+                                itemName.toLowerCase().includes(currentModel.name.toLowerCase())) {
+                                itemDiv.classList.add('active');
+                            } else {
+                                itemDiv.classList.remove('active');
+                            }
+
+                            // Update heart status in menu
+                            if (favorites.includes(itemName)) {
+                                itemDiv.classList.add('favorited');
+                            } else {
+                                itemDiv.classList.remove('favorited');
+                            }
+                        });
+                    }
+
+                    menuPopupBtn.addEventListener('click', toggleSlideMenu);
+                    closeMenuBtn.addEventListener('click', toggleSlideMenu);
+                    slideMenuOverlay.addEventListener('click', toggleSlideMenu);
+
+                    // Improved Search Logic
+                    menuSearch.addEventListener('input', (e) => {
+                        const term = e.target.value.toLowerCase();
+                        clearSearchBtn.style.display = term !== '' ? 'block' : 'none';
+
+                        let hasResults = false;
+                        const menuItems = document.querySelectorAll('.menu-item');
+                        const categories = document.querySelectorAll('.menu-category');
+
+                        menuItems.forEach(item => {
+                            const name = item.querySelector('.menu-item-name').textContent.toLowerCase();
+                            if (name.includes(term)) {
+                                item.style.display = 'flex';
+                                hasResults = true;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+
+                        // Hide categories if all their items are hidden
+                        categories.forEach(cat => {
+                            const visibleItems = cat.querySelectorAll('.menu-item[style*="display: flex"]');
+                            cat.style.display = (visibleItems.length > 0 || term === '') ? 'block' : 'none';
+                        });
+
+                        noResultsMsg.style.display = (!hasResults && term !== '') ? 'block' : 'none';
+                    });
+
+                    clearSearchBtn.addEventListener('click', () => {
+                        menuSearch.value = '';
+                        clearSearchBtn.style.display = 'none';
+                        menuSearch.dispatchEvent(new Event('input'));
+                        menuSearch.focus();
+                    });
+
+                    // Info Icon Toggle Logic
+                    infoIconBtn.addEventListener('click', (e) => {
+                        triggerHaptic(10);
+                        e.stopPropagation();
+                        ingredientPopup.classList.toggle('active');
+                    });
+
+                    // Heart Button Logic
+                    heartBtn.addEventListener('click', (e) => {
+                        triggerHaptic(30);
+                        const activeModel = modelData[currentModelIndex];
+                        if (!activeModel) return;
+
+                        const index = favorites.indexOf(activeModel.name);
+                        if (index === -1) {
+                            favorites.push(activeModel.name);
+                            heartBtn.classList.add('active');
+                        } else {
+                            favorites.splice(index, 1);
+                            heartBtn.classList.remove('active');
+                        }
+                        localStorage.setItem('hoc_favorites', JSON.stringify(favorites));
+
+                        // Refresh menu if open to show/hide hearts
+                        if (slideMenuPanel.classList.contains('active')) {
+                            updateMenuHighlights();
+                        }
+                    });
+
+                    // Close popup when clicking elsewhere
+                    document.addEventListener('click', () => {
+                        if (ingredientPopup.classList.contains('active')) {
+                            ingredientPopup.classList.remove('active');
+                        }
+                    });
+
+                    // Prevent closing when clicking inside the popup
+                    ingredientPopup.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                    });
+                }
+
+                // Fetch model data from local JSON file
+                async function fetchGoogleSheetCSV() {
+                    try {
+                        const response = await fetch('models.json');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+
+                        // Handle new object schema vs old array schema
+                        if (data.models && data.menu) {
+                            renderSlideMenu(data.menu);
+                            return data.models;
+                        }
+
+                        return Array.isArray(data) ? data : [];
+                    } catch (error) {
+                        console.error("Error loading models.json file:", error);
+                        loadingText.textContent = "Error loading data. Please try again.";
+                        return [];
+                    }
+                }
+
+                // Render Slide Menu
+                function renderSlideMenu(menuData) {
+                    const contentDiv = document.getElementById('slide-menu-content');
+                    contentDiv.innerHTML = '';
+
+                    menuData.forEach(category => {
+                        const categoryDiv = document.createElement('div');
+                        categoryDiv.className = 'menu-category';
+
+                        const title = document.createElement('div');
+                        title.className = 'menu-category-title';
+                        title.textContent = category.category;
+                        categoryDiv.appendChild(title);
+
+                        category.items.forEach(item => {
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'menu-item';
+                            itemDiv.style.cursor = 'pointer';
+
+                            const nameSpan = document.createElement('span');
+                            nameSpan.className = 'menu-item-name';
+                            nameSpan.textContent = item.name;
+
+                            const priceSpan = document.createElement('span');
+                            priceSpan.className = 'menu-item-price';
+                            priceSpan.textContent = '₹ ' + item.price;
+
+                            const heartSpan = document.createElement('span');
+                            heartSpan.className = 'menu-item-heart';
+                            heartSpan.innerHTML = '❤️';
+
+                            itemDiv.appendChild(nameSpan);
+                            itemDiv.appendChild(heartSpan);
+                            itemDiv.appendChild(priceSpan);
+
+                            // Highlight if this is the currently selected model
+                            if (modelData[currentModelIndex] &&
+                                (modelData[currentModelIndex].name.toLowerCase().includes(item.name.toLowerCase()) ||
+                                    item.name.toLowerCase().includes(modelData[currentModelIndex].name.toLowerCase()))) {
+                                itemDiv.classList.add('active');
+                            }
+
+                            // Show heart if favorited
+                            if (favorites.includes(item.name)) {
+                                itemDiv.classList.add('favorited');
+                            }
+
+                            // Add click event to navigate to model
+                            itemDiv.addEventListener('click', () => {
+                                // Find corresponding model index
+                                const targetIndex = modelData.findIndex(m =>
+                                    m.name.toLowerCase().includes(item.name.toLowerCase()) ||
+                                    item.name.toLowerCase().includes(m.name.toLowerCase())
+                                );
+
+                                if (targetIndex !== -1) {
+                                    // Clear other active classes
+                                    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+                                    itemDiv.classList.add('active');
+
+                                    currentModelIndex = targetIndex;
+                                    updateVisibleModel();
+
+                                    // Close the slide menu
+                                    slideMenuOverlay.classList.remove('active');
+                                    slideMenuPanel.classList.remove('active');
+                                }
+                            });
+
+                            categoryDiv.appendChild(itemDiv);
+                        });
+
+                        contentDiv.appendChild(categoryDiv);
+                    });
+                }
+
+                // (createModelEntities replaced by lazy ensureAssetLoaded + initModelEntity above)
+
+                // Show 3D viewer
+                function show3DViewer() {
+                    // Make scene visible
+                    scene.classList.add('active');
+                    sceneBg.classList.add('active');
+
+                    // Only attach button event listeners once.
+                    // Calling setupButtonEvents() on every visit stacks duplicate listeners,
+                    // causing the MENU button to toggle open+close in the same click.
+                    if (!buttonEventsSetup) {
+                        setupButtonEvents();
+                        buttonEventsSetup = true;
+                    }
+                    scrollLeftBtn.classList.add('active');
+                    scrollRightBtn.classList.add('active');
+                    bottomUI.style.display = 'flex';
+                    backButton.classList.add('active');
+                    menuPopupBtn.classList.add('active');
+
+                    // Show the first model
+                    updateVisibleModel();
+                }
+
+                // Zoom functions
+                function applyZoom() {
+                    zoomFactor = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoomFactor));
+                    modelParent.setAttribute('scale', `${zoomFactor} ${zoomFactor} ${zoomFactor}`);
+                }
+
+                function zoomIn() {
+                    zoomFactor *= 1.1;
+                    applyZoom();
+                }
+
+                function zoomOut() {
+                    zoomFactor /= 1.1;
+                    applyZoom();
+                }
+
+                // Event listeners for zoom
+                window.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    if (e.deltaY < 0) zoomIn();
+                    else zoomOut();
+                }, { passive: false });
+
+                let initialPinchDistance = null;
+                window.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 2) {
+                        const dx = e.touches[0].clientX - e.touches[1].clientX;
+                        const dy = e.touches[0].clientY - e.touches[1].clientY;
+                        initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+                    }
+                });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 2 && initialPinchDistance) {
+                        e.preventDefault();
+                        const dx = e.touches[0].clientX - e.touches[1].clientX;
+                        const dy = e.touches[0].clientY - e.touches[1].clientY;
+                        const currentPinchDistance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (currentPinchDistance > initialPinchDistance * 1.05) zoomIn();
+                        else if (currentPinchDistance < initialPinchDistance * 0.95) zoomOut();
+
+                        initialPinchDistance = currentPinchDistance;
+                    }
+                }, { passive: false });
+
+                // Start the application after everything else is set up
+                initApp();
+            });
+        </script>
 </div></body>
 </html>

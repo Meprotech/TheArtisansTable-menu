@@ -1,152 +1,366 @@
 {
   "models": [
-    { "name": "Hamburger", "price": "₹ 200", "url": "hamburger.glb", "scale": 5.0 },
-    { "name": "French Fries", "price": "₹ 280", "url": "pizza.glb" },
-    { "name": "Peri Peri Fries", "price": "₹ 320", "url": "pizza.glb" },
-    { "name": "Potato Wedges", "price": "₹ 320", "url": "pizza.glb" },
-    { "name": "Cheese Nachos", "price": "₹ 380", "url": "pizza.glb" },
-    { "name": "Veggie Loaded Nachos", "price": "₹ 380", "url": "pizza.glb" },
-    { "name": "Cheese Garlic Bread", "price": "₹ 450", "url": "pizza.glb" },
-    { "name": "Avocado Toast", "price": "₹ 370", "url": "pizza.glb" },
-    { "name": "Mushroom Toast", "price": "₹ 370", "url": "pizza.glb" },
-    { "name": "Chickpea Mushroom Toast", "price": "₹ 370", "url": "pizza.glb" },
-    { "name": "Chili Beans Toast", "price": "₹ 370", "url": "pizza.glb" },
-    { "name": "Spinach Cottage Cheese Sandwich", "price": "₹ 360", "url": "pizza.glb" },
-    { "name": "Falafel Sandwich", "price": "₹ 370", "url": "pizza.glb" },
-    { "name": "Peri Peri Cottage Sandwich", "price": "₹ 370", "url": "pizza.glb" },
-    { "name": "Falafel White", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Pita Pocket", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Fantastic Falafel Bowl", "price": "₹ 450", "url": "pizza.glb" },
-    { "name": "Falafel Platter", "price": "₹ 480", "url": "pizza.glb" },
-    { "name": "Caesar Salad", "price": "₹ 350", "url": "pizza.glb" },
-    { "name": "Farm Fresh Salad", "price": "₹ 350", "url": "pizza.glb" },
-    { "name": "Exotic Veg Salad", "price": "₹ 350", "url": "pizza.glb" },
-    { "name": "Brown Rice Salad", "price": "₹ 380", "url": "pizza.glb" },
-    { "name": "Pomodoro Pasta", "price": "₹ 380", "url": "pizza.glb" },
-    { "name": "Aglio E Olio Pasta", "price": "₹ 380", "url": "pizza.glb" },
-    { "name": "Alfredo Pasta", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Combination Pasta", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Green - Pesto Pasta", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Mexican Rice", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Burnt Rice", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Pesto Talab Rice", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Spinach Cottage Cheese Rice", "price": "₹ 420", "url": "pizza.glb" },
-    { "name": "Thai Curry with Basil Rice", "price": "₹ 450", "url": "pizza.glb" },
-    { "name": "Mushroom Risotto Rice", "price": "₹ 480", "url": "pizza.glb" },
-    { "name": "Cheese Add-on", "price": "₹ 79", "url": "pizza.glb" },
-    { "name": "Extra Vegetables Add-on", "price": "₹ 79", "url": "pizza.glb" },
-    { "name": "Margherita Pizza", "price": "₹ 510", "url": "pizza.glb" },
-    { "name": "Panuzzo-Pesto Pizza", "price": "₹ 510", "url": "pizza.glb" },
-    { "name": "Veggie Pizza", "price": "₹ 580", "url": "pizza.glb" },
-    { "name": "Mexican Pizza", "price": "₹ 620", "url": "pizza.glb" },
-    { "name": "Burrata Pizza", "price": "₹ 620", "url": "pizza.glb" },
-    { "name": "Silicon Pesto Pizza", "price": "₹ 620", "url": "pizza.glb" },
-    { "name": "Four Cheese Hot Honey Pizza", "price": "₹ 640", "url": "pizza.glb" },
-    { "name": "For The Indian Pizza", "price": "₹ 650", "url": "pizza.glb" },
-    { "name": "Exotic Mushroom Pizza", "price": "₹ 690", "url": "pizza.glb" },
-    { "name": "Butter Croissant", "price": "₹ 250", "url": "pizza.glb" },
-    { "name": "Nutella Croissant", "price": "₹ 320", "url": "pizza.glb" },
-    { "name": "Four Cheese Croissant", "price": "₹ 320", "url": "pizza.glb" },
-    { "name": "Avocado Croissant", "price": "₹ 350", "url": "pizza.glb" },
-    { "name": "Pesto Burrata Croissant", "price": "₹ 380", "url": "pizza.glb" }
+    { "name": "Espresso", "price": "₹ 140", "url": "pizza.glb", "ingredients": "Double shot of premium espresso" },
+    { "name": "Long Black", "price": "₹ 160", "url": "pizza.glb", "ingredients": "Hot water, double shot espresso" },
+    { "name": "Cappuccino", "price": "₹ 240", "url": "pizza.glb", "ingredients": "Espresso, steamed milk, deep layer of foam" },
+    { "name": "Cafe Latte", "price": "₹ 260", "url": "pizza.glb", "ingredients": "Espresso, plenty of steamed milk, thin foam" },
+    { "name": "Mocha Latte", "price": "₹ 270", "url": "pizza.glb", "ingredients": "Espresso, chocolate, steamed milk" },
+    { "name": "Spinach Latte", "price": "₹ 280", "url": "pizza.glb", "ingredients": "Espresso, spinach extract, steamed milk" },
+    { "name": "Cortado", "price": "₹ 200", "url": "pizza.glb", "ingredients": "Espresso, equal amount of warm milk" },
+    { "name": "Macchiato", "price": "₹ 200", "url": "pizza.glb", "ingredients": "Espresso, small amount of foamed milk" },
+    { "name": "Flavour Latte", "price": "₹ 270", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Iced Espresso", "price": "₹ 150", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Iced Americano", "price": "₹ 180", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Iced Latte", "price": "₹ 260", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Iced Mocha Latte", "price": "₹ 280", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Hazelnut Latte", "price": "₹ 280", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Vanilla Latte", "price": "₹ 280", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Caramel Iced Latte", "price": "₹ 280", "url": "coffe_1.glb", "scale": 2.0 },
+    { "name": "Coconut Iced Latte", "price": "₹ 280", "url": "burger_1.glb", "scale": 10 },
+    { "name": "Vietnamese", "price": "₹ 220", "url": "burger_1.glb", "scale": 10},
+    { "name": "Coconut Vietnamese", "price": "₹ 250", "url": "burger_1.glb", "scale": 10 },
+    { "name": "Affogato", "price": "₹ 220", "url": "coffe_1.glb","scale": 2.0 },
+    { "name": "Espresso Tonic", "price": "₹ 250", "url": "coffe_4.glb", "scale": 0.5 },
+    { "name": "Cold Brew Tonic", "price": "₹ 250", "url": "coffe_4.glb", "scale": 0.5 },
+    { "name": "Orange Tonic", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "Vanilla Tonic", "price": "₹ 260", "url": "pizza.glb" },
+    { "name": "Bubble Gum Tonic", "price": "₹ 260", "url": "pizza.glb" },
+    { "name": "Lemon Basil Tonic", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "Honey Cinnamon Tonic", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "Tropicana Tonic", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "Mint Tonic", "price": "₹ 260", "url": "pizza.glb" },
+    { "name": "Espresso Redbull", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Espresso Ginger Ale", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Classic Frappe", "price": "₹ 230", "url": "pizza.glb" },
+    { "name": "Mocha Frappe", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Caramel Frappe", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Hazelnut Frappe", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Brownie Frappe", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Nutella Frappe", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Biscoff Frappe", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Vanilla Frappe", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Strawberry Frappe", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "Coconut Frappe", "price": "₹ 260", "url": "pizza.glb" },
+    { "name": "Nutella Shake", "price": "₹ 310", "url": "pizza.glb" },
+    { "name": "Biscoff Shake", "price": "₹ 320", "url": "pizza.glb" },
+    { "name": "Biscoff Peanut Shake", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Biscoff Anjeer Shake", "price": "₹ 380", "url": "pizza.glb" },
+    { "name": "Oreo Shake", "price": "₹ 310", "url": "pizza.glb" },
+    { "name": "Lemon Iced Tea", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Peach Iced Tea", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Cranberry Iced Tea", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Strawberry Iced Tea", "price": "₹ 330", "url": "pizza.glb" },
+    { "name": "Ginger Honey Iced Tea", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "V60 Pour Over", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "AeroPress", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "French Press", "price": "₹ 240", "url": "pizza.glb" },
+    { "name": "Siphon", "price": "₹ 310", "url": "pizza.glb" },
+    { "name": "Classic Cold Brew", "price": "₹ 220", "url": "pizza.glb" },
+    { "name": "Rum Cold Brew", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Whiskey Cold Brew", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Wine Cold Brew", "price": "₹ 260", "url": "pizza.glb" },
+    { "name": "Orange Just Cold Brew", "price": "₹ 240", "url": "pizza.glb" },
+    { "name": "Coffee Mojito", "price": "₹ 280", "url": "pizza.glb" },
+    { "name": "Mexican Cold Brew", "price": "₹ 280", "url": "pizza.glb" },
+    { "name": "Wild Cinnamon", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Cold Brew Lemon Spark", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Honey Lemon Cold Brew", "price": "₹ 290", "url": "pizza.glb" },
+    { "name": "Bloody Brew", "price": "₹ 310", "url": "pizza.glb" },
+    { "name": "Mint Mojito", "price": "₹ 220", "url": "pizza.glb" },
+    { "name": "Strawberry Mojito", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Watermelon Mojito", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Cranberry Mojito", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Fresh Lime Soda", "price": "₹ 120", "url": "pizza.glb" },
+    { "name": "Citrus Cooler", "price": "₹ 310", "url": "pizza.glb" },
+    { "name": "Green Garden Bulls", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Sundowner", "price": "₹ 320", "url": "pizza.glb" },
+    { "name": "Green Apple Martini", "price": "₹ 290", "url": "pizza.glb" },
+    { "name": "Watermelon Refresher", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Peach Paradise", "price": "₹ 310", "url": "pizza.glb" },
+    { "name": "New York Cheesecake", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Nutella Cheesecake", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Biscoff Cheesecake", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Brownie", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Brownie with Ice Cream", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Sote Exotic Salad", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Hummus Beetroot", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Avocado Salad", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Grill Paneer Salad", "price": "₹ 0", "url": "pizza.glb" },
+    { "name": "French Fries", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Peri Peri Fries", "price": "₹ 270", "url": "pizza.glb" },
+    { "name": "Vol Au Vent", "price": "₹ 390", "url": "pizza.glb" },
+    { "name": "Loaded Nachos", "price": "₹ 380", "url": "pizza.glb" },
+    { "name": "Mexican Tacos", "price": "₹ 380", "url": "pizza.glb" },
+    { "name": "Dragon Cigar Roll", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Quesadilla", "price": "₹ 390", "url": "pizza.glb" },
+    { "name": "Jalapeno Cheese Croquettes", "price": "₹ 420", "url": "pizza.glb" },
+    { "name": "Cheese Garlic Toast", "price": "₹ 450", "url": "pizza.glb" },
+    { "name": "Pesto Paneer", "price": "₹ 370", "url": "pizza.glb" },
+    { "name": "Titbit Paneer", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Avocado Toast", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Mushroom Toast", "price": "₹ 450", "url": "pizza.glb" },
+    { "name": "Paneer Kathi Sandwich", "price": "₹ 300", "url": "pizza.glb" },
+    { "name": "Pesto Sandwich", "price": "₹ 370", "url": "pizza.glb" },
+    { "name": "Roasted Veggie Focaccia", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Verdure Cottage Cheese", "price": "₹ 390", "url": "pizza.glb" },
+    { "name": "Tuscan Garden Sandwich", "price": "₹ 380", "url": "pizza.glb" },
+    { "name": "Mexican Wrap", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Tandoori Wrap", "price": "₹ 250", "url": "pizza.glb" },
+    { "name": "Toscano Veg Wrap", "price": "₹ 240", "url": "pizza.glb" },
+    { "name": "Alfredo Pasta", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Arrabbiata Pasta", "price": "₹ 380", "url": "pizza.glb" },
+    { "name": "Prima Rosa Pasta", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Pesto Pasta", "price": "₹ 450", "url": "pizza.glb" },
+    { "name": "Aglio e Olio Pasta", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Princess Margherita Pizza", "price": "₹ 580", "url": "pizza.glb" },
+    { "name": "Montanara Pizza", "price": "₹ 450", "url": "pizza.glb" },
+    { "name": "Thunderbird Pizza", "price": "₹ 450", "url": "pizza.glb" },
+    { "name": "Indian Smoke Home Pizza", "price": "₹ 600", "url": "pizza.glb" },
+    { "name": "Rosso Pizza", "price": "₹ 370", "url": "pizza.glb" },
+    { "name": "Farm Fresh Pizza", "price": "₹ 550", "url": "pizza.glb" },
+    { "name": "Stuff Garlic Bread", "price": "₹ 400", "url": "pizza.glb" },
+    { "name": "Korean Garlic Bread", "price": "₹ 350", "url": "pizza.glb" },
+    { "name": "Burrito Rice Bowl", "price": "₹ 500", "url": "pizza.glb" },
+    { "name": "Mexican Chill Beans Rice", "price": "₹ 650", "url": "pizza.glb" },
+    { "name": "Burnt Garlic Rice", "price": "₹ 570", "url": "pizza.glb" },
+    { "name": "Thai Curry with Jasmine Rice", "price": "₹ 600", "url": "pizza.glb" },
+    { "name": "Soba Noodles", "price": "₹ 620", "url": "pizza.glb" },
+    { "name": "Miso Spicy Ramen Bowl", "price": "₹ 580", "url": "pizza.glb" }
   ],
   "menu": [
     {
-      "category": "Appetizers",
+      "category": "HOT",
       "items": [
-        { "name": "French Fries", "price": "280" },
-        { "name": "Peri Peri Fries", "price": "320" },
-        { "name": "Potato Wedges", "price": "320" },
-        { "name": "Cheese Nachos", "price": "380" },
-        { "name": "Veggie Loaded Nachos", "price": "380" },
-        { "name": "Cheese Garlic Bread", "price": "450" }
+        { "name": "Espresso", "price": "140" },
+        { "name": "Long Black", "price": "160" },
+        { "name": "Cappuccino", "price": "240" },
+        { "name": "Cafe Latte", "price": "260" },
+        { "name": "Mocha Latte", "price": "270" },
+        { "name": "Spinach Latte", "price": "280" },
+        { "name": "Cortado", "price": "200" },
+        { "name": "Macchiato", "price": "200" },
+        { "name": "Flavour Latte", "price": "270" }
       ]
     },
     {
-      "category": "Open Toast",
+      "category": "ICED",
       "items": [
-        { "name": "Avocado", "price": "370" },
-        { "name": "Mushroom", "price": "370" },
-        { "name": "Chickpea Mushroom", "price": "370" },
-        { "name": "Chili Beans", "price": "370" }
+        { "name": "Iced Espresso", "price": "150" },
+        { "name": "Iced Americano", "price": "180" },
+        { "name": "Iced Latte", "price": "260" },
+        { "name": "Mocha Latte", "price": "280" },
+        { "name": "Hazelnut Latte", "price": "280" },
+        { "name": "Vanilla Latte", "price": "280" },
+        { "name": "Caramel Iced Latte", "price": "280" },
+        { "name": "Coconut Iced Latte", "price": "280" },
+        { "name": "Vietnamese", "price": "220" },
+        { "name": "Coconut Vietnamese", "price": "250" },
+        { "name": "Affogato", "price": "220" }
       ]
     },
     {
-      "category": "Sandwich",
+      "category": "🧊 TONIC COFFEE",
       "items": [
-        { "name": "Spinach Cottage Cheese", "price": "360" },
-        { "name": "Falafel Sandwich", "price": "370" },
-        { "name": "Peri Peri Cottage Sandwich", "price": "370" }
+        { "name": "Espresso Tonic", "price": "250" },
+        { "name": "Cold Brew Tonic", "price": "250" },
+        { "name": "Orange Tonic", "price": "270" },
+        { "name": "Vanilla Tonic", "price": "260" },
+        { "name": "Bubble Gum Tonic", "price": "260" },
+        { "name": "Lemon Basil Tonic", "price": "270" },
+        { "name": "Honey Cinnamon Tonic", "price": "270" },
+        { "name": "Tropicana Tonic", "price": "270" },
+        { "name": "Mint Tonic", "price": "260" },
+        { "name": "Espresso Redbull", "price": "330" },
+        { "name": "Espresso Ginger Ale", "price": "250" }
       ]
     },
     {
-      "category": "Special Falafel",
+      "category": "🥤 FRAPPES",
       "items": [
-        { "name": "Falafel White", "price": "420" },
-        { "name": "Pita Pocket", "price": "420" },
-        { "name": "Fantastic Falafel Bowl", "price": "450" },
-        { "name": "Falafel Platter", "price": "480" }
+        { "name": "Classic Frappe", "price": "230" },
+        { "name": "Mocha Frappe", "price": "250" },
+        { "name": "Caramel Frappe", "price": "250" },
+        { "name": "Hazelnut Frappe", "price": "250" },
+        { "name": "Brownie Frappe", "price": "330" },
+        { "name": "Nutella Frappe", "price": "330" },
+        { "name": "Biscoff Frappe", "price": "330" },
+        { "name": "Vanilla Frappe", "price": "250" },
+        { "name": "Strawberry Frappe", "price": "270" },
+        { "name": "Coconut Frappe", "price": "260" }
       ]
     },
     {
-      "category": "Salad",
+      "category": "🥛 SHAKES",
       "items": [
-        { "name": "Caesar", "price": "350" },
-        { "name": "Farm Fresh", "price": "350" },
-        { "name": "Exotic Veg", "price": "350" },
-        { "name": "Brown Rice", "price": "380" }
+        { "name": "Nutella Shake", "price": "310" },
+        { "name": "Biscoff Shake", "price": "320" },
+        { "name": "Biscoff Peanut Shake", "price": "350" },
+        { "name": "Biscoff Anjeer Shake", "price": "380" },
+        { "name": "Oreo Shake", "price": "310" }
       ]
     },
     {
-      "category": "Pasta",
+      "category": "🍹 ICED TEA",
       "items": [
-        { "name": "Pomodoro", "price": "380" },
-        { "name": "Aglio E Olio", "price": "380" },
-        { "name": "Alfredo", "price": "420" },
-        { "name": "Combination", "price": "420" },
-        { "name": "Green - Pesto", "price": "420" }
+        { "name": "Lemon Iced Tea", "price": "330" },
+        { "name": "Peach Iced Tea", "price": "330" },
+        { "name": "Cranberry Iced Tea", "price": "300" },
+        { "name": "Strawberry Iced Tea", "price": "330" },
+        { "name": "Ginger Honey Iced Tea", "price": "270" }
       ]
     },
     {
-      "category": "Rice",
+      "category": "☕ MANUAL BREW",
       "items": [
-        { "name": "Mexican Rice", "price": "420" },
-        { "name": "Burnt Rice", "price": "420" },
-        { "name": "Pesto Talab Rice", "price": "420" },
-        { "name": "Spinach Cottage Cheese Rice", "price": "420" },
-        { "name": "Thai Curry with Basil Rice (Red/Green)", "price": "450" },
-        { "name": "Mushroom Risotto Rice", "price": "480" }
+        { "name": "V60 Pour Over (Hot/Iced)", "price": "250" },
+        { "name": "AeroPress (Hot/Iced)", "price": "250" },
+        { "name": "French Press", "price": "240" },
+        { "name": "Siphon", "price": "310" }
       ]
     },
     {
-      "category": "Add-on",
+      "category": "❄️ COLD BREW",
       "items": [
-        { "name": "Cheese", "price": "79" },
-        { "name": "Extra Vegetables", "price": "79" }
+        { "name": "Classic Cold Brew", "price": "220" },
+        { "name": "Rum Cold Brew", "price": "250" },
+        { "name": "Whiskey Cold Brew", "price": "250" },
+        { "name": "Wine Cold Brew", "price": "260" },
+        { "name": "Orange Just Cold Brew", "price": "240" }
       ]
     },
     {
-      "category": "Pizza",
+      "category": "SIGNATURE COLD BREW",
       "items": [
-        { "name": "Margherita", "price": "510" },
-        { "name": "Panuzzo-Pesto", "price": "510" },
-        { "name": "Veggie Pizza", "price": "580" },
-        { "name": "Mexican", "price": "620" },
-        { "name": "Burrata", "price": "620" },
-        { "name": "Silicon Pesto", "price": "620" },
-        { "name": "Four Cheese Hot Honey", "price": "640" },
-        { "name": "For The Indian", "price": "650" },
-        { "name": "Exotic Mushroom", "price": "690" }
+        { "name": "Coffee Mojito", "price": "280" },
+        { "name": "Mexican Cold Brew", "price": "280" },
+        { "name": "Wild Cinnamon", "price": "250" },
+        { "name": "Cold Brew Lemon Spark", "price": "300" },
+        { "name": "Honey Lemon Cold Brew", "price": "290" },
+        { "name": "Bloody Brew", "price": "310" }
       ]
     },
     {
-      "category": "Croissant",
+      "category": "🍸 MOCKTAILS",
       "items": [
-        { "name": "Butter Croissant", "price": "250" },
-        { "name": "Nutella Croissant", "price": "320" },
-        { "name": "Four Cheese Croissant", "price": "320" },
-        { "name": "Avocado Croissant", "price": "350" },
-        { "name": "Pesto Burrata Croissant", "price": "380" }
+        { "name": "Mint Mojito", "price": "220" },
+        { "name": "Strawberry Mojito", "price": "250" },
+        { "name": "Watermelon Mojito", "price": "250" },
+        { "name": "Cranberry Mojito", "price": "250" },
+        { "name": "Fresh Lime Soda/Water", "price": "120" },
+        { "name": "Citrus Cooler", "price": "310" },
+        { "name": "Green Garden Bulls", "price": "350" },
+        { "name": "Sundowner", "price": "320" },
+        { "name": "Green Apple Martini", "price": "290" },
+        { "name": "Watermelon Refresher", "price": "300" },
+        { "name": "Peach Paradise", "price": "310" }
+      ]
+    },
+    {
+      "category": "➕ EXTRA",
+      "items": [
+        { "name": "Only Juice", "price": "200" },
+        { "name": "Red Bull", "price": "200" },
+        { "name": "Ginger Ale", "price": "150" },
+        { "name": "Tonic Water", "price": "150" },
+        { "name": "Nutella", "price": "80" },
+        { "name": "Biscoff", "price": "80" }
+      ]
+    },
+    {
+      "category": "🍰 DESSERTS",
+      "items": [
+        { "name": "New York Cheesecake", "price": "300" },
+        { "name": "Nutella Cheesecake", "price": "350" },
+        { "name": "Biscoff Cheesecake", "price": "350" },
+        { "name": "Brownie", "price": "250" },
+        { "name": "Brownie with Ice Cream", "price": "300" }
+      ]
+    },
+    {
+      "category": "🥗 SALAD",
+      "items": [
+        { "name": "Sote Exotic Salad", "price": "300" },
+        { "name": "Hummus Beetroot", "price": "350" },
+        { "name": "Avocado Salad", "price": "350" },
+        { "name": "Grill Paneer Salad", "price": "—" }
+      ]
+    },
+    {
+      "category": "🍟 STARTERS",
+      "items": [
+        { "name": "French Fries", "price": "250" },
+        { "name": "Peri Peri Fries", "price": "270" },
+        { "name": "Vol Au Vent", "price": "390" },
+        { "name": "Loaded Nachos", "price": "380" },
+        { "name": "Mexican Tacos", "price": "380" },
+        { "name": "Dragon Cigar Roll", "price": "400" },
+        { "name": "Quesadilla", "price": "390" },
+        { "name": "Jalapeno Cheese Croquettes", "price": "420" },
+        { "name": "Cheese Garlic Toast", "price": "450" },
+        { "name": "Pesto Paneer", "price": "370" },
+        { "name": "Titbit Paneer", "price": "400" }
+      ]
+    },
+    {
+      "category": "🥪 SANDWICH",
+      "items": [
+        { "name": "Avocado Toast", "price": "400" },
+        { "name": "Mushroom Toast", "price": "450" },
+        { "name": "Paneer Kathi Sandwich", "price": "300" },
+        { "name": "Pesto Sandwich", "price": "370" },
+        { "name": "Roasted Veggie Focaccia", "price": "400" },
+        { "name": "Verdure Cottage Cheese", "price": "390" },
+        { "name": "Tuscan Garden Sandwich", "price": "380" }
+      ]
+    },
+    {
+      "category": "🌯 WRAPS",
+      "items": [
+        { "name": "Mexican", "price": "250" },
+        { "name": "Tandoori", "price": "250" },
+        { "name": "Toscano Veg", "price": "240" }
+      ]
+    },
+    {
+      "category": "🍝 PASTA",
+      "items": [
+        { "name": "Alfredo Pasta", "price": "400" },
+        { "name": "Arrabbiata Pasta", "price": "380" },
+        { "name": "Prima Rosa Pasta", "price": "400" },
+        { "name": "Pesto Pasta", "price": "450" },
+        { "name": "Aglio e Olio Pasta", "price": "400" }
+      ]
+    },
+    {
+      "category": "🍕 PIZZAS & BREADS",
+      "items": [
+        { "name": "Princess Margherita Pizza", "price": "580" },
+        { "name": "Montanara Pizza", "price": "450" },
+        { "name": "Thunderbird Pizza", "price": "450" },
+        { "name": "Indian Smoke Home Pizza", "price": "600" },
+        { "name": "Rosso Pizza", "price": "370" },
+        { "name": "Farm Fresh", "price": "550" },
+        { "name": "Stuff Garlic Bread", "price": "400" },
+        { "name": "Korean Garlic Bread", "price": "350" }
+      ]
+    },
+    {
+      "category": "🍚 RICE BOWLS",
+      "items": [
+        { "name": "Burrito Rice Bowl", "price": "500" },
+        { "name": "Mexican Chill Beans Rice", "price": "650" },
+        { "name": "Burnt Garlic Rice", "price": "570" },
+        { "name": "Thai Curry with Jasmine Rice", "price": "600" },
+        { "name": "Soba Noodles", "price": "620" },
+        { "name": "Miso Spicy Ramen Bowl", "price": "580" }
+      ]
+    },
+    {
+      "category": "➕ ADD-ONS",
+      "items": [
+        { "name": "Extra Cheese", "price": "80" },
+        { "name": "Cheese Sauce", "price": "80" },
+        { "name": "Extra Curry", "price": "80" }
       ]
     }
   ]

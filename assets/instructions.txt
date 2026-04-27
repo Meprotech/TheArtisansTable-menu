@@ -1,0 +1,9 @@
+# AR Feature Instructions
+
+To test the AR feature:
+1. Open the website on your phone.
+2. Click the 'SCAN ME' button.
+3. Grant camera permissions.
+4. Point your phone at a "Hiro" marker.
+   - You can find the Hiro marker here: https://ar-js-org.github.io/AR.js/data/images/HIRO.png
+5. The 3D coffee model will appear live on your screen!
